@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UYIRVA agricultural trade platform">
+  <title>UYIRVA | Agricultural Trade</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">UYIRVA</a>
+    <nav aria-label="Main navigation"><a href="#how">How it works</a><a href="#features">Features</a></nav>
+    <button class="button button-primary" data-open-auth="login">Sign in</button>
+  </header>
+
+  <main id="landing-page">
+    <section class="hero">
+      <div><p class="eyebrow">A digital coordination layer for agricultural trade</p><h1>From farmgate to bulk buyer, without the guesswork.</h1><p class="lead">UYIRVA connects farmers, FPOs, and buyers with transparent pricing, smart matching, and coordinated logistics.</p><div class="actions"><button class="button button-primary" data-open-auth="register">Create an account</button><a class="button button-secondary" href="#how">Explore UYIRVA</a></div></div>
+      <aside class="market-card"><p class="muted">Today’s marketplace</p><h2>Live demand</h2><div class="demand"><span>Tomato</span><b>High</b></div><div class="demand"><span>Onion</span><b class="medium">Medium</b></div><div class="demand"><span>Potato</span><b class="medium">Medium</b></div><hr><p class="muted">AI fair-price guidance</p><strong class="price">₹24–₹29/kg</strong></aside>
+    </section>
+    <section class="section" id="how"><p class="eyebrow">How UYIRVA works</p><h2>One practical flow for a fragmented market.</h2><div class="card-grid"><article><span>01</span><h3>Farmer lists</h3><p>Create crop listings using a simple visual form.</p></article><article><span>02</span><h3>Buyer requests</h3><p>Specify crop, quantity, quality, price, and delivery window.</p></article><article><span>03</span><h3>UYIRVA coordinates</h3><p>Match supply and demand, pool logistics, and track settlement.</p></article></div></section>
+    <section class="section" id="features"><p class="eyebrow">Built for useful decisions</p><h2>Trade with clear prices and clear next steps.</h2><div class="card-grid"><article><h3>AI price guidance</h3><p>Advisory fair-price ranges grounded in trade signals.</p></article><article><h3>Smart matching</h3><p>Match compatible crop, quantity, price, and location.</p></article><article><h3>Transparent settlement</h3><p>Follow each order from confirmation to delivery.</p></article></div></section>
+  </main>
+
+  <main class="dashboard" id="dashboard-page" hidden></main>
+
+  <dialog class="auth-dialog" id="auth-dialog" aria-labelledby="auth-title">
+    <button class="close" id="close-auth" aria-label="Close">×</button>
+    <section id="login-panel"><h2 id="auth-title">Welcome back</h2><p>Sign in to continue to your dashboard.</p><form id="login-form"><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Role<select name="role" required><option value="FARMER">Farmer</option><option value="BUYER">Buyer</option><option value="FPO">FPO</option></select></label><label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required></label><p class="form-message" aria-live="polite"></p><button class="button button-primary" type="submit">Sign in</button></form><p>New to UYIRVA? <button class="text-button" data-open-auth="register">Create an account</button></p></section>
+    <section id="register-panel" hidden><h2>Create your account</h2><p>Join as a farmer, buyer, or FPO.</p><form id="register-form"><label>Full name<input name="full_name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Phone<input name="phone" type="tel" autocomplete="tel" required></label><label>Role<select name="role" required><option value="FARMER">Farmer</option><option value="BUYER">Buyer</option><option value="FPO">FPO</option></select></label><label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label><p class="form-message" aria-live="polite"></p><button class="button button-primary" type="submit">Create account</button></form><p>Already have an account? <button class="text-button" data-open-auth="login">Sign in</button></p></section>
+  </dialog>
+  <script src="/app.js"></script>
+</body>
+</html>
