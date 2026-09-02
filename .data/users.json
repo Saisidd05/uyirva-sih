@@ -1,0 +1,24 @@
+[
+  {
+    "id": "884c3d2f-195e-4193-a4bc-42520bcef7e6",
+    "full_name": "Sai Siddharth",
+    "email": "nsaisiddharth05@gmail.com",
+    "phone": "nsaisiddharth05@gmail.com",
+    "role": "FARMER",
+    "password": {
+      "salt": "2d44ddd08697653f02b3123a7369bdca",
+      "value": "89ffc0cb9313da50fd4ae5452f6eef0ca1a804f167b30810fbcdb544759fa73feccfb9282b644e8efe0445ec3667f130dd75abe00ea89cc92b231e52e5501bcf"
+    }
+  },
+  {
+    "id": "8c1de702-9d9b-4518-adf1-84f836d49f49",
+    "full_name": "Verification User",
+    "email": "verification-1788365096@example.com",
+    "phone": "+910000000000",
+    "role": "FARMER",
+    "password": {
+      "salt": "64d2d07c8b756eae3034f1ff8e0d8817",
+      "value": "231134c93f4908704226d3cbc5ba171ad42e3d2ec2b6350f70af3c854cd95148957661bccd7570449df65de74df8912ad185c46a296692563ee204681978824f"
+    }
+  }
+]

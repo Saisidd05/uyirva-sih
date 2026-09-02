@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UYIRVA — Dashboard</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* Additional styles for dashboard features */
+    .dashboard-app { display: block; margin: 40px auto; }
+    .action-row { margin-bottom: 24px; display: flex; gap: 12px; }
+    .feature-card { background: rgba(9, 36, 20, 0.42); padding: 18px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--line); }
+    .feature-card h3 { margin-bottom: 8px; font-size: 1.1rem; color: var(--wheat); }
+    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+    .status-escrow { background: rgba(90, 143, 94, 0.3); color: #e0f3d9; }
+    .feature-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    @media(min-width: 700px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+  </style>
+</head>
+<body>
+  
+  <section class="dashboard-app" id="dashboard-app">
+    <!-- Populated by JS -->
+  </section>
+
+  <!-- Create Listing Modal for Farmer -->
+  <div class="auth-modal" id="listing-modal" role="dialog" aria-hidden="true">
+    <div class="auth-card glass">
+      <button class="auth-close" type="button" aria-label="Close">×</button>
+      <h2>Voice/Visual Listing</h2>
+      <p class="auth-copy">Speak your listing (e.g. "Tomato 500kg at 25rs") or enter manually.</p>
+      <form class="auth-form" id="listing-form">
+        <button class="button secondary" type="button" onclick="alert('Voice recognition started...')">🎤 Start Voice Listing</button>
+        <label>Crop Name<input type="text" placeholder="e.g. Tomato"></label>
+        <label>Quantity (kg)<input type="number"></label>
+        <label>Upload Image for Quality Check<input type="file" accept="image/*"></label>
+        <button class="button primary" type="submit">Submit Listing</button>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
