@@ -1,9 +1,15 @@
-const button=document.querySelector('.menu-btn'),menu=document.querySelector('.mobile-menu');if(button&&menu)button.addEventListener('click',()=>menu.classList.toggle('open'));
-const modal=document.querySelector('#auth-modal'),loginPanel=document.querySelector('#login-panel'),registerPanel=document.querySelector('#register-panel'),loginForm=document.querySelector('#login-form'),otpForm=document.querySelector('#otp-form'),accountType=document.querySelector('#account-type'),phoneField=document.querySelector('#phone-field'),buyerEmailField=document.querySelector('#buyer-email-field'),buyerPasswordField=document.querySelector('#buyer-password-field'),loginSubmit=document.querySelector('#login-submit'),apiBase=window.UYIRVA_API_URL||window.location.origin;let loginPhone='';
-function showAuth(view){if(!modal)return;loginPanel.hidden=view!=='login';registerPanel.hidden=view!=='register';modal.classList.add('open')}function closeAuth(){modal?.classList.remove('open')}function errorFor(form,message=''){form.querySelector('.auth-error').textContent=message}
-function updateLoginFields(){const type=accountType.value,otp=['farmer','logistics'].includes(type);phoneField.hidden=!otp;buyerEmailField.hidden=otp;buyerPasswordField.hidden=otp;phoneField.querySelector('input').required=otp;buyerEmailField.querySelector('input').required=!otp;buyerPasswordField.querySelector('input').required=!otp;loginSubmit.textContent=otp?'Send OTP':`${type==='admin'?'Admin':'Buyer'} sign in`;otpForm.hidden=true}
-async function post(path,body){const res=await fetch(`${apiBase}${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}),data=await res.json().catch(()=>({}));if(!res.ok)throw new Error(data.detail||'Unable to sign in');return data}
-function complete(data){localStorage.setItem('uyirva_access_token',data.access_token);localStorage.setItem('uyirva_user',JSON.stringify(data.user));location.assign('dashboard.html')}
-document.querySelectorAll('[data-auth-open]').forEach(item=>item.addEventListener('click',()=>showAuth(item.dataset.authOpen)));document.querySelector('.auth-close')?.addEventListener('click',closeAuth);accountType?.addEventListener('change',updateLoginFields);
-loginForm?.addEventListener('submit',async event=>{event.preventDefault();const formData=new FormData(loginForm),type=formData.get('account_type');loginSubmit.disabled=true;errorFor(loginForm);try{if(type==='buyer'||type==='admin')return complete(await post(`/api/auth/${type}/login`,{email:formData.get('email').trim(),password:formData.get('password')}));loginPhone=formData.get('phone').trim();const response=await post(`/api/auth/${type}/request-otp`,{phone:loginPhone});otpForm.hidden=false;otpForm.querySelector('input').focus();errorFor(otpForm,response.demo_otp?`Demo OTP: ${response.demo_otp}`:'OTP sent to your phone.')}catch(error){errorFor(loginForm,error.message)}finally{loginSubmit.disabled=false}});
-otpForm?.addEventListener('submit',async event=>{event.preventDefault();const type=accountType.value,submit=otpForm.querySelector('button');submit.disabled=true;try{complete(await post(`/api/auth/${type}/verify-otp`,{phone:loginPhone,otp:new FormData(otpForm).get('otp')}))}catch(error){errorFor(otpForm,error.message)}finally{submit.disabled=false}});updateLoginFields();
+const button = document.querySelector('.menu-btn');
+const menu = document.querySelector('.mobile-menu');
+const modal = document.querySelector('#auth-modal');
+const loginForm = document.querySelector('#login-form');
+const accountType = document.querySelector('#account-type');
+const loginSubmit = document.querySelector('#login-submit');
+
+if (button && menu) button.addEventListener('click', () => menu.classList.toggle('open'));
+function showAuth() { modal?.classList.add('open'); }
+function closeAuth() { modal?.classList.remove('open'); }
+function showError(message = '') { loginForm.querySelector('.auth-error').textContent = message; }
+function completeDemo(role) { localStorage.removeItem('uyirva_access_token'); localStorage.setItem('uyirva_demo_mode', 'true'); localStorage.setItem('uyirva_user', JSON.stringify({ id: `demo-${role}`, role })); location.assign('dashboard.html'); }
+document.querySelectorAll('[data-auth-open]').forEach(item => item.addEventListener('click', showAuth));
+document.querySelector('.auth-close')?.addEventListener('click', closeAuth);
+loginForm?.addEventListener('submit', event => { event.preventDefault(); loginSubmit.disabled = true; showError(); completeDemo(accountType.value); });

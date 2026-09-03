@@ -1,9 +1,10 @@
 const user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
 const token = localStorage.getItem('uyirva_access_token');
+const demoMode = localStorage.getItem('uyirva_demo_mode') === 'true';
 const app = document.querySelector('#dashboard-app');
 const apiBase = window.UYIRVA_API_URL || window.location.origin;
 
-if (!user || !token) {
+if (!user || (!token && !demoMode)) {
   location.assign('index.html');
 } else {
   const role = String(user.role).toLowerCase();
@@ -27,6 +28,14 @@ if (!user || !token) {
     document.querySelector('#logout').onclick = logout;
   };
 
+  function farmerDemo() {
+    const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
+    const listingHtml = listings.length ? listings.map(item => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small></div></div>`).join('') : '<p>No vegetables listed yet. Click List vegetables to publish your first listing.</p>';
+    const buyers = [{ name: 'Kovai Fresh Mart', need: '500 kg tomatoes for tomorrow', offer: '₹29/kg', quality: 'Premium / Grade A' }, { name: 'Chennai Bulk Foods', need: '300 kg vegetables for hotel kitchens', offer: '₹28/kg', quality: 'Grade A or B' }, { name: 'Green Basket FPO', need: '250 kg fresh vegetables this week', offer: '₹27/kg', quality: 'Good quality' }];
+    shell('Farmer Demo Dashboard', `<div class="feature-grid"><div class="feature-card"><h3>My vegetable listings</h3><strong>${listings.length}</strong><p>Demo dashboard · locally saved listings</p><button class="button primary" id="create">List vegetables</button></div><div class="feature-card"><h3>Demand planning</h3><p>High demand expected for Tomato next month.</p></div></div><div class="feature-card"><h3>My listed vegetables</h3><div class="listing-list">${listingHtml}</div></div><div class="feature-card"><h3>Buyer requirements</h3><div class="buyer-requirements">${buyers.map(buyer => `<div class="buyer-requirement"><b>${buyer.name}</b><span>Near you</span><p>${buyer.need}</p><small>Offer: ${buyer.offer} · Quality: ${buyer.quality} · Freshness: within 24 hours</small></div>`).join('')}</div></div>`);
+    document.querySelector('#create').onclick = () => document.querySelector('#listing-modal').classList.add('open');
+  }
+
   async function farmer() {
     const [data, listingData, matchData] = await Promise.all([api('/api/farmer/dashboard'), api('/api/farmer/listings'), api('/api/farmer/matches')]);
     const listingHtml = listingData.listings.length ? listingData.listings.map(item => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small></div></div>`).join('') : '<p>No vegetables listed yet. Click “List vegetables” to publish your first listing.</p>';
@@ -44,7 +53,7 @@ if (!user || !token) {
   async function logistics() { const [orders, route] = await Promise.all([api('/api/logistics/orders'), api('/api/logistics/route')]); shell('Logistics Partner', `<div class="feature-card"><h3>Assigned pooled orders</h3><strong>${orders.orders.length}</strong><p>${route.distance_km} km · ${route.estimated_duration_minutes} minutes</p></div>`); }
   async function admin() { const data = await api('/api/admin/dashboard'); shell('Admin Control Centre', `<div class="feature-card"><h3>Adoption rate</h3><strong>${data.analytics.adoption_rate}%</strong></div>`); }
 
-  ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.')))().catch(error => shell('Dashboard error', `<p>${error.message}</p>`));
+  (demoMode ? farmerDemo : ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.'))))().catch?.(error => shell('Dashboard error', `<p>${error.message}</p>`));
 
   const modal = document.querySelector('#listing-modal');
   const form = document.querySelector('#listing-form');
@@ -60,7 +69,7 @@ if (!user || !token) {
   form?.addEventListener('submit', async event => {
     event.preventDefault(); const error = document.querySelector('#listing-error'); error.textContent = '';
     const values = Object.fromEntries(new FormData(form));
-    try { await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer(); }
+    try { if (demoMode) { const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]'); listings.unshift({ ...values, photo_url: photoData }); localStorage.setItem('uyirva_demo_listings', JSON.stringify(listings)); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo(); return; } await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer(); }
     catch (err) { error.textContent = err.message; }
   });
 }
