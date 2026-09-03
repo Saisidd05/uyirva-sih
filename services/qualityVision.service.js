@@ -1,0 +1,2 @@
+function assess({ crop, photo_url }) { const seed = String(photo_url || crop || '').length; const score = Math.min(95, 76 + seed % 18); return { score, grade: score >= 90 ? 'Grade A' : score >= 80 ? 'Grade B+' : 'Grade B', visible_indicators: ['colour consistency', 'surface condition', 'size uniformity'], disclaimer: 'Mock visual assistance only; not a food-safety certification.' }; }
+module.exports = { assess };

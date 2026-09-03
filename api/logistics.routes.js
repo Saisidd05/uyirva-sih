@@ -1,0 +1,5 @@
+const ordersController = require('../controllers/logisticsOrders.controller');
+const routeUpdateController = require('../controllers/routeUpdate.controller');
+const { authGuard, roleGuard } = require('../middleware/auth.middleware');
+function handleLogisticsRoute(request, pathname, body) { const auth = authGuard(request); if (!auth.ok) return auth; const role = roleGuard('logistics')(auth.user); if (!role.ok) return role; if (request.method === 'GET' && pathname === '/api/logistics/orders') return ordersController.assignedPooledOrders(auth.user); if (request.method === 'GET' && pathname === '/api/logistics/route') return ordersController.routeView(auth.user); const orderId = pathname.split('/')[4]; if (request.method === 'POST' && pathname.endsWith('/status')) return routeUpdateController.updateStop(auth.user, orderId, body); if (request.method === 'POST' && pathname.endsWith('/proof-of-delivery')) return routeUpdateController.uploadProof(auth.user, orderId, body); return { status: 404, body: { detail: 'Logistics route not found' } }; }
+module.exports = { handleLogisticsRoute };

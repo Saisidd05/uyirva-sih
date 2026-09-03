@@ -1,0 +1,3 @@
+import { useEffect, useState } from 'react';
+import { farmerApi } from '../../services/farmerApi';
+export default function Payouts() { const [payouts, setPayouts] = useState(null); const [error, setError] = useState(''); useEffect(() => { farmerApi.payouts().then(setPayouts).catch(error => setError(error.message)); }, []); if (error) return <p role="alert">{error}</p>; if (!payouts) return <p>Loading earnings…</p>; return <main><h1>Payouts & earnings</h1><p>Pending escrow release: ₹{payouts.pending_funds}</p><p>Released funds: ₹{payouts.released_funds}</p>{payouts.transactions.map(item => <article key={item.id}><strong>{item.crop}</strong><span>₹{item.amount} · {item.status}</span></article>)}</main>; }

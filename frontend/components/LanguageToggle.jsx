@@ -1,0 +1,1 @@
+export default function LanguageToggle({ language, onChange }) { return <label>Language <select value={language} onChange={event => onChange(event.target.value)}><option value="en">English</option><option value="ta">தமிழ்</option><option value="hi">हिन्दी</option><option value="te">తెలుగు</option></select></label>; }

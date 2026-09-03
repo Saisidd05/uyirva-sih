@@ -1,0 +1,4 @@
+const authService = require('../services/auth.service');
+const User = require('../models/User.model');
+function login(body) { const email = String(body.email || '').toLowerCase(); const expectedEmail = (process.env.ADMIN_EMAIL || 'admin@agriconnect.local').toLowerCase(); const expectedPassword = process.env.ADMIN_PASSWORD || 'adminpass123'; if (email !== expectedEmail || body.password !== expectedPassword) return { status: 401, body: { detail: 'Invalid admin credentials' } }; const user = User.ensureAdmin(email); const access_token = authService.signToken({ sub: user.id, email: user.email, role: 'admin' }); return { status: 200, body: { access_token, token_type: 'bearer', user: { id: user.id, email: user.email, role: 'admin' }, redirect_to: '/admin/dashboard' } }; }
+module.exports = { login };

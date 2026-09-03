@@ -1,0 +1,8 @@
+uyirva-sih/
+.data/
+*.mp4
+*.pdf
+__pycache__/
+.venv/
+venv/
+node_modules/

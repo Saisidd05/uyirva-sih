@@ -1,0 +1,1 @@
+export default function EscrowStatusBadge({ status }) { const labels = { secured: 'Funds secured in escrow', released: 'Escrow released', on_hold: 'Escrow on hold' }; return <span className={`escrow-status ${status}`}>{labels[status] || status}</span>; }

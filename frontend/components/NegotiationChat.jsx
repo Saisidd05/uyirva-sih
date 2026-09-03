@@ -1,0 +1,1 @@
+export default function NegotiationChat({ listing, onCounter }) { return <section><h3>Negotiate with farmer</h3><p>Send a counter offer for {listing.crop}.</p><button onClick={() => onCounter?.({ price: listing.price, quantity: listing.quantity })}>Start counter-offer</button></section>; }

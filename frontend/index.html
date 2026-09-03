@@ -339,22 +339,21 @@
     <div class="auth-card glass">
       <button class="auth-close" type="button" aria-label="Close sign in">×</button>
       <section class="auth-panel" id="login-panel">
-        <h2 id="auth-title">Welcome back</h2>
-        <p class="auth-copy">Sign in to manage your marketplace activity.</p>
+        <h2 id="auth-title">Sign in</h2>
+        <p class="auth-copy">Choose your marketplace account type.</p>
         <form class="auth-form" id="login-form">
-          <label>Email<input name="email" type="email" autocomplete="email" required></label>
-          <label>Role
-            <select name="role" required>
-              <option value="FARMER">Farmer</option>
-              <option value="BUYER">Buyer</option>
-              <option value="FPO">FPO</option>
-            </select>
-          </label>
-          <label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required></label>
+          <label>Sign in as<select name="account_type" id="account-type"><option value="farmer">Farmer — Phone OTP</option><option value="buyer">Buyer — Email & Password</option><option value="logistics">Logistics Partner — Phone OTP</option><option value="admin">Admin — Email & Password</option></select></label>
+          <label id="phone-field">Phone number<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+91 98765 43210"></label>
+          <label id="buyer-email-field" hidden>Email<input name="email" type="email" autocomplete="email"></label>
+          <label id="buyer-password-field" hidden>Password<input name="password" type="password" autocomplete="current-password" minlength="8"></label>
           <p class="auth-error" aria-live="polite"></p>
-          <button class="button primary" type="submit">Sign in</button>
+          <button class="button primary" type="submit" id="login-submit">Send OTP</button>
         </form>
-        <p class="auth-switch">New to UYIRVA? <button class="auth-link" type="button" data-auth-open="register">Create an account</button></p>
+        <form class="auth-form" id="otp-form" hidden>
+          <label>OTP<input name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" minlength="6" maxlength="6" required></label>
+          <p class="auth-error" aria-live="polite"></p>
+          <button class="button primary" type="submit">Verify &amp; continue</button>
+        </form>
       </section>
       <section class="auth-panel" id="register-panel" hidden>
         <h2>Create your account</h2>

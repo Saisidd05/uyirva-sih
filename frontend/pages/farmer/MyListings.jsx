@@ -1,0 +1,3 @@
+import { useEffect, useState } from 'react';
+import { farmerApi } from '../../services/farmerApi';
+export default function MyListings() { const [listings, setListings] = useState([]); const [error, setError] = useState(''); useEffect(() => { farmerApi.listings().then(data => setListings(data.listings)).catch(error => setError(error.message)); }, []); return <main><h1>My listings</h1><p role="alert">{error}</p><div>{listings.map(listing => <article key={listing.id}><h2>{listing.crop}</h2><p>{listing.quantity} kg · ₹{listing.price}/kg</p><span>{listing.status}</span></article>)}</div>{!listings.length && !error && <p>No active, sold, or pooled listings yet.</p>}</main>; }

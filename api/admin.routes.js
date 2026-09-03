@@ -1,0 +1,6 @@
+const verification = require('../controllers/verification.controller');
+const disputes = require('../controllers/disputeResolution.controller');
+const analytics = require('../controllers/analytics.controller');
+const { authGuard, roleGuard } = require('../middleware/auth.middleware');
+function handleAdminRoute(request, pathname, body) { const auth = authGuard(request); if (!auth.ok) return auth; const role = roleGuard('admin')(auth.user); if (!role.ok) return role; if (request.method === 'GET' && pathname === '/api/admin/dashboard') return analytics.dashboard(); if (request.method === 'GET' && pathname === '/api/admin/verifications') return verification.queue(); if (request.method === 'POST' && /^\/api\/admin\/verifications\/[^/]+$/.test(pathname)) return verification.decide(pathname.split('/').pop(), body); if (request.method === 'GET' && pathname === '/api/admin/disputes') return disputes.list(); if (request.method === 'POST' && /^\/api\/admin\/disputes\/[^/]+\/resolve$/.test(pathname)) return disputes.decide(pathname.split('/')[4], body); if (request.method === 'GET' && pathname === '/api/admin/market-config') return analytics.getConfig(); if (request.method === 'PUT' && pathname === '/api/admin/market-config') return analytics.setConfig(body); return { status: 404, body: { detail: 'Admin route not found' } }; }
+module.exports = { handleAdminRoute };

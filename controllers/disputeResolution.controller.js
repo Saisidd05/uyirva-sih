@@ -1,0 +1,7 @@
+const Dispute = require('../models/Dispute.model');
+const Order = require('../models/Order.model');
+const Transaction = require('../models/Transaction.model');
+const escrow = require('../services/escrow.service');
+function list() { return { status: 200, body: { disputes: Dispute.all() } }; }
+function decide(disputeId, body) { const dispute = Dispute.findById(disputeId); const order = dispute && Order.findById(dispute.order_id); if (!dispute || !order) return { status: 404, body: { detail: 'Dispute or order not found' } }; if (!['refund', 'release', 'partial_settlement'].includes(body.decision)) return { status: 422, body: { detail: 'Use refund, release, or partial_settlement' } }; const amount = body.decision === 'partial_settlement' ? Number(body.amount) : order.total_amount; if (!amount || amount > order.total_amount) return { status: 422, body: { detail: 'Enter a valid settlement amount' } }; const settlement = body.decision === 'refund' ? { status: 'refunded', amount } : escrow.releaseFunds({ amount, order_id: order.id }); Order.update(order.id, { status: body.decision === 'refund' ? 'refunded' : 'completed', escrow_status: settlement.status }); Transaction.create({ buyer_id: order.buyer_id, order_id: order.id, amount, status: settlement.status, type: body.decision }); Dispute.update(dispute.id, { status: 'resolved', decision: body.decision, resolved_at: new Date().toISOString() }); return { status: 200, body: { dispute, settlement } }; }
+module.exports = { list, decide };

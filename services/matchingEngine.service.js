@@ -1,0 +1,2 @@
+function getMatches(listing) { const buyers = [{ buyer_name: 'Kovai Fresh Mart', distance_km: 18, requested_kg: 500, offered_price: 29 }, { buyer_name: 'Chennai Bulk Foods', distance_km: 64, requested_kg: 300, offered_price: 28 }, { buyer_name: 'Green Basket FPO', distance_km: 31, requested_kg: 250, offered_price: 27 }]; return buyers.map((buyer, index) => ({ ...buyer, listing_id: listing.id, crop: listing.crop, rank: index + 1, match_score: 94 - index * 7, status: 'incoming' })); }
+module.exports = { getMatches };

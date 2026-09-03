@@ -1,0 +1,2 @@
+import { useState } from 'react';
+export default function RatingForm({ onSubmit }) { const [score, setScore] = useState(5); const [review, setReview] = useState(''); return <form onSubmit={event => { event.preventDefault(); onSubmit({ score, review }); }}><label>Rating<select value={score} onChange={event => setScore(event.target.value)}>{[5,4,3,2,1].map(value => <option key={value}>{value}</option>)}</select></label><label>Review<textarea value={review} onChange={event => setReview(event.target.value)} /></label><button>Submit rating</button></form>; }

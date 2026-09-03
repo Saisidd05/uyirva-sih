@@ -1,0 +1,1 @@
+export default function RouteStopCard({ stop, onUpdate }) { return <article className="route-stop"><strong>{stop.type === 'pickup' ? 'Pickup' : 'Delivery'} · {stop.location}</strong><p>{stop.window} · {stop.status}</p>{onUpdate && <button onClick={() => onUpdate(stop.order_id)}>Update stop</button>}</article>; }

@@ -1,0 +1,2 @@
+function getSuggestion({ crop, quantity, location = 'Tamil Nadu' }) { const basePrices = { tomato: 26, onion: 31, potato: 24, paddy: 22, banana: 30 }; const midpoint = basePrices[String(crop).toLowerCase()] || 28; const volumeAdjustment = Number(quantity) >= 500 ? -1 : 0; return { crop, location, currency: 'INR', unit: 'kg', recommended_min: midpoint - 3 + volumeAdjustment, recommended_max: midpoint + 4 + volumeAdjustment, confidence: 0.82, source: 'Mock price engine' }; }
+module.exports = { getSuggestion };

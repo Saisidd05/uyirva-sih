@@ -1,0 +1,6 @@
+const authService = require('../services/auth.service');
+const User = require('../models/User.model');
+function requestBuyerOtp(body) { if (!body.phone) return { status: 422, body: { detail: 'Phone number is required' } }; return { status: 200, body: authService.requestOtp(body.phone, 'buyer') }; }
+function verifyBuyerOtp(body) { try { const access_token = authService.verifyOtp(body.phone, body.otp, 'buyer'); return { status: 200, body: { access_token, token_type: 'bearer', user: { phone: body.phone, role: 'buyer' }, redirect_to: '/buyer/dashboard' } }; } catch (error) { return { status: 401, body: { detail: error.message } }; } }
+function buyerPasswordLogin(body) { let user = User.verifyBuyerPassword(body.email, body.password); if (!user && body.email && body.password?.length >= 8) user = User.createBuyer(body); if (!user) return { status: 401, body: { detail: 'Invalid email or password' } }; const access_token = authService.signToken({ sub: user.id, email: user.email, role: 'buyer' }); return { status: 200, body: { access_token, token_type: 'bearer', user: { email: user.email, role: 'buyer' }, redirect_to: '/buyer/dashboard' } }; }
+module.exports = { requestBuyerOtp, verifyBuyerOtp, buyerPasswordLogin };

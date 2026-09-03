@@ -1,0 +1,12 @@
+const Listing = require('../models/Listing.model');
+const User = require('../models/User.model');
+const Rating = require('../models/Rating.model');
+const matchingEngine = require('../services/matchingEngine.service');
+const priceEngine = require('../services/priceEngine.service');
+const favorites = new Map();
+function searchListings(query) { const { crop, location, min_price, max_price, min_quality, harvest_date } = query; const listings = Listing.all().filter(item => item.status === 'active' && (!crop || item.crop.toLowerCase().includes(String(crop).toLowerCase())) && (!location || String(item.location || '').toLowerCase().includes(String(location).toLowerCase())) && (!min_price || item.price >= Number(min_price)) && (!max_price || item.price <= Number(max_price)) && (!min_quality || Number(item.quality_score || 0) >= Number(min_quality)) && (!harvest_date || !item.harvest_date || item.harvest_date <= harvest_date)); return { status: 200, body: { listings } }; }
+function smartMatches(buyer, body) { const { listings } = searchListings(body).body; return { status: 200, body: { matches: listings.flatMap(listing => matchingEngine.getMatches(listing).map(match => ({ ...match, buyer_id: buyer.sub }))).sort((a, b) => b.match_score - a.match_score) } }; }
+function detail(buyer, id) { const listing = Listing.findById(id); if (!listing) return { status: 404, body: { detail: 'Listing not found' } }; const farmer = User.findById(listing.farmer_id); const ratings = Rating.findByFarmer(listing.farmer_id); const suggestion = priceEngine.getSuggestion(listing); return { status: 200, body: { listing, farmer: farmer ? { id: farmer.id, phone: farmer.phone, verified: farmer.verification_status === 'approved' } : { verified: false }, ratings, price_history: [30, 15, 7, 0].map(days => ({ days_ago: days, price: suggestion.recommended_min + 2 + days / 30 })), is_favorite: (favorites.get(buyer.sub) || new Set()).has(id) } }; }
+function toggleFavorite(buyer, id) { const saved = favorites.get(buyer.sub) || new Set(); saved.has(id) ? saved.delete(id) : saved.add(id); favorites.set(buyer.sub, saved); return { status: 200, body: { listing_id: id, saved: saved.has(id) } }; }
+function recommended(buyer) { const saved = [...(favorites.get(buyer.sub) || new Set())].map(Listing.findById).filter(Boolean); const listings = saved.length ? saved : Listing.all().filter(item => item.status === 'active').slice(0, 6); return { status: 200, body: { listings } }; }
+module.exports = { searchListings, smartMatches, detail, toggleFavorite, recommended };

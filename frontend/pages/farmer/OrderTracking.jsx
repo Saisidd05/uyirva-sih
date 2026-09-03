@@ -1,0 +1,3 @@
+import { useEffect, useState } from 'react';
+import { farmerApi } from '../../services/farmerApi';
+export default function OrderTracking() { const [orders, setOrders] = useState([]); useEffect(() => { farmerApi.orders().then(data => setOrders(data.orders)); }, []); return <main><h1>Orders & logistics</h1>{orders.map(order => <article key={order.id}><strong>{order.crop}</strong><p>Matched → Pooled → Picked up → Delivered → Paid</p><p>Current: {order.order_status} · Escrow: {order.escrow_status}</p><p>{order.escrow_status === 'released' ? 'Payment released.' : 'Pooled pickup and delivery confirmation pending.'}</p></article>)}{!orders.length && <p>No orders in progress.</p>}</main>; }

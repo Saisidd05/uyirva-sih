@@ -1,0 +1,2 @@
+function findAlerts(transactions, orders) { return transactions.filter(transaction => transaction.amount > 50000).map(transaction => ({ id: `high-value-${transaction.id}`, severity: 'medium', type: 'high_value_escrow', transaction_id: transaction.id, message: `Escrow of ₹${transaction.amount} requires review.` })).concat(orders.filter(order => order.status === 'disputed').map(order => ({ id: `dispute-${order.id}`, severity: 'high', type: 'open_dispute', order_id: order.id, message: `Order ${order.id.slice(0, 8)} has funds on hold.` }))); }
+module.exports = { findAlerts };

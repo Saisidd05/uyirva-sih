@@ -1,0 +1,12 @@
+{
+  "name": "uyirva-sih26033",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "20.x"
+  }
+}

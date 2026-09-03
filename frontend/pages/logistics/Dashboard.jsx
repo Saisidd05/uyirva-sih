@@ -1,0 +1,4 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { logisticsApi } from '../../services/logisticsApi';
+export default function Dashboard() { const [orders, setOrders] = useState([]); const [error, setError] = useState(''); useEffect(() => { logisticsApi.orders().then(data => setOrders(data.orders)).catch(error => setError(error.message)); }, []); return <main><header><h1>AgriConnect Logistics</h1><Link to="/logistics/route">View optimized route</Link></header><p role="alert">{error}</p><h2>Assigned pooled orders</h2>{orders.map(order => <article key={order.id}><strong>{order.crop} · {order.quantity} kg</strong><p>{order.pooling.nearby_order_count} pooled orders · {order.delivery_status}</p></article>)}{!orders.length && !error && <p>No pooled orders assigned yet.</p>}</main>; }
