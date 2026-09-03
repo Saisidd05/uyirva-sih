@@ -30,10 +30,16 @@ if (!user || (!token && !demoMode)) {
 
   function farmerDemo() {
     const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
-    const listingHtml = listings.length ? listings.map(item => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small></div></div>`).join('') : '<p>No vegetables listed yet. Click List vegetables to publish your first listing.</p>';
+    const listingHtml = listings.length ? listings.map((item, index) => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small><button class="delete-listing" type="button" data-delete-listing="${index}">Delete listing</button></div></div>`).join('') : '<p>No vegetables listed yet. Click List vegetables to publish your first listing.</p>';
     const buyers = [{ name: 'Kovai Fresh Mart', need: '500 kg tomatoes for tomorrow', offer: '₹29/kg', quality: 'Premium / Grade A' }, { name: 'Chennai Bulk Foods', need: '300 kg vegetables for hotel kitchens', offer: '₹28/kg', quality: 'Grade A or B' }, { name: 'Green Basket FPO', need: '250 kg fresh vegetables this week', offer: '₹27/kg', quality: 'Good quality' }];
     shell('Farmer Demo Dashboard', `<div class="feature-grid"><div class="feature-card"><h3>My vegetable listings</h3><strong>${listings.length}</strong><p>Demo dashboard · locally saved listings</p><button class="button primary" id="create">List vegetables</button></div><div class="feature-card"><h3>Demand planning</h3><p>High demand expected for Tomato next month.</p></div></div><div class="feature-card"><h3>My listed vegetables</h3><div class="listing-list">${listingHtml}</div></div><div class="feature-card"><h3>Buyer requirements</h3><div class="buyer-requirements">${buyers.map(buyer => `<div class="buyer-requirement"><b>${buyer.name}</b><span>Near you</span><p>${buyer.need}</p><small>Offer: ${buyer.offer} · Quality: ${buyer.quality} · Freshness: within 24 hours</small></div>`).join('')}</div></div>`);
     document.querySelector('#create').onclick = () => document.querySelector('#listing-modal').classList.add('open');
+    document.querySelectorAll('[data-delete-listing]').forEach(button => button.onclick = () => {
+      const current = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
+      current.splice(Number(button.dataset.deleteListing), 1);
+      localStorage.setItem('uyirva_demo_listings', JSON.stringify(current));
+      farmerDemo();
+    });
   }
 
   async function farmer() {
