@@ -22,7 +22,7 @@ if (!user || (!token && !demoMode)) {
     }
     return data;
   };
-  const logout = () => { localStorage.clear(); location.assign('index.html'); };
+  const logout = () => { localStorage.removeItem('uyirva_access_token'); localStorage.removeItem('uyirva_user'); localStorage.removeItem('uyirva_demo_mode'); location.assign('index.html'); };
   const shell = (title, content) => {
     app.innerHTML = `<div class="dashboard-top"><div><div class="eyebrow">UYIRVA · ${role.toUpperCase()}</div><h1>${title}</h1><p>Welcome to your marketplace workspace.</p></div><button class="button logout-button" id="logout">Sign out</button></div>${content}`;
     document.querySelector('#logout').onclick = logout;
@@ -69,7 +69,15 @@ if (!user || (!token && !demoMode)) {
   form?.addEventListener('submit', async event => {
     event.preventDefault(); const error = document.querySelector('#listing-error'); error.textContent = '';
     const values = Object.fromEntries(new FormData(form));
-    try { if (demoMode) { const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]'); listings.unshift({ ...values, photo_url: photoData }); localStorage.setItem('uyirva_demo_listings', JSON.stringify(listings)); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo(); return; } await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer(); }
+    try {
+      if (demoMode) {
+        const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
+        listings.unshift({ crop: values.crop, quantity: values.quantity, price: values.price, freshness: values.freshness, agmark: values.agmark, quality_grade: values.quality_grade, photo_url: photoData });
+        localStorage.setItem('uyirva_demo_listings', JSON.stringify(listings));
+        modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo(); return;
+      }
+      await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer();
+    }
     catch (err) { error.textContent = err.message; }
   });
 }
