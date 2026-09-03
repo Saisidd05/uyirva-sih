@@ -53,7 +53,12 @@ if (!user || (!token && !demoMode)) {
   async function logistics() { const [orders, route] = await Promise.all([api('/api/logistics/orders'), api('/api/logistics/route')]); shell('Logistics Partner', `<div class="feature-card"><h3>Assigned pooled orders</h3><strong>${orders.orders.length}</strong><p>${route.distance_km} km · ${route.estimated_duration_minutes} minutes</p></div>`); }
   async function admin() { const data = await api('/api/admin/dashboard'); shell('Admin Control Centre', `<div class="feature-card"><h3>Adoption rate</h3><strong>${data.analytics.adoption_rate}%</strong></div>`); }
 
-  (demoMode ? farmerDemo : ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.'))))().catch?.(error => shell('Dashboard error', `<p>${error.message}</p>`));
+  if (demoMode) {
+    farmerDemo();
+  } else {
+    const loadDashboard = ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.')));
+    loadDashboard().catch(error => shell('Dashboard error', `<p>${error.message}</p>`));
+  }
 
   const modal = document.querySelector('#listing-modal');
   const form = document.querySelector('#listing-form');
@@ -74,7 +79,8 @@ if (!user || (!token && !demoMode)) {
         const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
         listings.unshift({ crop: values.crop, quantity: values.quantity, price: values.price, freshness: values.freshness, agmark: values.agmark, quality_grade: values.quality_grade, photo_url: photoData });
         localStorage.setItem('uyirva_demo_listings', JSON.stringify(listings));
-        modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo(); return;
+        modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo();
+        const notice = document.createElement('p'); notice.className = 'listing-success'; notice.textContent = `${values.crop} listing published successfully.`; app.prepend(notice); return;
       }
       await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer();
     }
