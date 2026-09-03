@@ -14,6 +14,13 @@
     .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
     .status-escrow { background: rgba(90, 143, 94, 0.3); color: #e0f3d9; }
     .feature-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .listing-list, .buyer-requirements { display: grid; gap: 12px; }
+    .listing-item, .buyer-requirement { display: flex; gap: 14px; align-items: flex-start; padding: 13px; border-radius: 10px; background: rgba(255,255,255,.08); }
+    .listing-item img { width: 78px; height: 78px; object-fit: cover; border-radius: 9px; }
+    .listing-item p, .buyer-requirement p { margin: 4px 0; }
+    .listing-item small, .buyer-requirement small, .buyer-requirement span, .buyer-note { color: var(--muted); font-size: .82rem; }
+    .buyer-requirement { display: block; border-left: 3px solid var(--wheat); }
+    .buyer-requirement span { float: right; }
     @media(min-width: 700px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
   </style>
 </head>
@@ -27,18 +34,23 @@
   <div class="auth-modal" id="listing-modal" role="dialog" aria-hidden="true">
     <div class="auth-card glass">
       <button class="auth-close" type="button" aria-label="Close">×</button>
-      <h2>Voice/Visual Listing</h2>
-      <p class="auth-copy">Speak your listing (e.g. "Tomato 500kg at 25rs") or enter manually.</p>
+      <h2>List your vegetables</h2>
+      <p class="auth-copy">Add the vegetable details buyers need to see.</p>
       <form class="auth-form" id="listing-form">
-        <button class="button secondary" type="button" onclick="alert('Voice recognition started...')">🎤 Start Voice Listing</button>
-        <label>Crop Name<input type="text" placeholder="e.g. Tomato"></label>
-        <label>Quantity (kg)<input type="number"></label>
-        <label>Upload Image for Quality Check<input type="file" accept="image/*"></label>
-        <button class="button primary" type="submit">Submit Listing</button>
+        <label>Vegetable name<input name="crop" type="text" placeholder="e.g. Tomato" required></label>
+        <label>Quantity (kg)<input name="quantity" type="number" min="1" placeholder="e.g. 500" required></label>
+        <label>Your rate (₹ per kg)<input name="price" type="number" min="1" placeholder="e.g. 25" required></label>
+        <label>Freshness<select name="freshness"><option>Fresh today</option><option>Harvested within 24 hours</option><option>Harvested within 2 days</option></select></label>
+        <label>AGMARK status<select name="agmark"><option>AGMARK certified</option><option>Applied for AGMARK</option><option>Not certified</option></select></label>
+        <label>Quality<select name="quality_grade"><option>Premium / Grade A</option><option>Grade A</option><option>Grade B</option><option>Standard</option></select></label>
+        <label>Vegetable image<input name="photo" type="file" accept="image/*"></label>
+        <img id="listing-image-preview" alt="Vegetable preview" hidden style="width:100%;max-height:160px;object-fit:cover;border-radius:10px">
+        <p class="auth-error" id="listing-error"></p>
+        <button class="button primary" type="submit">Publish vegetable listing</button>
       </form>
     </div>
   </div>
 
-  <script src="js/dashboard.js"></script>
+  <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

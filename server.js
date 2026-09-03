@@ -38,7 +38,7 @@ function publicUser(user) { return { id: user.id, full_name: user.full_name, ema
 function readBody(request) {
   return new Promise((resolve, reject) => {
     let body = '';
-    request.on('data', chunk => { body += chunk; if (body.length > 100_000) request.destroy(); });
+    request.on('data', chunk => { body += chunk; if (body.length > 4_000_000) request.destroy(); });
     request.on('end', () => { try { resolve(JSON.parse(body || '{}')); } catch { reject(new Error('Invalid JSON body')); } });
   });
 }

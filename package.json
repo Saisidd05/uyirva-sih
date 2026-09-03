@@ -4,7 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "node server.js",
+    "dev:frontend": "vite",
+    "build": "vite build",
     "start": "node server.js"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
   },
   "engines": {
     "node": "24.x"
