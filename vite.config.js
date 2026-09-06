@@ -10,7 +10,8 @@ module.exports = defineConfig({
       input: {
         main: resolve(__dirname, 'frontend/index.html'),
         dashboard: resolve(__dirname, 'frontend/dashboard.html'),
-        buyerDashboard: resolve(__dirname, 'frontend/pages/buyer/dashboard.html')
+        buyerDashboard: resolve(__dirname, 'frontend/pages/buyer/dashboard.html'),
+        logisticsDashboard: resolve(__dirname, 'frontend/pages/logistics/dashboard.html')
       }
     }
   },

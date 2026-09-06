@@ -329,7 +329,7 @@ function redirectToDashboard(user) {
     buyer: '/pages/buyer/dashboard.html',
     farmer: '/dashboard.html',
     fpo: '/dashboard.html',
-    logistics: '/dashboard.html',
+    logistics: '/pages/logistics/dashboard.html',
     admin: '/dashboard.html'
   };
   location.assign(routes[role] || '/dashboard.html');
