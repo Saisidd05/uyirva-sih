@@ -20,8 +20,9 @@
         <label>Vegetable name<select name="crop" required><option value="">Select a vegetable</option><option>Tomato</option><option>Onion</option><option>Potato</option><option>Brinjal</option><option>Carrot</option><option>Beans</option><option>Cabbage</option><option>Cauliflower</option><option>Okra</option><option>Chilli</option><option>Cucumber</option><option>Drumstick</option></select></label>
         <label>Quantity (kg)<input name="quantity" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 500" required></label>
         <label>Price (₹ per kg)<input name="price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="e.g. 25" required></label>
-        <label>Harvest date<input name="harvest_date" type="date" required></label>
-        <label>Pickup-ready date/time<input name="pickup_ready_at" type="datetime-local" required></label>
+        <label>Harvest date <small>(choose from calendar)</small><input name="harvest_date" type="date" required></label>
+        <label>Pickup-ready date <small>(choose from calendar)</small><input name="pickup_date" type="date" required></label>
+        <label>Pickup-ready time<input name="pickup_time" type="time" required></label>
         <label>Pickup location<select name="location" required><option value="">Choose serviced area</option><option>Coimbatore</option><option>Pollachi</option><option>Mettupalayam</option><option>Tiruppur</option><option>Erode</option></select></label>
         <label>Freshness<select name="freshness" required><option value="">Choose freshness</option><option>Fresh today</option><option>Harvested within 24 hours</option><option>Harvested within 2 days</option></select></label>
         <label>AGMARK status<select name="agmark" required><option value="">Choose status</option><option>AGMARK certified</option><option>Applied for AGMARK</option><option>Not certified</option></select></label>
