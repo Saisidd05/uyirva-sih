@@ -8,7 +8,8 @@ function qualityScore(body) { if (!body.crop) return { status: 422, body: { deta
 function createListing(farmer, body) {
   const quantity = Number(body.quantity), price = Number(body.price);
   if (!body.crop || !Number.isFinite(quantity) || quantity < 1 || !Number.isFinite(price) || price <= 0) return { status: 422, body: { detail: 'Crop is required; quantity and expected price must be valid positive numbers.' } };
-  if (!body.harvest_date || !body.pickup_ready_at || !body.location) return { status: 422, body: { detail: 'Harvest date, pickup-ready time, and pickup location are required.' } };
+  const requiredDetails = ['harvest_date', 'pickup_ready_at', 'location', 'freshness', 'agmark', 'quality_grade'];
+  if (requiredDetails.some(field => !String(body[field] || '').trim())) return { status: 422, body: { detail: 'Harvest date, pickup-ready time, location, freshness, AGMARK status, and quality grade are all required.' } };
   if (new Date(body.harvest_date) < new Date(new Date().toDateString()) || new Date(body.pickup_ready_at) < new Date()) return { status: 422, body: { detail: 'Harvest and pickup-ready dates cannot be in the past.' } };
   if (!Array.isArray(body.photos) && !body.photo_url) return { status: 422, body: { detail: 'Upload at least one crop photo.' } };
   const quality = qualityVision.assess(body);
