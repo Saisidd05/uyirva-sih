@@ -7,7 +7,10 @@ const matchingEngine = require('../services/matchingEngine.service');
 function directory(farmer, query = {}) {
   const listings = Listing.findByFarmer(farmer.sub).filter(item => item.status === 'active');
   const orders = Order.all().filter(item => item.seller_id === farmer.sub);
-  let buyers = listings.flatMap(listing => matchingEngine.getMatches(listing).map(match => {
+  // New farmers should also see open buyer demand before making their first
+  // listing, while listing owners see requirements matched to their produce.
+  const relevantListings = listings.length ? listings : [{ id: 'open-requirements', crop: 'Fresh vegetables' }];
+  let buyers = relevantListings.flatMap(listing => matchingEngine.getMatches(listing).map(match => {
     const hasOrder = orders.some(order => order.listing_id === listing.id && order.buyer_id === match.buyer_id);
     // This list contains only buyer matches for this farmer's listings, so
     // contact details can be used immediately to discuss the requirement.
