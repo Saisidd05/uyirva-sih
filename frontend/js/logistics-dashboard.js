@@ -519,8 +519,8 @@ function initDashboard() {
   renderTrips();
 }
 
+// Execute immediately and also on DOMContentLoaded to guarantee execution in all browser states
+initDashboard();
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initDashboard);
-} else {
-  initDashboard();
 }

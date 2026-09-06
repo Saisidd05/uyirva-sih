@@ -146,15 +146,7 @@ async function fpo() {
 }
 
 async function logistics() {
-  shell('Logistics Partner Dashboard', `
-    <div class="feature-grid">
-      <div class="feature-card"><h3>Assigned Orders</h3><strong>5</strong><p>Active deliveries today</p></div>
-      <div class="feature-card"><h3>Vehicles Available</h3><strong>3 / 5</strong><p>Fleet availability</p></div>
-      <div class="feature-card"><h3>Distance Today</h3><strong>127 km</strong><p>Total route distance</p></div>
-      <div class="feature-card"><h3>This Month</h3><strong>₹28,500</strong><p>Logistics earnings</p></div>
-    </div>
-    <div class="feature-card"><h3>Route optimization and delivery tracking coming soon.</h3></div>
-  `);
+  location.assign('/pages/logistics/dashboard.html');
 }
 
 async function admin() {
