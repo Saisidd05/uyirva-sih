@@ -9,7 +9,15 @@ function showAuth() { modal?.classList.add('open'); }
 function closeAuth() { modal?.classList.remove('open'); }
 function showError(message = '') { loginForm.querySelector('.auth-error').textContent = message; }
 const otpField = document.querySelector('#otp-field');
-const api = async (path, body) => { const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); const data = await response.json(); if (!response.ok) throw new Error(data.detail || 'Request failed'); return data; };
+const api = async (path, body) => {
+  const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  const raw = await response.text();
+  let data = {};
+  try { data = raw ? JSON.parse(raw) : {}; }
+  catch { throw new Error('OTP service is unavailable. Please refresh after the deployment finishes.'); }
+  if (!response.ok) throw new Error(data.detail || 'Request failed');
+  return data;
+};
 document.querySelectorAll('[data-auth-open]').forEach(item => item.addEventListener('click', showAuth));
 document.querySelector('.auth-close')?.addEventListener('click', closeAuth);
 loginForm?.addEventListener('submit', async event => {

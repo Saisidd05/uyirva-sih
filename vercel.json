@@ -5,5 +5,11 @@
     "api/[...path].js": {
       "includeFiles": "frontend/**"
     }
-  }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/[...path]"
+    }
+  ]
 }
