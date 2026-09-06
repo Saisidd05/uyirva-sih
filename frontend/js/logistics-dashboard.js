@@ -137,10 +137,10 @@ function renderVehicles() {
         </div>
       </div>
       <div class="vc-actions">
-        <button class="btn-sm" onclick="toggleVehicleStatus('${v.id}')">
+        <button class="btn-sm" data-action="toggle-status" data-veh-id="${v.id}" onclick="toggleVehicleStatus('${v.id}')">
           ${v.status === 'Available' ? 'Mark Maintenance' : 'Mark Available'}
         </button>
-        <button class="btn-sm danger" onclick="deleteVehicle('${v.id}')">Remove</button>
+        <button class="btn-sm danger" data-action="delete-veh" data-veh-id="${v.id}" onclick="deleteVehicle('${v.id}')">Remove</button>
       </div>
     </div>
   `).join('');
@@ -457,6 +457,41 @@ window.completeTrip = id => {
     alert(`🎉 Delivery for Route #${t.id} marked as DELIVERED! Payment settlement initiated via Escrow.`);
   }
 };
+
+// ─── Event Delegation for Dynamic Action Buttons ───
+document.addEventListener('click', e => {
+  const target = e.target;
+
+  // 1. Assign Vehicle to Buyer button
+  if (target.matches('[data-action="assign-veh"]')) {
+    const reqId = target.getAttribute('data-req-id');
+    if (reqId) window.assignVehicleToBuyer(reqId);
+  }
+
+  // 2. Toggle Vehicle Status (Mark Maintenance / Available)
+  if (target.matches('[data-action="toggle-status"]')) {
+    const vehId = target.getAttribute('data-veh-id');
+    if (vehId) window.toggleVehicleStatus(vehId);
+  }
+
+  // 3. Remove Vehicle button
+  if (target.matches('[data-action="delete-veh"]')) {
+    const vehId = target.getAttribute('data-veh-id');
+    if (vehId) window.deleteVehicle(vehId);
+  }
+
+  // 4. Mark Read Notification button
+  if (target.matches('[data-action="mark-read"]')) {
+    const notifId = target.getAttribute('data-notif-id');
+    if (notifId) window.markNotifRead(notifId);
+  }
+
+  // 5. Complete Trip / Mark Delivered button
+  if (target.matches('[data-action="complete-trip"]')) {
+    const tripId = target.getAttribute('data-trip-id');
+    if (tripId) window.completeTrip(tripId);
+  }
+});
 
 // ─── Initial Render Invocation ───
 updateStats();
