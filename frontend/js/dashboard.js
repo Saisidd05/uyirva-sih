@@ -36,25 +36,6 @@ const api = async (path, options = {}) => {
   return data;
 };
 
-// ─── FARMER DEMO DATA ───
-const DEMO = {
-  stats: { active_listings: 3, pending_orders: 2, month_earnings: '14,250' },
-  actions: { unread_matches: 5, disputes_awaiting_response: 0 },
-  demand_insight: { recommendation: 'Tomato demand is trending high in Coimbatore this week. Consider listing early.' },
-  listings: [
-    { crop: 'Tomato', quantity: 500, price: 24, freshness: 'Harvested within 24 hours', quality_grade: 'Grade A', photo_url: '' },
-    { crop: 'Onion', quantity: 280, price: 21, freshness: 'Fresh today', quality_grade: 'Grade A', photo_url: '' },
-    { crop: 'Brinjal', quantity: 150, price: 18, freshness: 'Harvested within 24 hours', quality_grade: 'Grade B', photo_url: '' }
-  ],
-  buyers: [
-    { buyer_name: 'Metro Supermarket', buyer_type: 'Retailer', distance_km: 6.2, crop: 'Tomato', quantity: 300, price_min: 22, price_max: 27, delivery_location: 'Coimbatore North', delivery_window: 'Within 3 days', requirements: { freshness: 'Fresh today', quality: 'Grade A', agmark: 'Preferred' }, contact: { phone: '+91 98765 43210', email: 'procurement@metro.in' }, match_id: 'M001' },
-    { buyer_name: 'Annapurna Hotels', buyer_type: 'Restaurant Chain', distance_km: 12.4, crop: 'Onion', quantity: 200, price_min: 19, price_max: 23, delivery_location: 'Gandhipuram', delivery_window: 'Tomorrow morning', requirements: { freshness: 'Within 24 hrs', quality: 'Grade A', agmark: 'Not required' }, contact: { phone: '+91 87654 32109', email: 'chef@annapurna.com' }, match_id: 'M002' }
-  ],
-  orders: [
-    { buyer_name: 'City Fresh Mart', crop: 'Tomato', quantity: 200, agreed_price: 25, order_status: 'Dispatched', escrow_status: 'Held', logistics: { driver_name: 'Ramu K.', contact_number: '+91 76543 21098', vehicle_number: 'TN 33 AB 1234', pickup_time_window: '6:00 AM – 8:00 AM' } }
-  ]
-};
-
 // ─── Card renderers ───
 const listingCard = item => `
   <div class="listing-item">
@@ -68,77 +49,76 @@ const listingCard = item => `
 
 const buyerCard = buyer => `
   <div class="buyer-requirement">
-    <b>${escapeHtml(buyer.buyer_name)}</b>
-    <span>${escapeHtml(buyer.buyer_type)} · ${buyer.distance_km} km away</span>
-    <p><b>Requirement:</b> ${buyer.quantity} kg of ${escapeHtml(buyer.crop)} · ₹${buyer.price_min}–₹${buyer.price_max}/kg</p>
-    <small><b>Delivery:</b> ${escapeHtml(buyer.delivery_location)} · ${escapeHtml(buyer.delivery_window)}<br>
-    <b>Freshness:</b> ${escapeHtml(buyer.requirements?.freshness)} · <b>Quality:</b> ${escapeHtml(buyer.requirements?.quality)}</small>
-    <p><b>Contact:</b> ${escapeHtml(buyer.contact.phone)} · ${escapeHtml(buyer.contact.email)}</p>
-    <button class="button secondary" data-chat="${buyer.match_id}">Contact / Negotiate</button>
+    <b>${escapeHtml(buyer.crop)} Required — ${escapeHtml(buyer.qty)}</b>
+    <span>📍 ${escapeHtml(buyer.location || 'Coimbatore')}</span>
+    <p><b>Max Price:</b> ₹${escapeHtml(buyer.price || 'Negotiable')}/kg · <b>Grade:</b> Grade ${escapeHtml(buyer.grade || 'A')}</p>
+    <small><b>Required By:</b> ${escapeHtml(buyer.date || 'Immediate')} · <b>Notes:</b> ${escapeHtml(buyer.notes || 'None')}</small>
+    <div style="margin-top:8px">
+      <button class="button secondary" data-chat="${buyer.id}">Contact Buyer</button>
+    </div>
   </div>`;
 
 const orderCard = order => `
   <div class="order-item">
-    <b>${escapeHtml(order.buyer_name)}</b>
-    <p>${escapeHtml(order.crop)} · ${order.quantity} kg · Agreed ₹${order.agreed_price}/kg</p>
-    <small>Confirmed → Pooled → Dispatched → Delivered → Paid</small>
-    <p>Current: ${escapeHtml(order.order_status)} · Escrow: ${escapeHtml(order.escrow_status)}</p>
-    ${order.logistics
-      ? `<div class="driver-details"><b>Buyer-allotted driver</b>
-         <p><b>Driver:</b> ${escapeHtml(order.logistics.driver_name)} · ${escapeHtml(order.logistics.contact_number)}<br>
-         <b>Vehicle:</b> ${escapeHtml(order.logistics.vehicle_number)}<br>
-         <b>Pickup:</b> ${escapeHtml(order.logistics.pickup_time_window)}</p></div>`
-      : '<p class="buyer-note">Driver and logistics details will appear after the buyer confirms the order.</p>'}
+    <b>Order #${escapeHtml(order.id)} — ${escapeHtml(order.crop)}</b>
+    <p>${escapeHtml(order.qty)} · Total: ${escapeHtml(order.total)}</p>
+    <small>Delivery to: ${escapeHtml(order.delivery)} · Logistics: ${escapeHtml(order.logistics)}</small>
+    <p>Status: <span class="tag high">${escapeHtml(order.status)}</span></p>
   </div>`;
 
 const bindChats = () => document.querySelectorAll('[data-chat]').forEach(btn =>
-  btn.onclick = () => window.alert('💬 Negotiation chat coming in the next release!')
+  btn.onclick = () => window.alert('💬 Contacting buyer for negotiation...')
 );
 
 // ─── FARMER dashboard ───
 async function farmer() {
-  let d, listings, buyers, orders;
+  let listings, buyers, orders;
   try {
-    [d, { listings }, { buyers }, { orders }] = await Promise.all([
+    [_, { listings }, { buyers }, { orders }] = await Promise.all([
       api('/api/farmer/dashboard'),
       api('/api/farmer/listings'),
       api('/api/farmer/buyers?sort=distance'),
       api('/api/farmer/accepted-orders')
     ]);
   } catch {
-    // No backend — use demo data
-    d = DEMO; listings = DEMO.listings; buyers = DEMO.buyers; orders = DEMO.orders;
+    // Read real user data from localStorage
+    listings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+    buyers = JSON.parse(localStorage.getItem('uyirva_req') || '[]');
+    orders = JSON.parse(localStorage.getItem('uyirva_orders') || '[]');
   }
+
+  const activeCount = listings.length;
+  const pendingCount = orders.filter(o => o.status === 'Pending').length;
 
   shell('Farmer Dashboard', `
     <div class="feature-grid">
       <div class="feature-card">
         <h3>My vegetable listings</h3>
-        <strong>${d.stats.active_listings}</strong>
-        <p>Active listings · Pending orders: ${d.stats.pending_orders}</p>
+        <strong>${activeCount}</strong>
+        <p>Active listings · Pending orders: ${pendingCount}</p>
         <button class="button primary" id="create">+ List vegetables</button>
       </div>
       <div class="feature-card">
         <h3>Action needed</h3>
-        <p>${d.actions.unread_matches} buyer matches · ${d.actions.disputes_awaiting_response} disputes awaiting</p>
+        <p>${buyers.length} buyer requirements posted</p>
       </div>
       <div class="feature-card">
         <h3>Demand planning</h3>
-        <p>${escapeHtml(d.demand_insight.recommendation)}</p>
+        <p>${listings.length > 0 ? 'Your vegetables are live for buyers.' : 'List your harvested vegetables to match with nearby buyers.'}</p>
       </div>
       <div class="feature-card">
         <h3>This month earnings</h3>
-        <strong>₹${d.stats.month_earnings}</strong>
+        <strong>₹0</strong>
       </div>
     </div>
     <div class="feature-card">
       <h3>My listed vegetables</h3>
-      <div class="listing-list">${listings.length ? listings.map(listingCard).join('') : '<p>No vegetables listed yet. Create a listing to reach buyers.</p>'}</div>
+      <div class="listing-list">${listings.length ? listings.map(listingCard).join('') : '<p>No vegetables listed yet. Click "+ List vegetables" to post your produce.</p>'}</div>
     </div>
     <div class="feature-card">
-      <h3>Nearby Buyers</h3>
-      <p class="buyer-note">Matched buyers interested in your active listings.</p>
-      <div class="buyer-requirements">${buyers.length ? buyers.map(buyerCard).join('') : '<p>No buyer interest yet.</p>'}</div>
+      <h3>Nearby Buyers Requirements</h3>
+      <p class="buyer-note">Buyer requirements posted on the marketplace platform.</p>
+      <div class="buyer-requirements">${buyers.length ? buyers.map(buyerCard).join('') : '<p>No buyer requirements posted yet.</p>'}</div>
     </div>
     <div class="feature-card">
       <h3>Accepted orders</h3>
@@ -235,10 +215,23 @@ form.onsubmit = async event => {
     modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = '';
     farmer();
   } catch (issue) {
-    // Demo mode — just show success and close
+    // Offline mode — save listing to localStorage
     if (issue.message === 'OFFLINE') {
+      const existing = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+      existing.unshift({
+        id: Date.now().toString(),
+        crop: values.crop,
+        quantity: values.quantity,
+        price: values.price,
+        freshness: values.freshness,
+        quality_grade: values.quality_grade,
+        location: values.location,
+        photo_url: photoData
+      });
+      localStorage.setItem('uyirva_farmer_listings', JSON.stringify(existing));
       modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = '';
-      window.alert('✅ Listing saved locally! It will sync when the backend is connected.');
+      window.alert('✅ Vegetable listing published successfully!');
+      farmer();
     } else {
       error.textContent = issue.message;
     }

@@ -22,7 +22,6 @@ if (user && userRole !== 'BUYER') {
 document.body.classList.add('buyer-mode');
 initAccountModal();
 
-
 // ─── Data store (localStorage backed) ───
 const store = {
   requirements: JSON.parse(localStorage.getItem('uyirva_req') || '[]'),
@@ -33,23 +32,6 @@ const save = () => {
   localStorage.setItem('uyirva_orders', JSON.stringify(store.orders));
 };
 const uid = () => Math.random().toString(36).slice(2, 8).toUpperCase();
-
-// ─── Sample data ───
-const FARMERS = [
-  { id: 'F1', name: 'Murugan Farms', location: 'Coimbatore', dist: '4.2 km', rating: '4.8', produce: [{ name: 'Tomato', qty: '800 kg', price: '₹24/kg' }, { name: 'Brinjal', qty: '350 kg', price: '₹18/kg' }] },
-  { id: 'F2', name: 'Lakshmi Agro', location: 'Erode', dist: '11.7 km', rating: '4.6', produce: [{ name: 'Onion', qty: '1200 kg', price: '₹21/kg' }, { name: 'Garlic', qty: '200 kg', price: '₹55/kg' }] },
-  { id: 'F3', name: 'Selvam & Sons', location: 'Salem', dist: '28.3 km', rating: '4.9', produce: [{ name: 'Potato', qty: '950 kg', price: '₹22/kg' }, { name: 'Carrot', qty: '400 kg', price: '₹30/kg' }] },
-  { id: 'F4', name: 'Devi Organics', location: 'Tiruppur', dist: '7.5 km', rating: '4.7', produce: [{ name: 'Banana', qty: '600 kg', price: '₹28/kg' }, { name: 'Coconut', qty: '500 units', price: '₹15/pc' }] },
-  { id: 'F5', name: 'Suresh Horticulture', location: 'Namakkal', dist: '19.1 km', rating: '4.5', produce: [{ name: 'Chilli', qty: '300 kg', price: '₹65/kg' }, { name: 'Turmeric', qty: '250 kg', price: '₹80/kg' }] },
-  { id: 'F6', name: 'Anbu Farms', location: 'Pollachi', dist: '5.8 km', rating: '4.8', produce: [{ name: 'Mango', qty: '700 kg', price: '₹45/kg' }, { name: 'Guava', qty: '300 kg', price: '₹32/kg' }] }
-];
-
-const LOGISTICS = [
-  { id: 'L1', name: 'Vel Transports', owner: 'Velmurugan K.', rating: '4.9 ★', loc: 'Coimbatore', vehicles: [{ type: 'Mini Truck', cap: '2 Ton', icon: '🚚', avail: true }, { type: 'Pickup Van', cap: '800 kg', icon: '🚐', avail: true }, { type: 'Refrigerator Van', cap: '1.5 Ton', icon: '❄️', avail: false }] },
-  { id: 'L2', name: 'Muthu Cargo', owner: 'Muthu Rajan', rating: '4.7 ★', loc: 'Erode', vehicles: [{ type: 'Lorry (14 ft)', cap: '5 Ton', icon: '🚛', avail: true }, { type: 'Mini Truck', cap: '2 Ton', icon: '🚚', avail: false }] },
-  { id: 'L3', name: 'Sri Logistics', owner: 'Sridhar P.', rating: '4.8 ★', loc: 'Salem', vehicles: [{ type: 'Pickup Van', cap: '800 kg', icon: '🚐', avail: true }, { type: 'Auto Tempo', cap: '500 kg', icon: '🛺', avail: true }, { type: 'Lorry (20 ft)', cap: '8 Ton', icon: '🚛', avail: true }] },
-  { id: 'L4', name: 'Kaviya Fleet', owner: 'Kavitha M.', rating: '4.6 ★', loc: 'Tiruppur', vehicles: [{ type: 'Refrigerator Van', cap: '2 Ton', icon: '❄️', avail: true }, { type: 'Mini Truck', cap: '1.5 Ton', icon: '🚚', avail: true }] }
-];
 
 // ─── Init header ───
 const nameEl = document.getElementById('db-user-name');
@@ -117,39 +99,39 @@ function renderRequirements() {
 // ─── RENDER: Farmers ───
 function renderFarmers() {
   const grid = document.getElementById('farmer-grid');
-  const cropFilter = document.getElementById('farmer-filter-crop').value.toLowerCase();
-  const distFilter = parseFloat(document.getElementById('farmer-filter-dist').value) || 999;
-  const filtered = FARMERS.filter(f => {
-    if (parseFloat(f.dist) > distFilter) return false;
-    if (cropFilter && !f.produce.some(p => p.name.toLowerCase().includes(cropFilter))) return false;
+  const cropFilter = document.getElementById('farmer-filter-crop')?.value.toLowerCase() || '';
+  const farmerListings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+
+  const filtered = farmerListings.filter(f => {
+    if (cropFilter && !f.crop.toLowerCase().includes(cropFilter)) return false;
     return true;
   });
+
   if (!filtered.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🌾</div><p>No farmers match your filter. Try widening your search.</p></div>`;
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🌾</div><p>No farmer produce listings available yet.<br>Listings published by farmers will appear here live.</p></div>`;
     return;
   }
+
   grid.innerHTML = filtered.map(f => `
     <div class="farmer-card glass">
       <div class="fc-top">
         <div>
-          <div class="fc-name">🧑‍🌾 ${f.name}</div>
-          <div class="fc-loc">📍 ${f.location}</div>
+          <div class="fc-name">🧑‍🌾 Farmer Produce</div>
+          <div class="fc-loc">📍 ${f.location || 'Coimbatore'}</div>
         </div>
         <div>
-          <div class="fc-dist">${f.dist}</div>
-          <div style="font-size:.72rem;color:var(--wheat);text-align:right;margin-top:4px">⭐ ${f.rating}</div>
+          <div class="fc-dist">⭐ Fresh</div>
         </div>
       </div>
       <div class="produce-list">
-        ${f.produce.map(p => `
-          <div class="produce-row">
-            <span class="p-name">${p.name}</span>
-            <span class="p-qty">${p.qty}</span>
-            <span class="p-price">${p.price}</span>
-          </div>
-        `).join('')}
+        <div class="produce-row">
+          <span class="p-name">${f.crop}</span>
+          <span class="p-qty">${f.quantity} kg</span>
+          <span class="p-price">₹${f.price}/kg</span>
+        </div>
       </div>
-      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="placeOrder('${f.id}')">📦 Place Order</button>
+      <small style="color:var(--muted);display:block;margin-top:6px">Grade: ${f.quality_grade || 'Standard'} · ${f.freshness || 'Fresh'}</small>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="placeOrderForListing('${f.id}')">📦 Place Order</button>
     </div>
   `).join('');
 }
@@ -157,40 +139,11 @@ function renderFarmers() {
 // ─── RENDER: Logistics ───
 function renderLogistics() {
   const grid = document.getElementById('logistics-grid');
-  const typeFilter = document.getElementById('logi-filter-type').value;
-  const availFilter = document.getElementById('logi-filter-avail').value;
-  grid.innerHTML = LOGISTICS.map(l => {
-    let vehicles = l.vehicles;
-    if (typeFilter) vehicles = vehicles.filter(v => v.type === typeFilter);
-    if (availFilter === 'yes') vehicles = vehicles.filter(v => v.avail);
-    if (!vehicles.length) return '';
-    return `
-      <div class="logistics-card glass">
-        <div class="lc-header">
-          <div>
-            <div class="lc-name">🏢 ${l.name}</div>
-            <div style="font-size:.75rem;color:var(--muted)">Owner: ${l.owner} · ${l.loc}</div>
-          </div>
-          <div class="lc-rating">${l.rating}</div>
-        </div>
-        <div class="vehicles-list">
-          ${vehicles.map(v => `
-            <div class="vehicle-row">
-              <div class="veh-icon">${v.icon}</div>
-              <div class="veh-info">
-                <div class="vtype">${v.type}</div>
-                <div class="vcap">Capacity: ${v.cap}</div>
-              </div>
-              <span class="veh-avail ${v.avail ? 'yes' : 'no'}">${v.avail ? 'Available' : 'Booked'}</span>
-            </div>
-          `).join('')}
-        </div>
-        ${vehicles.some(v => v.avail) ? `<button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="bookLogistics('${l.id}')">Book Transport</button>` : ''}
-      </div>
-    `;
-  }).join('');
-  if (!grid.innerHTML.trim()) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🚚</div><p>No logistics partners match your filter.</p></div>`;
+  const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
+
+  if (!logisticsList.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🚚</div><p>No logistics partners listed yet.<br>Registered logistics providers will appear here.</p></div>`;
+    return;
   }
 }
 
@@ -257,24 +210,29 @@ window.editReq = id => {
   save(); updateStats(); renderRequirements();
   document.getElementById('req-crop').scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
-window.placeOrder = farmerId => {
-  const farmer = FARMERS.find(f => f.id === farmerId);
-  if (!farmer) return;
-  const produce = farmer.produce[0];
+window.placeOrderForListing = listingId => {
+  const farmerListings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+  const listing = farmerListings.find(f => f.id === listingId);
+  if (!listing) return;
+  const totalPrice = (parseFloat(listing.quantity || 0) * parseFloat(listing.price || 0)).toLocaleString();
   store.orders.unshift({
-    id: uid(), crop: produce.name, farmer: farmer.name,
-    qty: '500 kg', total: '₹12,000', delivery: farmer.location,
-    logistics: 'Vel Transports', status: 'Pending',
+    id: uid(),
+    crop: listing.crop,
+    farmer: 'Farmer Produce',
+    qty: `${listing.quantity} kg`,
+    total: `₹${totalPrice}`,
+    delivery: listing.location || 'Coimbatore',
+    logistics: 'Direct Partner Transport',
+    status: 'Pending',
     date: new Date().toLocaleDateString('en-IN')
   });
   save(); updateStats();
-  // Switch to Orders tab
   document.querySelectorAll('.db-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-tab="orders"]').classList.add('active');
   document.getElementById('panel-orders').classList.add('active');
   renderOrders();
-  alert(`✅ Order placed for ${produce.name} from ${farmer.name}!`);
+  alert(`✅ Order placed for ${listing.crop} (${listing.quantity} kg)!`);
 };
 window.bookLogistics = id => {
   const lp = LOGISTICS.find(l => l.id === id);
