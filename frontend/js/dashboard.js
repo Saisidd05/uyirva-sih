@@ -1,7 +1,4 @@
-/**
- * dashboard.js — Farmer / FPO / Logistics / Admin Dashboard
- * Works with OTP auth (no backend token required for demo mode).
- */
+import { initAccountModal } from './account.js';
 
 // ─── Auth guard ───
 const user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
@@ -12,6 +9,9 @@ const token = localStorage.getItem('uyirva_access_token') || '';
 const app = document.querySelector('#dashboard-app');
 const apiBase = window.UYIRVA_API_URL || window.location.origin;
 const escapeHtml = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
+
+// Initialize Account Profile Modal & Navbar triggers
+initAccountModal();
 
 const logout = () => { localStorage.clear(); location.assign('/'); };
 

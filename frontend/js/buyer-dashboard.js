@@ -1,3 +1,5 @@
+import { initAccountModal } from './account.js';
+
 /**
  * buyer-dashboard.js — Full Buyer Dashboard module for UYIRVA
  * Tabs: Requirements | Farmer Listings | Logistics | My Orders
@@ -16,8 +18,9 @@ if (user && userRole !== 'BUYER') {
   localStorage.setItem('uyirva_user', JSON.stringify(user));
 }
 
-// ─── Apply buyer background ───
+// ─── Apply buyer background & Init Account Modal ───
 document.body.classList.add('buyer-mode');
+initAccountModal();
 
 
 // ─── Data store (localStorage backed) ───
