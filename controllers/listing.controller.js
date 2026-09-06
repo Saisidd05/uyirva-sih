@@ -7,9 +7,7 @@ function suggestPrice(body) { if (!body.crop || !body.quantity) return { status:
 function qualityScore(body) { if (!body.crop) return { status: 422, body: { detail: 'Crop is required' } }; return { status: 200, body: qualityVision.assess(body) }; }
 function createListing(farmer, body) {
   const quantity = Number(body.quantity), price = Number(body.price);
-  if (!body.crop || !Number.isFinite(quantity) || quantity < 1 || !Number.isFinite(price) || price <= 0) return { status: 422, body: { detail: 'Crop is required; quantity and expected price must be valid positive numbers.' } };
-  if (!body.harvest_date || !body.pickup_ready_at || !body.location) return { status: 422, body: { detail: 'Harvest date, pickup-ready time, and pickup location are required.' } };
-  if (new Date(body.harvest_date) < new Date(new Date().toDateString()) || new Date(body.pickup_ready_at) < new Date()) return { status: 422, body: { detail: 'Harvest and pickup-ready dates cannot be in the past.' } };
+  if (!body.crop || !Number.isFinite(quantity) || quantity < 1 || !Number.isFinite(price) || price < 1) return { status: 422, body: { detail: 'Crop is required; quantity and expected price must be valid numbers of at least 1.' } };
   if (!Array.isArray(body.photos) && !body.photo_url) return { status: 422, body: { detail: 'Upload at least one crop photo.' } };
   const quality = qualityVision.assess(body);
   const listing = Listing.create({ farmer_id: farmer.sub, crop: body.crop, variety: body.variety || null, quantity, unit: body.unit === 'quintal' ? 'quintal' : 'kg', price, harvest_date: body.harvest_date || null, pickup_ready_at: body.pickup_ready_at || null, photos: body.photos || (body.photo_url ? [body.photo_url] : []), photo_url: body.photo_url || body.photos?.[0], notes: String(body.notes || '').slice(0, 300), freshness: body.freshness || 'Fresh today', agmark: body.agmark || 'Not certified', quality_grade: body.quality_grade || quality.grade, quality_score: quality.score, location: body.location || null, language: body.language || 'en', price_source: 'farmer_set', status: body.offline_draft ? 'draft' : 'active' });
