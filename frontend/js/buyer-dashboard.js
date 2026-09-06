@@ -5,12 +5,20 @@
 
 // ─── Auth guard ───
 const user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
-if (!user || user.role?.toUpperCase() !== 'BUYER') {
-  location.assign('../../index.html');
+// Normalize role — accept 'buyer', 'BUYER', 'Buyer' etc.
+const userRole = (user?.role || '').toUpperCase();
+if (!user) {
+  location.assign('/');
+}
+// If role is set but not buyer, update it so the dashboard works
+if (user && userRole !== 'BUYER') {
+  user.role = 'BUYER';
+  localStorage.setItem('uyirva_user', JSON.stringify(user));
 }
 
 // ─── Apply buyer background ───
 document.body.classList.add('buyer-mode');
+
 
 // ─── Data store (localStorage backed) ───
 const store = {
