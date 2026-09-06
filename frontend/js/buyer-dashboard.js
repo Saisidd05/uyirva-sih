@@ -52,9 +52,13 @@ const LOGISTICS = [
 ];
 
 // ─── Init header ───
-document.getElementById('db-user-name').textContent = user.full_name;
-document.getElementById('db-avatar').textContent = user.full_name[0];
-document.getElementById('db-logout').addEventListener('click', () => {
+const nameEl = document.getElementById('db-user-name');
+if (nameEl) nameEl.textContent = user.full_name || 'Buyer';
+
+const avatarEl = document.getElementById('db-avatar');
+if (avatarEl) avatarEl.textContent = (user.full_name || 'B')[0];
+
+document.getElementById('db-logout')?.addEventListener('click', () => {
   localStorage.removeItem('uyirva_access_token');
   localStorage.removeItem('uyirva_user');
   location.assign('/');
@@ -285,7 +289,7 @@ window.cancelOrder = id => {
 // ─── Requirement form ───
 document.getElementById('req-form')?.addEventListener('submit', e => {
   e.preventDefault();
-  store.requirements.unshift({
+  const newReq = {
     id: uid(),
     crop: document.getElementById('req-crop').value.trim(),
     qty: document.getElementById('req-qty').value.trim(),
@@ -295,8 +299,14 @@ document.getElementById('req-form')?.addEventListener('submit', e => {
     location: document.getElementById('req-loc').value.trim(),
     notes: document.getElementById('req-notes').value.trim(),
     status: 'Open'
-  });
-  save(); e.currentTarget.reset(); updateStats(); renderRequirements();
+  };
+  store.requirements.unshift(newReq);
+  save();
+  e.currentTarget.reset();
+  updateStats();
+  renderRequirements();
+  document.getElementById('req-list')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  alert(`✅ Requirement for ${newReq.crop} (${newReq.qty}) posted successfully!`);
 });
 
 // ─── Filter events ───
