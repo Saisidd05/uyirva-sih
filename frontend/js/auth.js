@@ -171,13 +171,13 @@ document.getElementById('back-step1')?.addEventListener('click', () => {
 function redirectToDashboard(user) {
   localStorage.setItem('uyirva_user', JSON.stringify(user));
   const role = user.role.toLowerCase();
-  // Route to dedicated page or fallback
+  // Use absolute paths so redirect works from any base URL
   const routes = {
-    buyer: 'pages/buyer/dashboard.html',
-    farmer: 'dashboard.html',
-    fpo: 'dashboard.html',
-    logistics: 'dashboard.html',
-    admin: 'dashboard.html'
+    buyer: '/pages/buyer/dashboard.html',
+    farmer: '/dashboard.html',
+    fpo: '/dashboard.html',
+    logistics: '/dashboard.html',
+    admin: '/dashboard.html'
   };
-  location.assign(routes[role] || 'dashboard.html');
+  location.assign(routes[role] || '/dashboard.html');
 }

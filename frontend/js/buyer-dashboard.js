@@ -46,7 +46,7 @@ document.getElementById('db-avatar').textContent = user.full_name[0];
 document.getElementById('db-logout').addEventListener('click', () => {
   localStorage.removeItem('uyirva_access_token');
   localStorage.removeItem('uyirva_user');
-  location.assign('../../index.html');
+  location.assign('/');
 });
 
 // ─── Tab switching ───
