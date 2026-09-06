@@ -6,6 +6,7 @@
   <meta name="description" content="UYIRVA — AI-powered farmgate coordination for transparent agricultural trade.">
   <title>UYIRVA — Transparent Agricultural Trade</title>
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/otp.css">
 </head>
 <body>
   <div class="video-bg" aria-hidden="true">
@@ -333,37 +334,84 @@
   
   <div class="auth-modal" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-hidden="true">
     <div class="auth-card glass">
-      <button class="auth-close" type="button" aria-label="Close sign in">×</button>
-      <section class="auth-panel" id="login-panel">
-        <h2 id="auth-title">Sign in</h2>
-        <p class="auth-copy">Farmer sign-in uses a phone OTP. For this prototype, use test OTP <strong>123456</strong>.</p>
-        <form class="auth-form" id="login-form">
-          <label>Mobile number<input name="phone" id="farmer-phone" type="tel" inputmode="numeric" autocomplete="tel" placeholder="e.g. 9876543210" pattern="[0-9+ -]{10,16}" required></label>
-          <label id="otp-field" hidden>OTP<input name="otp" id="farmer-otp" type="text" inputmode="numeric" autocomplete="one-time-code" placeholder="Enter 123456" pattern="[0-9]{6}" maxlength="6"></label>
-          <p class="auth-error" aria-live="polite"></p>
-          <button class="button primary" type="submit" id="login-submit">Send test OTP</button>
-        </form>
-      </section>
-      <section class="auth-panel" id="register-panel" hidden>
-        <h2>Create your account</h2>
-        <p class="auth-copy">Join as a farmer, buyer, or FPO.</p>
-        <form class="auth-form" id="register-form">
-          <label>Full name<input name="full_name" autocomplete="name" required></label>
-          <label>Email<input name="email" type="email" autocomplete="email" required></label>
-          <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
-          <label>Role
-            <select name="role" required>
-              <option value="FARMER">Farmer</option>
-              <option value="BUYER">Buyer</option>
-              <option value="FPO">FPO</option>
-            </select>
-          </label>
-          <label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label>
-          <p class="auth-error" aria-live="polite"></p>
-          <button class="button primary" type="submit">Create account</button>
-        </form>
-        <p class="auth-switch">Already have an account? <button class="auth-link" type="button" data-auth-open="login">Sign in</button></p>
-      </section>
+      <button class="auth-close" type="button" aria-label="Close">&#x2715;</button>
+
+      <!-- STEP 1: Phone + Role -->
+      <div id="otp-step1">
+        <div class="otp-stepper">
+          <div class="otp-step active"><span class="otp-step-num">1</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step"><span class="otp-step-num">2</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2 id="auth-title">Welcome to UYIRVA</h2>
+        <p class="auth-copy">Enter your mobile number and select your role to continue.</p>
+        <div class="role-grid">
+          <button class="role-btn selected" data-role="FARMER" type="button">
+            <span class="rb-icon">&#x1F9D1;&#x200D;&#x1F33E;</span>
+            <span class="rb-label">Farmer</span>
+          </button>
+          <button class="role-btn" data-role="BUYER" type="button">
+            <span class="rb-icon">&#x1F6D2;</span>
+            <span class="rb-label">Buyer</span>
+          </button>
+          <button class="role-btn" data-role="FPO" type="button">
+            <span class="rb-icon">&#x1F3E2;</span>
+            <span class="rb-label">FPO</span>
+          </button>
+        </div>
+        <div class="phone-wrap">
+          <span class="phone-cc">&#x1F1EE;&#x1F1F3; +91</span>
+          <input class="phone-inp" id="phone-inp" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national">
+        </div>
+        <p class="auth-error" id="step1-err"></p>
+        <button class="auth-submit" id="send-otp-btn" type="button">Send OTP &#x2192;</button>
+      </div>
+
+      <!-- STEP 2: OTP Entry -->
+      <div id="otp-step2" hidden>
+        <div class="otp-stepper">
+          <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step active"><span class="otp-step-num">2</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2>Verify your number</h2>
+        <p class="auth-copy">Enter the 6-digit OTP sent to <strong id="otp-phone-display"></strong></p>
+        <div class="otp-demo-hint">&#x1F4CB; Demo mode &mdash; your OTP is: <strong id="otp-demo-val"></strong></div>
+        <div class="otp-boxes">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" type="tel">
+        </div>
+        <p class="otp-timer" id="otp-timer"></p>
+        <p class="auth-error" id="step2-err"></p>
+        <button class="auth-submit" id="verify-otp-btn" type="button">Verify OTP</button>
+        <p style="text-align:center;margin-top:12px;font-size:.83rem;color:var(--muted)">
+          <button class="auth-link" type="button" id="back-step1">&#x2190; Change number</button>
+        </p>
+      </div>
+
+      <!-- STEP 3: Name (new users) -->
+      <div id="otp-step3" hidden>
+        <div class="otp-stepper">
+          <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step active"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2>Almost there!</h2>
+        <p class="auth-copy">Tell us your name to complete your UYIRVA profile.</p>
+        <input class="name-inp" id="name-inp" type="text" placeholder="Full name" autocomplete="name">
+        <p class="auth-error" id="step3-err"></p>
+        <button class="auth-submit" id="complete-btn" type="button">Enter Dashboard &#x1F680;</button>
+      </div>
     </div>
   </div>
   

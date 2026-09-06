@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="UYIRVA Buyer Dashboard — manage requirements, farmer listings, logistics and orders.">
+  <title>Buyer Dashboard — UYIRVA</title>
+  <link rel="stylesheet" href="../../css/styles.css">
+  <link rel="stylesheet" href="../../css/buyer.css">
+</head>
+<body>
+
+  <main class="db-app" id="db-app">
+
+    <!-- Header -->
+    <div class="db-header">
+      <div>
+        <div class="eyebrow">UYIRVA · BUYER</div>
+        <h1>Buyer Dashboard</h1>
+        <p>Welcome, <span id="db-user-name">—</span> &nbsp;·&nbsp; Manage your procurement end-to-end.</p>
+      </div>
+      <div class="db-meta">
+        <div class="db-avatar" id="db-avatar">B</div>
+        <button class="db-logout" id="db-logout" type="button">Sign out</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="db-stats">
+      <div class="db-stat-card glass">
+        <small>My Requirements</small>
+        <span class="val" id="stat-req">0</span>
+        <small>Posted</small>
+      </div>
+      <div class="db-stat-card glass">
+        <small>Farmer Listings</small>
+        <span class="val">6</span>
+        <small>Available nearby</small>
+      </div>
+      <div class="db-stat-card glass">
+        <small>Logistics Partners</small>
+        <span class="val">4</span>
+        <small>Active in region</small>
+      </div>
+      <div class="db-stat-card glass">
+        <small>Active Orders</small>
+        <span class="val" id="stat-orders">0</span>
+        <small>In progress</small>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="db-tabs">
+      <button class="db-tab active" data-tab="requirements" type="button">📋 Requirements</button>
+      <button class="db-tab" data-tab="farmers" type="button">🌾 Farmer Listings</button>
+      <button class="db-tab" data-tab="logistics" type="button">🚚 Logistics</button>
+      <button class="db-tab" data-tab="orders" type="button">📦 My Orders</button>
+    </div>
+
+    <!-- ── REQUIREMENTS PANEL ── -->
+    <div class="db-panel active" id="panel-requirements">
+      <div class="db-section-head">
+        <h2>My Requirements</h2>
+      </div>
+
+      <!-- Add requirement form -->
+      <div class="req-form-card glass">
+        <h3 style="margin:0 0 16px;font-size:1.1rem">➕ Add New Requirement</h3>
+        <form class="req-form-grid" id="req-form">
+          <div class="form-field">
+            <label for="req-crop">Crop Name *</label>
+            <input id="req-crop" name="crop" placeholder="e.g. Tomato, Onion…" required>
+          </div>
+          <div class="form-field">
+            <label for="req-qty">Quantity Required *</label>
+            <input id="req-qty" name="qty" placeholder="e.g. 500 kg" required>
+          </div>
+          <div class="form-field">
+            <label for="req-grade">Quality Grade</label>
+            <select id="req-grade" name="grade">
+              <option value="A">Grade A (Premium)</option>
+              <option value="B" selected>Grade B (Standard)</option>
+              <option value="C">Grade C (Economy)</option>
+              <option value="Any">Any Grade</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="req-price">Max Price (₹/kg)</label>
+            <input id="req-price" name="price" type="number" placeholder="e.g. 28" min="1">
+          </div>
+          <div class="form-field">
+            <label for="req-date">Required By</label>
+            <input id="req-date" name="date" type="date">
+          </div>
+          <div class="form-field">
+            <label for="req-loc">Delivery Location *</label>
+            <input id="req-loc" name="location" placeholder="e.g. Coimbatore Central Market" required>
+          </div>
+          <div class="form-field form-span">
+            <label for="req-notes">Special Notes</label>
+            <textarea id="req-notes" name="notes" rows="2" placeholder="e.g. Organic preferred, no pesticides…"></textarea>
+          </div>
+          <div class="form-span">
+            <button class="btn-primary" type="submit">Post Requirement</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Requirements list -->
+      <div class="db-section-head"><h2>Posted Requirements</h2></div>
+      <div class="req-list" id="req-list"></div>
+    </div>
+
+    <!-- ── FARMERS PANEL ── -->
+    <div class="db-panel" id="panel-farmers">
+      <div class="db-section-head">
+        <h2>Farmer Listings</h2>
+        <span class="badge open">6 available</span>
+      </div>
+      <div class="map-placeholder glass">
+        <div class="map-icon">📍</div>
+        <strong>Nearby Farmers Map</strong>
+        <p>Showing farmers within 50 km of your delivery location. AI-matched to your requirements.</p>
+      </div>
+      <div class="filter-bar">
+        <select id="farmer-filter-crop">
+          <option value="">All Crops</option>
+          <option>Tomato</option><option>Onion</option><option>Potato</option>
+          <option>Brinjal</option><option>Carrot</option><option>Banana</option>
+          <option>Chilli</option><option>Turmeric</option><option>Mango</option>
+        </select>
+        <select id="farmer-filter-dist">
+          <option value="">Any Distance</option>
+          <option value="10">Within 10 km</option>
+          <option value="25">Within 25 km</option>
+          <option value="50">Within 50 km</option>
+        </select>
+      </div>
+      <div class="farmer-grid" id="farmer-grid"></div>
+    </div>
+
+    <!-- ── LOGISTICS PANEL ── -->
+    <div class="db-panel" id="panel-logistics">
+      <div class="db-section-head">
+        <h2>Logistics Partners</h2>
+        <span class="badge matched">4 active partners</span>
+      </div>
+      <div class="filter-bar">
+        <select id="logi-filter-type">
+          <option value="">All Vehicle Types</option>
+          <option>Mini Truck</option><option>Pickup Van</option>
+          <option>Refrigerator Van</option><option>Lorry (14 ft)</option>
+          <option>Lorry (20 ft)</option><option>Auto Tempo</option>
+        </select>
+        <select id="logi-filter-avail">
+          <option value="">All Availability</option>
+          <option value="yes">Available Now</option>
+        </select>
+      </div>
+      <div class="logistics-grid" id="logistics-grid"></div>
+    </div>
+
+    <!-- ── ORDERS PANEL ── -->
+    <div class="db-panel" id="panel-orders">
+      <div class="db-section-head">
+        <h2>My Orders</h2>
+      </div>
+      <div class="filter-bar">
+        <select id="order-filter-status">
+          <option value="">All Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Accepted">Accepted</option>
+          <option value="In Transit">In Transit</option>
+          <option value="Delivered">Delivered</option>
+        </select>
+      </div>
+      <div class="orders-list" id="orders-list"></div>
+    </div>
+
+  </main>
+
+  <script type="module" src="../../js/buyer-dashboard.js"></script>
+</body>
+</html>

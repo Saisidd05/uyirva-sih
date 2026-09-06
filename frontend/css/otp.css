@@ -1,0 +1,53 @@
+/* ═══════════════ OTP AUTH STYLES ═══════════════ */
+
+/* Modal overrides for OTP flow */
+.auth-card { padding: 32px; }
+.auth-card h2 { font-size: 1.85rem; margin-bottom: 6px; }
+.auth-copy { color: var(--muted); font-size: .88rem; line-height: 1.5; }
+
+/* Stepper */
+.otp-stepper { display: flex; align-items: center; gap: 0; margin-bottom: 26px; }
+.otp-step { display: flex; align-items: center; gap: 6px; font-size: .75rem; color: var(--muted); flex: 1; }
+.otp-step-num { width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--line); display: grid; place-items: center; font-size: .7rem; font-weight: 700; flex-shrink: 0; transition: all .3s; }
+.otp-step.active .otp-step-num { background: var(--wheat); border-color: var(--wheat); color: #1a2d1e; }
+.otp-step.done .otp-step-num { background: var(--leaf); border-color: var(--leaf); color: #fff; }
+.otp-step.active .otp-step-label { color: var(--cream); font-weight: 600; }
+.otp-step-divider { flex: none; width: 28px; height: 1.5px; background: var(--line); margin: 0 4px; flex-shrink: 0; }
+
+/* Role selector */
+.role-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 16px 0; }
+.role-btn { padding: 14px 8px; border: 1.5px solid var(--line); border-radius: 14px; background: transparent; color: var(--cream); cursor: pointer; text-align: center; font: inherit; transition: all .22s; display: grid; gap: 4px; }
+.role-btn .rb-icon { font-size: 1.7rem; }
+.role-btn .rb-label { font-size: .78rem; font-weight: 700; }
+.role-btn.selected { border-color: var(--wheat); background: rgba(233,185,73,.18); color: var(--wheat); }
+.role-btn:hover:not(.selected) { background: rgba(255,255,255,.09); }
+
+/* Phone input */
+.phone-wrap { display: flex; gap: 0; margin: 16px 0; }
+.phone-cc { padding: 11px 13px; border: 1px solid var(--line); border-right: none; border-radius: 10px 0 0 10px; background: rgba(9,36,20,.45); color: var(--muted); font-size: .9rem; white-space: nowrap; font: inherit; }
+.phone-inp { flex: 1; padding: 11px 13px; border: 1px solid var(--line); border-radius: 0 10px 10px 0; background: rgba(9,36,20,.45); color: var(--cream); font: inherit; font-size: .9rem; min-width: 0; }
+.phone-inp::placeholder { color: rgba(244,239,226,.35); }
+
+/* OTP boxes */
+.otp-boxes { display: flex; gap: 10px; justify-content: center; margin: 18px 0; }
+.otp-box { width: 46px; height: 54px; border: 1.5px solid var(--line); border-radius: 10px; background: rgba(9,36,20,.45); color: var(--cream); font: 700 1.5rem Fraunces, serif; text-align: center; caret-color: var(--wheat); transition: border-color .2s; }
+.otp-box:focus { border-color: var(--wheat); outline: none; }
+
+/* Demo hint */
+.otp-demo-hint { text-align: center; padding: 10px; border-radius: 10px; background: rgba(233,185,73,.12); border: 1px dashed rgba(233,185,73,.4); font-size: .8rem; color: #ffe39b; margin-bottom: 12px; }
+
+/* Timer */
+.otp-timer { text-align: center; font-size: .82rem; color: var(--muted); margin-bottom: 14px; }
+.otp-resend { background: none; border: none; color: var(--wheat); font: inherit; font-size: .82rem; cursor: pointer; text-decoration: underline; }
+.otp-resend:disabled { color: var(--muted); text-decoration: none; cursor: default; }
+
+/* Name input */
+.name-inp { width: 100%; padding: 12px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: rgba(9,36,20,.45); color: var(--cream); font: inherit; font-size: .95rem; margin: 14px 0; }
+.name-inp::placeholder { color: rgba(244,239,226,.35); }
+
+/* Auth submit button */
+.auth-submit { width: 100%; padding: 13px; background: var(--wheat); color: #1a2d1e; border: none; border-radius: 999px; font: 700 1rem "Public Sans", sans-serif; cursor: pointer; transition: opacity .2s; margin-top: 4px; }
+.auth-submit:hover { opacity: .88; }
+.auth-submit:disabled { opacity: .5; cursor: default; }
+.auth-error { min-height: 1.2em; margin: 4px 0; color: #ffe39b; font-size: .82rem; text-align: center; }
+.auth-link { border: 0; background: transparent; padding: 0; color: var(--wheat); font: inherit; font-weight: 700; cursor: pointer; }

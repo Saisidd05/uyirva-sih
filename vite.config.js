@@ -9,7 +9,8 @@ module.exports = defineConfig({
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'frontend/index.html'),
-        dashboard: resolve(__dirname, 'frontend/dashboard.html')
+        dashboard: resolve(__dirname, 'frontend/dashboard.html'),
+        buyerDashboard: resolve(__dirname, 'frontend/pages/buyer/dashboard.html')
       }
     }
   },
