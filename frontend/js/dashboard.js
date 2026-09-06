@@ -16,17 +16,9 @@ initAccountModal();
 const logout = () => { localStorage.clear(); location.assign('/'); };
 
 const shell = (title, content) => {
-  app.innerHTML = `
-    <div class="dashboard-hero glass">
-      <div>
-        <div class="eyebrow">UYIRVA · ${role.toUpperCase()}</div>
-        <h2>${title}</h2>
-        <p>Welcome, ${escapeHtml(user.full_name || user.phone || 'User')} &nbsp;·&nbsp; Your marketplace workspace.</p>
-      </div>
-      <button class="button logout-button" id="logout">Sign out</button>
-    </div>
-    ${content}`;
-  document.querySelector('#logout').onclick = logout;
+  app.innerHTML = content;
+  const navLogout = document.querySelector('#nav-logout');
+  if (navLogout) navLogout.onclick = logout;
 };
 
 // ─── API helper (graceful offline fallback) ───
