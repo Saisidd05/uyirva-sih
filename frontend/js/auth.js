@@ -1,6 +1,9 @@
 /**
- * auth.js — OTP-based role login for UYIRVA
- * 3-step flow: Phone + Role → OTP Verify → Name (new users)
+ * auth.js — OTP-based role login & registration for UYIRVA
+ * Features:
+ * - Returning user check (bypasses registration questions for existing users)
+ * - Strict input restrictions (digits only phone, letters only name)
+ * - Format & range validation checks
  */
 
 // ─── Modal open/close ───
@@ -47,24 +50,82 @@ let _phone = '';
 let _generatedOTP = '';
 let _timerInterval = null;
 
-// Role selector
+// Role selector & detail field updater
+const updateRoleDetailField = (role) => {
+  const label = document.getElementById('role-detail-label');
+  const input = document.getElementById('role-detail-inp');
+  if (!label || !input) return;
+
+  if (role === 'FARMER') {
+    label.textContent = 'Farm Size (Acres) *';
+    input.type = 'number';
+    input.placeholder = 'e.g. 5.0';
+    input.min = '0.5';
+    input.max = '1000';
+    input.step = '0.5';
+  } else if (role === 'BUYER') {
+    label.textContent = 'Business Type *';
+    input.type = 'text';
+    input.placeholder = 'e.g. Supermarket, Wholesaler, Hotel';
+    input.removeAttribute('min');
+    input.removeAttribute('max');
+  } else if (role === 'FPO') {
+    label.textContent = 'FPO Organization Name *';
+    input.type = 'text';
+    input.placeholder = 'e.g. Pollachi Farmers Producer Org';
+    input.removeAttribute('min');
+    input.removeAttribute('max');
+  } else {
+    label.textContent = 'Logistics Fleet Type *';
+    input.type = 'text';
+    input.placeholder = 'e.g. Mini Truck (2 Ton)';
+    input.removeAttribute('min');
+    input.removeAttribute('max');
+  }
+};
+
 document.querySelectorAll('.role-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('selected'));
     btn.classList.add('selected');
     _selectedRole = btn.dataset.role;
+    updateRoleDetailField(_selectedRole);
   });
 });
+
+// ─── INPUT RESTRICTIONS & FORMAT MASKS ───
+const phoneInp = document.getElementById('phone-inp');
+if (phoneInp) {
+  phoneInp.addEventListener('input', e => {
+    // Restrict to digits only, max 10 chars
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
+  });
+}
+
+const nameInp = document.getElementById('name-inp');
+if (nameInp) {
+  nameInp.addEventListener('input', e => {
+    // Restrict to letters and spaces only, max 50 chars
+    e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
+  });
+}
 
 // ─── STEP 1: Send OTP ───
 document.getElementById('send-otp-btn')?.addEventListener('click', () => {
   const phoneVal = document.getElementById('phone-inp').value.trim();
   const err = document.getElementById('step1-err');
   err.textContent = '';
-  if (!/^[6-9]\d{9}$/.test(phoneVal)) {
-    err.textContent = 'Please enter a valid 10-digit Indian mobile number.';
+
+  // Required & Format check: Exactly 10 digits starting with 6-9
+  if (!phoneVal) {
+    err.textContent = 'Mobile number is required.';
     return;
   }
+  if (!/^[6-9]\d{9}$/.test(phoneVal)) {
+    err.textContent = 'Please enter a valid 10-digit mobile number starting with 6, 7, 8, or 9.';
+    return;
+  }
+
   _phone = phoneVal;
   _generatedOTP = String(Math.floor(100000 + Math.random() * 900000));
 
@@ -129,30 +190,82 @@ document.getElementById('verify-otp-btn')?.addEventListener('click', () => {
   const entered = Array.from(document.querySelectorAll('.otp-box')).map(b => b.value).join('');
   const err = document.getElementById('step2-err');
   err.textContent = '';
+
   if (entered.length < 6) { err.textContent = 'Please enter all 6 digits of the OTP.'; return; }
   if (entered !== _generatedOTP) { err.textContent = 'Incorrect OTP. Please try again.'; return; }
 
   clearInterval(_timerInterval);
-  const savedUser = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
-  const isReturning = savedUser && savedUser.phone === _phone;
 
-  if (isReturning) {
-    savedUser.role = _selectedRole;
-    redirectToDashboard(savedUser);
+  // Check persistent users registry
+  const usersRegistry = JSON.parse(localStorage.getItem('uyirva_users_registry') || '{}');
+  const existingUser = usersRegistry[_phone];
+
+  // RETURNING OLD USER: Bypass name/registration questions completely!
+  if (existingUser && existingUser.full_name) {
+    existingUser.role = _selectedRole;
+    redirectToDashboard(existingUser);
   } else {
+    // NEW USER: Show Registration Questions Form
     document.getElementById('otp-step2').hidden = true;
     document.getElementById('otp-step3').hidden = false;
+    updateRoleDetailField(_selectedRole);
     setTimeout(() => document.getElementById('name-inp').focus(), 50);
   }
 });
 
-// ─── STEP 3: Complete signup ───
+// ─── STEP 3: Complete Signup with Validations ───
 document.getElementById('complete-btn')?.addEventListener('click', () => {
   const nameVal = document.getElementById('name-inp').value.trim();
+  const locVal = document.getElementById('loc-inp').value;
+  const detailVal = document.getElementById('role-detail-inp').value.trim();
   const err = document.getElementById('step3-err');
   err.textContent = '';
-  if (!nameVal || nameVal.length < 2) { err.textContent = 'Please enter your full name.'; return; }
-  redirectToDashboard({ full_name: nameVal, phone: _phone, role: _selectedRole });
+
+  // Required Field Check — Full Name
+  if (!nameVal) {
+    err.textContent = 'Full name is required.';
+    return;
+  }
+  // Format & Length Check — Name
+  if (!/^[a-zA-Z\s]{2,50}$/.test(nameVal)) {
+    err.textContent = 'Full name should contain only letters and spaces (2 to 50 characters).';
+    return;
+  }
+
+  // Required Field Check — Location
+  if (!locVal) {
+    err.textContent = 'Please select your primary district.';
+    return;
+  }
+
+  // Role-Specific Validation & Range Check
+  if (_selectedRole === 'FARMER') {
+    const acres = parseFloat(detailVal);
+    if (isNaN(acres) || acres < 0.5 || acres > 1000) {
+      err.textContent = 'Farm size must be a valid number between 0.5 and 1000 acres.';
+      return;
+    }
+  } else if (!detailVal) {
+    err.textContent = 'Please answer the role detail question.';
+    return;
+  }
+
+  // Create & Register New User Profile
+  const newUser = {
+    id: `UYIR-${Math.floor(10000 + Math.random() * 90000)}`,
+    full_name: nameVal,
+    phone: _phone,
+    role: _selectedRole,
+    location: locVal,
+    extra_info: detailVal
+  };
+
+  // Save to persistent registry
+  const usersRegistry = JSON.parse(localStorage.getItem('uyirva_users_registry') || '{}');
+  usersRegistry[_phone] = newUser;
+  localStorage.setItem('uyirva_users_registry', JSON.stringify(usersRegistry));
+
+  redirectToDashboard(newUser);
 });
 
 document.getElementById('name-inp')?.addEventListener('keydown', e => {
@@ -170,8 +283,7 @@ document.getElementById('back-step1')?.addEventListener('click', () => {
 // ─── Redirect ───
 function redirectToDashboard(user) {
   localStorage.setItem('uyirva_user', JSON.stringify(user));
-  const role = user.role.toLowerCase();
-  // Use absolute paths so redirect works from any base URL
+  const role = (user.role || 'FARMER').toLowerCase();
   const routes = {
     buyer: '/pages/buyer/dashboard.html',
     farmer: '/dashboard.html',

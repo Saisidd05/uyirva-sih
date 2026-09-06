@@ -397,20 +397,44 @@
         </p>
       </div>
 
-      <!-- STEP 3: Name (new users) -->
+      <!-- STEP 3: Registration Questions (new users only) -->
       <div id="otp-step3" hidden>
         <div class="otp-stepper">
           <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Phone &amp; Role</span></div>
           <div class="otp-step-divider"></div>
           <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Verify OTP</span></div>
           <div class="otp-step-divider"></div>
-          <div class="otp-step active"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+          <div class="otp-step active"><span class="otp-step-num">3</span><span class="otp-step-label">Registration</span></div>
         </div>
-        <h2>Almost there!</h2>
-        <p class="auth-copy">Tell us your name to complete your UYIRVA profile.</p>
-        <input class="name-inp" id="name-inp" type="text" placeholder="Full name" autocomplete="name">
-        <p class="auth-error" id="step3-err"></p>
-        <button class="auth-submit" id="complete-btn" type="button">Enter Dashboard &#x1F680;</button>
+        <h2>New User Registration</h2>
+        <p class="auth-copy">Please complete your registration details to continue.</p>
+        
+        <div style="display:grid;gap:12px;margin-top:14px;text-align:left">
+          <label style="display:grid;gap:4px;font-size:.84rem;font-weight:700">Full Name *
+            <input class="name-inp" id="name-inp" type="text" placeholder="e.g. Ramesh Kumar" autocomplete="name" required maxlength="50" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:rgba(9,36,20,.6);color:#fff;font:inherit">
+          </label>
+          
+          <label style="display:grid;gap:4px;font-size:.84rem;font-weight:700">Primary District *
+            <select id="loc-inp" required style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:rgba(9,36,20,.8);color:#fff;font:inherit">
+              <option value="">Choose District</option>
+              <option value="Coimbatore">Coimbatore</option>
+              <option value="Tiruppur">Tiruppur</option>
+              <option value="Erode">Erode</option>
+              <option value="Pollachi">Pollachi</option>
+              <option value="Salem">Salem</option>
+              <option value="Namakkal">Namakkal</option>
+              <option value="Mettupalayam">Mettupalayam</option>
+            </select>
+          </label>
+
+          <label style="display:grid;gap:4px;font-size:.84rem;font-weight:700" id="role-detail-wrapper">
+            <span id="role-detail-label">Farm Size (Acres) *</span>
+            <input id="role-detail-inp" type="number" step="0.5" min="0.5" max="1000" placeholder="e.g. 5" required style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:rgba(9,36,20,.6);color:#fff;font:inherit">
+          </label>
+        </div>
+
+        <p class="auth-error" id="step3-err" style="color:#ffe39b;margin-top:10px;font-size:.84rem;min-height:1.2em"></p>
+        <button class="auth-submit" id="complete-btn" type="button" style="margin-top:10px">Complete Registration &#x1F680;</button>
       </div>
     </div>
   </div>
