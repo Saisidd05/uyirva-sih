@@ -77,15 +77,24 @@ document.getElementById('db-logout')?.addEventListener('click', () => {
   location.assign('/');
 });
 
-// ─── Tab Switching ───
-document.querySelectorAll('.db-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.db-tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelector(`#panel-${btn.dataset.tab}`)?.classList.add('active');
+// ─── Tab Switching & Event Listener Setup ───
+function setupTabSwitching() {
+  document.querySelectorAll('.db-tab').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.db-tab').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      const targetPanel = document.querySelector(`#panel-${btn.dataset.tab}`);
+      if (targetPanel) targetPanel.classList.add('active');
+    };
   });
-});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupTabSwitching);
+} else {
+  setupTabSwitching();
+}
 
 // ─── Update Header Badges & Stats ───
 function updateStats() {
@@ -497,8 +506,17 @@ document.addEventListener('click', e => {
 });
 
 // ─── Initial Render Invocation ───
-updateStats();
-renderVehicles();
-renderBuyerListings();
-renderNotifications();
-renderTrips();
+function initDashboard() {
+  setupTabSwitching();
+  updateStats();
+  renderVehicles();
+  renderBuyerListings();
+  renderNotifications();
+  renderTrips();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initDashboard);
+} else {
+  initDashboard();
+}
