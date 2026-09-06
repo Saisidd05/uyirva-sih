@@ -178,65 +178,68 @@ window.deleteVehicle = id => {
   updateStats();
 };
 
-// ─── Add Vehicle Form ───
-document.getElementById('add-vehicle-form')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const name = document.getElementById('veh-name').value.trim();
-  const num = document.getElementById('veh-num').value.trim().toUpperCase();
-  const type = document.getElementById('veh-type').value;
-  const cap = document.getElementById('veh-cap').value.trim();
-  const loc = document.getElementById('veh-loc').value.trim();
-  const driver = document.getElementById('veh-driver').value.trim();
-  const driverPhone = document.getElementById('veh-phone').value.trim();
+// ─── Add Vehicle Form Setup ───
+function setupVehicleForm() {
+  const form = document.getElementById('add-vehicle-form');
+  if (!form) return;
+  
+  form.onsubmit = e => {
+    e.preventDefault();
+    const name = document.getElementById('veh-name').value.trim();
+    const num = document.getElementById('veh-num').value.trim().toUpperCase();
+    const type = document.getElementById('veh-type').value;
+    const cap = document.getElementById('veh-cap').value.trim();
+    const loc = document.getElementById('veh-loc').value.trim();
+    const driver = document.getElementById('veh-driver').value.trim();
+    const driverPhone = document.getElementById('veh-phone').value.trim();
 
-  if (!name || !num || !cap || !loc) return;
+    if (!name || !num || !cap || !loc) return;
 
-  const newVehicle = {
-    id: `VEH-${Math.floor(1000 + Math.random() * 9000)}`,
-    name,
-    number: num,
-    type,
-    capacity: cap,
-    location: loc,
-    driver: driver || 'Owner Operator',
-    driverPhone: driverPhone || user.phone || '9876543210',
-    status: 'Available'
+    const newVehicle = {
+      id: `VEH-${Math.floor(1000 + Math.random() * 9000)}`,
+      name,
+      number: num,
+      type,
+      capacity: cap,
+      location: loc,
+      driver: driver || 'Owner Operator',
+      driverPhone: driverPhone || user.phone || '9876543210',
+      status: 'Available'
+    };
+
+    // 1. Update vehicle stack list
+    const vehicles = getVehicles();
+    vehicles.unshift(newVehicle);
+    saveVehicles(vehicles);
+
+    // 2. Sync to public logistics list
+    const publicLogi = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
+    publicLogi.unshift({
+      id: newVehicle.id,
+      name: newVehicle.name,
+      type: newVehicle.type,
+      location: newVehicle.location,
+      capacity: newVehicle.capacity,
+      phone: newVehicle.driverPhone,
+      available: true
+    });
+    localStorage.setItem('uyirva_logistics', JSON.stringify(publicLogi));
+
+    form.reset();
+    renderVehicles();
+    renderBuyerListings();
+    updateStats();
+
+    const feedback = document.getElementById('veh-add-feedback');
+    if (feedback) {
+      feedback.textContent = `✅ Vehicle ${name} (${num}) added to your active stack!`;
+      feedback.hidden = false;
+      setTimeout(() => { feedback.hidden = true; }, 4000);
+    }
+
+    document.getElementById('vehicle-stack-list')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
-
-  // 1. Update vehicle stack list
-  const vehicles = getVehicles();
-  vehicles.unshift(newVehicle);
-  saveVehicles(vehicles);
-
-  // 2. Also sync to global public logistics list so buyers can see it in Buyer Dashboard!
-  const publicLogi = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
-  publicLogi.unshift({
-    id: newVehicle.id,
-    name: newVehicle.name,
-    type: newVehicle.type,
-    location: newVehicle.location,
-    capacity: newVehicle.capacity,
-    phone: newVehicle.driverPhone,
-    available: true
-  });
-  localStorage.setItem('uyirva_logistics', JSON.stringify(publicLogi));
-
-  e.target.reset();
-  renderVehicles();
-  renderBuyerListings();
-  updateStats();
-
-  // Instant smooth feedback message without blocking laggy alert dialogs!
-  const feedback = document.getElementById('veh-add-feedback');
-  if (feedback) {
-    feedback.textContent = `✅ Vehicle ${name} (${num}) added to your stack!`;
-    feedback.hidden = false;
-    setTimeout(() => { feedback.hidden = true; }, 4000);
-  }
-
-  // Scroll down to newly added vehicle card smoothly
-  document.getElementById('vehicle-stack-list')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-});
+}
 
 // ─── RENDER: Buyer Requirements List & Vehicle Assignment ───
 function renderBuyerListings() {
@@ -508,6 +511,7 @@ document.addEventListener('click', e => {
 // ─── Initial Render Invocation ───
 function initDashboard() {
   setupTabSwitching();
+  setupVehicleForm();
   updateStats();
   renderVehicles();
   renderBuyerListings();
