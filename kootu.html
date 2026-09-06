@@ -12,8 +12,43 @@
     .video-bg,.video-bg video,.veil{position:fixed;inset:0;width:100%;height:100%}.video-bg{z-index:-2;background:#254b30}.video-bg video{object-fit:cover}.veil{z-index:-1;background:linear-gradient(180deg,rgba(13,42,25,.64),rgba(22,48,31,.45) 38%,rgba(10,34,20,.77));pointer-events:none}
     .glass{background:var(--glass);border:1px solid var(--line);box-shadow:var(--shadow),inset 0 1px rgba(255,255,255,.18);border-radius:20px;backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%)}
     .wrap{width:min(100% - 32px,1200px);margin-inline:auto}.section{padding:74px 0;position:relative}.eyebrow{color:var(--wheat);font-size:.87rem;font-weight:700;margin-bottom:10px}.section-title{font-size:clamp(2rem,5.8vw,3.3rem);max-width:16ch;margin-bottom:14px}.intro{max-width:62ch;color:var(--muted)}
-    .nav{position:fixed;z-index:10;top:12px;left:16px;right:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font:600 1.3rem Fraunces,Georgia,serif}.mark{width:28px;height:28px;border-radius:9px;background:var(--wheat);display:grid;place-items:center;color:var(--canopy)}.mark svg{width:18px}.nav-links{display:none;gap:24px;font-size:.86rem}.nav-links a{text-decoration:none}.nav-cta{display:none}.menu-btn{border:0;background:transparent;min-width:44px;min-height:44px;border-radius:12px;cursor:pointer}.menu-btn span,.menu-btn:before,.menu-btn:after{content:"";display:block;width:20px;height:2px;background:var(--cream);margin:4px auto}.mobile-menu{position:fixed;z-index:9;top:74px;left:16px;right:16px;padding:12px;display:none}.mobile-menu.open{display:grid}.mobile-menu a{padding:12px;text-decoration:none;border-radius:10px}.mobile-menu a:hover{background:rgba(255,255,255,.1)}
-    .auth-modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:18px;background:rgba(4,18,10,.72);backdrop-filter:blur(7px)}.auth-modal.open{display:grid}.auth-card{width:min(100%,460px);padding:28px;position:relative;color:var(--cream)}.auth-card h2{font-size:2rem;margin-bottom:7px}.auth-copy{color:var(--muted);font-size:.9rem}.auth-close{position:absolute;right:13px;top:12px;border:0;background:transparent;font-size:1.7rem;line-height:1;cursor:pointer}.auth-form{display:grid;gap:12px;margin-top:22px}.auth-form label{display:grid;gap:5px;font-size:.83rem;font-weight:700}.auth-form input,.auth-form select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(9,36,20,.42);color:var(--cream);font:inherit}.auth-form select option{color:#16301f}.auth-error{min-height:1.25em;margin:0;color:#ffe39b;font-size:.84rem}.auth-switch{margin:17px 0 0;color:var(--muted);font-size:.86rem}.auth-link{border:0;background:transparent;padding:0;color:var(--wheat);font:inherit;font-weight:700;cursor:pointer}.auth-panel[hidden]{display:none}.account-status{position:fixed;right:18px;bottom:18px;z-index:20;display:none;padding:11px 15px;font-size:.86rem}.account-status.show{display:block}
+    .nav{position:fixed;z-index:10;top:12px;left:16px;right:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font:600 1.3rem Fraunces,Georgia,serif}.mark{width:28px;height:28px;border-radius:9px;background:var(--wheat);display:grid;place-items:center;color:var(--canopy)}.mark svg{width:18px}.nav-links{display:none;gap:24px;font-size:.86rem}.nav-links a{text-decoration:none}.nav-cta{display:none}.menu-btn{border:0;background:transparent;min-width:44px;min-height:44px;border-radius:12px;cursor:pointer}.menu-btn span,.menu-btn:before,.menu-btn:after{content:"";display:block;width:20px;height:2px;background:var(--cream);margin:4px auto}.mobile-menu{position:fixed;z-index:9;top:74px;left:16px;right:16px;padding:12px;display:none}.mobile-menu.open{display:grid}.mobile-menu a{padding:12px;text-decoration:none;border-radius:10px}.mobile-menu a:hover{background:rgba(255,255,255,.     .auth-modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:18px;background:rgba(4,18,10,.72);backdrop-filter:blur(7px)}.auth-modal.open{display:grid}.auth-card{width:min(100%,460px);padding:32px;position:relative;color:var(--cream)}.auth-card h2{font-size:1.85rem;margin-bottom:6px}.auth-copy{color:var(--muted);font-size:.88rem;line-height:1.5}.auth-close{position:absolute;right:13px;top:12px;border:0;background:transparent;font-size:1.7rem;line-height:1;cursor:pointer;color:var(--cream)}
+    /* OTP stepper */
+    .otp-stepper{display:flex;align-items:center;gap:0;margin-bottom:26px}
+    .otp-step{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--muted);flex:1}
+    .otp-step-num{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.7rem;font-weight:700;flex-shrink:0;transition:all .3s}
+    .otp-step.active .otp-step-num{background:var(--wheat);border-color:var(--wheat);color:#1a2d1e}
+    .otp-step.done .otp-step-num{background:var(--leaf);border-color:var(--leaf);color:#fff}
+    .otp-step.active .otp-step-label{color:var(--cream);font-weight:600}
+    .otp-step-divider{flex:none;width:28px;height:1.5px;background:var(--line);margin:0 4px;flex-shrink:0}
+    /* OTP role selector */
+    .role-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+    .role-btn{padding:14px 8px;border:1.5px solid var(--line);border-radius:14px;background:transparent;color:var(--cream);cursor:pointer;text-align:center;font:inherit;transition:all .22s;display:grid;gap:4px}
+    .role-btn .rb-icon{font-size:1.7rem}
+    .role-btn .rb-label{font-size:.78rem;font-weight:700}
+    .role-btn.selected{border-color:var(--wheat);background:rgba(233,185,73,.18);color:var(--wheat)}
+    .role-btn:hover:not(.selected){background:rgba(255,255,255,.09)}
+    /* Phone input */
+    .phone-wrap{display:flex;gap:0;margin:16px 0}
+    .phone-cc{padding:11px 13px;border:1px solid var(--line);border-right:none;border-radius:10px 0 0 10px;background:rgba(9,36,20,.45);color:var(--muted);font-size:.9rem;white-space:nowrap;font:inherit}
+    .phone-inp{flex:1;padding:11px 13px;border:1px solid var(--line);border-radius:0 10px 10px 0;background:rgba(9,36,20,.45);color:var(--cream);font:inherit;font-size:.9rem;min-width:0}
+    .phone-inp::placeholder{color:rgba(244,239,226,.35)}
+    /* OTP boxes */
+    .otp-boxes{display:flex;gap:10px;justify-content:center;margin:18px 0}
+    .otp-box{width:46px;height:54px;border:1.5px solid var(--line);border-radius:10px;background:rgba(9,36,20,.45);color:var(--cream);font:700 1.5rem Fraunces,serif;text-align:center;caret-color:var(--wheat);transition:border-color .2s}
+    .otp-box:focus{border-color:var(--wheat);outline:none}
+    .otp-demo-hint{text-align:center;padding:10px;border-radius:10px;background:rgba(233,185,73,.12);border:1px dashed rgba(233,185,73,.4);font-size:.8rem;color:#ffe39b;margin-bottom:12px}
+    .otp-timer{text-align:center;font-size:.82rem;color:var(--muted);margin-bottom:14px}
+    .otp-resend{background:none;border:none;color:var(--wheat);font:inherit;font-size:.82rem;cursor:pointer;text-decoration:underline}
+    .otp-resend:disabled{color:var(--muted);text-decoration:none;cursor:default}
+    /* Name input */
+    .name-inp{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:rgba(9,36,20,.45);color:var(--cream);font:inherit;font-size:.95rem;margin:14px 0}
+    .name-inp::placeholder{color:rgba(244,239,226,.35)}
+    /* Submit button */
+    .auth-submit{width:100%;padding:13px;background:var(--wheat);color:#1a2d1e;border:none;border-radius:999px;font:700 1rem "Public Sans",sans-serif;cursor:pointer;transition:opacity .2s;margin-top:4px}
+    .auth-submit:hover{opacity:.88}.auth-submit:disabled{opacity:.5;cursor:default}
+    .auth-error{min-height:1.2em;margin:4px 0;color:#ffe39b;font-size:.82rem;text-align:center}
+    .auth-panel[hidden]{display:none}.account-status{position:fixed;right:18px;bottom:18px;z-index:20;display:none;padding:11px 15px;font-size:.86rem}.account-status.show{display:block}ock}
     /* ═══════════════ BUYER DASHBOARD ═══════════════ */
     /* Buyer-mode background: Farmer Login Background.jpg */
     body.buyer-mode .video-bg,body.buyer-mode .veil{display:none}
@@ -169,9 +204,76 @@
   <footer class="wrap"><div class="footer-row"><div><strong>UYIRVA</strong><br>AI-powered farmgate coordination for transparent agricultural trade.</div><div class="footer-links"><a href="#how">How It Works</a><a href="#intelligence">Intelligence</a><a href="#impact">Impact</a><a href="#demo">Demo</a></div></div></footer>
   <div class="auth-modal" id="auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title" aria-hidden="true">
     <div class="auth-card glass">
-      <button class="auth-close" type="button" aria-label="Close sign in">×</button>
-      <section class="auth-panel" id="login-panel"><h2 id="auth-title">Welcome back</h2><p class="auth-copy">Sign in to manage your marketplace activity.</p><form class="auth-form" id="login-form"><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Role<select name="role" required><option value="FARMER">Farmer</option><option value="BUYER">Buyer</option><option value="FPO">FPO</option></select></label><label>Password<input name="password" type="password" autocomplete="current-password" minlength="8" required></label><p class="auth-error" aria-live="polite"></p><button class="button primary" type="submit">Sign in</button></form><p class="auth-switch">New to UYIRVA? <button class="auth-link" type="button" data-auth-open="register">Create an account</button></p></section>
-      <section class="auth-panel" id="register-panel" hidden><h2>Create your account</h2><p class="auth-copy">Join as a farmer, buyer, or FPO.</p><form class="auth-form" id="register-form"><label>Full name<input name="full_name" autocomplete="name" required></label><label>Email<input name="email" type="email" autocomplete="email" required></label><label>Phone<input name="phone" type="tel" autocomplete="tel" required></label><label>Role<select name="role" required><option value="FARMER">Farmer</option><option value="BUYER">Buyer</option><option value="FPO">FPO</option></select></label><label>Password<input name="password" type="password" autocomplete="new-password" minlength="8" required></label><p class="auth-error" aria-live="polite"></p><button class="button primary" type="submit">Create account</button></form><p class="auth-switch">Already have an account? <button class="auth-link" type="button" data-auth-open="login">Sign in</button></p></section>
+      <button class="auth-close" type="button" aria-label="Close">&#x2715;</button>
+
+      <!-- STEP 1: Phone + Role -->
+      <div id="otp-step1">
+        <div class="otp-stepper">
+          <div class="otp-step active" id="st1"><span class="otp-step-num">1</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step" id="st2"><span class="otp-step-num">2</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step" id="st3"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2 id="auth-title">Welcome to UYIRVA</h2>
+        <p class="auth-copy">Enter your mobile number and select your role to continue.</p>
+        <div class="role-grid">
+          <button class="role-btn selected" data-role="FARMER" type="button" id="role-farmer"><span class="rb-icon">&#x1F9D1;&#x200D;&#x1F33E;</span><span class="rb-label">Farmer</span></button>
+          <button class="role-btn" data-role="BUYER" type="button" id="role-buyer"><span class="rb-icon">&#x1F6D2;</span><span class="rb-label">Buyer</span></button>
+          <button class="role-btn" data-role="FPO" type="button" id="role-fpo"><span class="rb-icon">&#x1F3E2;</span><span class="rb-label">FPO</span></button>
+        </div>
+        <div class="phone-wrap">
+          <span class="phone-cc">&#x1F1EE;&#x1F1F3; +91</span>
+          <input class="phone-inp" id="phone-inp" type="tel" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" autocomplete="tel-national">
+        </div>
+        <p class="auth-error" id="step1-err"></p>
+        <button class="auth-submit" id="send-otp-btn" type="button">Send OTP &#x2192;</button>
+      </div>
+
+      <!-- STEP 2: OTP Entry -->
+      <div id="otp-step2" hidden>
+        <div class="otp-stepper">
+          <div class="otp-step done" id="st1b"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step active" id="st2b"><span class="otp-step-num">2</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step" id="st3b"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2>Verify your number</h2>
+        <p class="auth-copy">Enter the 6-digit OTP sent to <strong id="otp-phone-display"></strong></p>
+        <div class="otp-demo-hint">&#x1F4CB; Demo mode &mdash; your OTP is: <strong id="otp-demo-val"></strong></div>
+        <div class="otp-boxes" id="otp-boxes">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+          <input class="otp-box" maxlength="1" inputmode="numeric" pattern="[0-9]" type="tel">
+        </div>
+        <p class="otp-timer" id="otp-timer"></p>
+        <p class="auth-error" id="step2-err"></p>
+        <button class="auth-submit" id="verify-otp-btn" type="button">Verify OTP</button>
+        <p style="text-align:center;margin-top:12px;font-size:.83rem;color:var(--muted)">
+          <button class="auth-link" type="button" id="back-step1">&#x2190; Change number</button>
+        </p>
+      </div>
+
+      <!-- STEP 3: Name (new users) -->
+      <div id="otp-step3" hidden>
+        <div class="otp-stepper">
+          <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Phone &amp; Role</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step done"><span class="otp-step-num">&#x2713;</span><span class="otp-step-label">Verify OTP</span></div>
+          <div class="otp-step-divider"></div>
+          <div class="otp-step active"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
+        </div>
+        <h2>Almost there!</h2>
+        <p class="auth-copy">Tell us your name to complete your UYIRVA profile.</p>
+        <input class="name-inp" id="name-inp" type="text" placeholder="Full name" autocomplete="name">
+        <p class="auth-error" id="step3-err"></p>
+        <button class="auth-submit" id="complete-btn" type="button">Enter Dashboard &#x1F680;</button>
+      </div>
+
     </div>
   </div>
   <div class="account-status glass" id="account-status" role="status"></div>
@@ -180,15 +282,135 @@
     button.addEventListener('click',()=>{const open=menu.classList.toggle('open');button.setAttribute('aria-expanded',open);button.setAttribute('aria-label',open?'Close navigation menu':'Open navigation menu')});
     menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.classList.remove('open');button.setAttribute('aria-expanded','false')}));
     if(!matchMedia('(prefers-reduced-motion: reduce)').matches){const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in-view');observer.unobserve(e.target)}}),{threshold:.25});document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));}else document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in-view'));
-    const modal=document.querySelector('#auth-modal'),loginPanel=document.querySelector('#login-panel'),registerPanel=document.querySelector('#register-panel'),statusBox=document.querySelector('#account-status');
-    const apiBase=window.UYIRVA_API_URL||((location.protocol==='file:'||location.port!=='8000')?'http://127.0.0.1:8000':'');
-    function showAuth(view){loginPanel.hidden=view!=='login';registerPanel.hidden=view!=='register';modal.classList.add('open');modal.setAttribute('aria-hidden','false');(view==='login'?loginPanel:registerPanel).querySelector('input').focus()}
-    function closeAuth(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
-    document.querySelectorAll('[data-auth-open]').forEach(el=>el.addEventListener('click',()=>showAuth(el.dataset.authOpen)));
-    document.querySelector('.auth-close').addEventListener('click',closeAuth);modal.addEventListener('click',e=>{if(e.target===modal)closeAuth()});document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth()});
+    // ─── AUTH MODAL ───
+    const modal=document.querySelector('#auth-modal');
+    function showAuth(){modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.getElementById('phone-inp').focus();}
+    function closeAuth(){modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
+    document.querySelectorAll('[data-auth-open]').forEach(el=>el.addEventListener('click',showAuth));
+    document.querySelector('.auth-close').addEventListener('click',closeAuth);
+    modal.addEventListener('click',e=>{if(e.target===modal)closeAuth();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuth();});
+
+    // ─── OTP STATE ───
+    let _selectedRole='FARMER', _phone='', _generatedOTP='', _timerInterval=null;
+
+    // Role selector
+    document.querySelectorAll('.role-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        document.querySelectorAll('.role-btn').forEach(b=>b.classList.remove('selected'));
+        btn.classList.add('selected');
+        _selectedRole=btn.dataset.role;
+      });
+    });
+
+    // ─── STEP 1: Send OTP ───
+    document.getElementById('send-otp-btn').addEventListener('click',()=>{
+      const phoneVal=document.getElementById('phone-inp').value.trim();
+      const err=document.getElementById('step1-err');
+      err.textContent='';
+      if(!/^[6-9]\d{9}$/.test(phoneVal)){err.textContent='Please enter a valid 10-digit Indian mobile number.';return;}
+      _phone=phoneVal;
+      _generatedOTP=String(Math.floor(100000+Math.random()*900000));
+      // Show step 2
+      document.getElementById('otp-step1').hidden=true;
+      document.getElementById('otp-step2').hidden=false;
+      document.getElementById('otp-phone-display').textContent='+91 '+_phone.replace(/(\d{5})(\d{5})/,'$1 $2');
+      document.getElementById('otp-demo-val').textContent=_generatedOTP;
+      document.getElementById('step2-err').textContent='';
+      // Clear OTP boxes
+      document.querySelectorAll('.otp-box').forEach(b=>b.value='');
+      document.querySelectorAll('.otp-box')[0].focus();
+      startTimer(60);
+    });
+
+    // OTP boxes navigation
+    document.querySelectorAll('.otp-box').forEach((box,i,arr)=>{
+      box.addEventListener('input',e=>{
+        const v=e.target.value.replace(/\D/g,'');
+        e.target.value=v.slice(-1);
+        if(v&&i<arr.length-1)arr[i+1].focus();
+      });
+      box.addEventListener('keydown',e=>{
+        if(e.key==='Backspace'&&!e.target.value&&i>0)arr[i-1].focus();
+      });
+      box.addEventListener('paste',e=>{
+        e.preventDefault();
+        const pasted=(e.clipboardData||window.clipboardData).getData('text').replace(/\D/g,'').slice(0,6);
+        arr.forEach((b,j)=>{b.value=pasted[j]||'';});
+        if(pasted.length)arr[Math.min(pasted.length,5)].focus();
+      });
+    });
+
+    // Timer
+    function startTimer(seconds){
+      clearInterval(_timerInterval);
+      const timerEl=document.getElementById('otp-timer');
+      let remaining=seconds;
+      const tick=()=>{
+        if(remaining<=0){
+          clearInterval(_timerInterval);
+          timerEl.innerHTML='OTP expired. <button class="otp-resend" id="resend-btn" type="button">Resend OTP</button>';
+          document.getElementById('resend-btn')&&document.getElementById('resend-btn').addEventListener('click',resendOtp);
+          return;
+        }
+        timerEl.textContent=`Resend OTP in ${remaining}s`;
+        remaining--;
+      };
+      tick();
+      _timerInterval=setInterval(tick,1000);
+    }
+    function resendOtp(){
+      _generatedOTP=String(Math.floor(100000+Math.random()*900000));
+      document.getElementById('otp-demo-val').textContent=_generatedOTP;
+      document.querySelectorAll('.otp-box').forEach(b=>b.value='');
+      document.querySelectorAll('.otp-box')[0].focus();
+      document.getElementById('step2-err').textContent='';
+      startTimer(60);
+    }
+
+    // ─── STEP 2: Verify OTP ───
+    document.getElementById('verify-otp-btn').addEventListener('click',()=>{
+      const entered=Array.from(document.querySelectorAll('.otp-box')).map(b=>b.value).join('');
+      const err=document.getElementById('step2-err');
+      err.textContent='';
+      if(entered.length<6){err.textContent='Please enter all 6 digits of the OTP.';return;}
+      if(entered!==_generatedOTP){err.textContent='Incorrect OTP. Please try again.';return;}
+      clearInterval(_timerInterval);
+      // Check if existing user
+      const savedUser=JSON.parse(localStorage.getItem('uyirva_user')||'null');
+      const isSameUser=savedUser&&savedUser.phone===_phone;
+      if(isSameUser){
+        // Returning user — go straight to dashboard
+        savedUser.role=_selectedRole;
+        redirectToDashboard(savedUser);
+      } else {
+        // New user — ask name
+        document.getElementById('otp-step2').hidden=true;
+        document.getElementById('otp-step3').hidden=false;
+        setTimeout(()=>document.getElementById('name-inp').focus(),50);
+      }
+    });
+
+    // ─── STEP 3: Complete signup ───
+    document.getElementById('complete-btn').addEventListener('click',()=>{
+      const nameVal=document.getElementById('name-inp').value.trim();
+      const err=document.getElementById('step3-err');
+      err.textContent='';
+      if(!nameVal||nameVal.length<2){err.textContent='Please enter your full name.';return;}
+      const newUser={full_name:nameVal,phone:_phone,role:_selectedRole};
+      redirectToDashboard(newUser);
+    });
+    document.getElementById('name-inp').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('complete-btn').click();});
+
+    // Back to step 1
+    document.getElementById('back-step1').addEventListener('click',()=>{
+      clearInterval(_timerInterval);
+      document.getElementById('otp-step2').hidden=true;
+      document.getElementById('otp-step1').hidden=false;
+      document.getElementById('step1-err').textContent='';
+    });
+
     function redirectToDashboard(user){localStorage.setItem('uyirva_user',JSON.stringify(user));location.assign(`${location.pathname}?dashboard=${user.role.toLowerCase()}`)}
-    async function submitAuth(form,path){const error=form.querySelector('.auth-error'),submit=form.querySelector('[type="submit"]');error.textContent='';submit.disabled=true;submit.textContent='Please wait…';try{const payload=Object.fromEntries(new FormData(form));const response=await fetch(`${apiBase}/api/auth/${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.detail||'Unable to complete your request.');localStorage.setItem('uyirva_access_token',data.access_token);localStorage.setItem('uyirva_refresh_token',data.refresh_token||'');redirectToDashboard(data.user||{full_name:payload.full_name||'UYIRVA member',email:payload.email,role:payload.role})}catch(err){error.textContent=err.message==='Failed to fetch'?'Cannot reach the UYIRVA server. Start the FastAPI backend on port 8000.':err.message}finally{submit.disabled=false;submit.textContent=path==='register'?'Create account':'Sign in'}}
-    document.querySelector('#login-form').addEventListener('submit',e=>{e.preventDefault();submitAuth(e.currentTarget,'login')});document.querySelector('#register-form').addEventListener('submit',e=>{e.preventDefault();submitAuth(e.currentTarget,'register')});
     const dashboardRole=new URLSearchParams(location.search).get('dashboard'),savedUser=JSON.parse(localStorage.getItem('uyirva_user')||'null');
     if(dashboardRole&&savedUser){
       const role=savedUser.role.toUpperCase();
