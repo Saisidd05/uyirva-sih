@@ -10,7 +10,9 @@ function createListing(farmer, body) {
   if (!body.crop || !Number.isFinite(quantity) || quantity < 1 || !Number.isFinite(price) || price <= 0) return { status: 422, body: { detail: 'Crop is required; quantity and expected price must be valid positive numbers.' } };
   const requiredDetails = ['harvest_date', 'pickup_ready_at', 'location', 'freshness', 'agmark', 'quality_grade'];
   if (requiredDetails.some(field => !String(body[field] || '').trim())) return { status: 422, body: { detail: 'Harvest date, pickup-ready time, location, freshness, AGMARK status, and quality grade are all required.' } };
-  if (new Date(body.harvest_date) < new Date(new Date().toDateString()) || new Date(body.pickup_ready_at) < new Date()) return { status: 422, body: { detail: 'Harvest and pickup-ready dates cannot be in the past.' } };
+  // Produce may have been harvested before it is listed; only the collection
+  // appointment must be current or in the future.
+  if (new Date(body.pickup_ready_at) < new Date()) return { status: 422, body: { detail: 'Pickup-ready date and time cannot be in the past.' } };
   if (!Array.isArray(body.photos) && !body.photo_url) return { status: 422, body: { detail: 'Upload at least one crop photo.' } };
   const quality = qualityVision.assess(body);
   const listing = Listing.create({ farmer_id: farmer.sub, crop: body.crop, variety: body.variety || null, quantity, unit: body.unit === 'quintal' ? 'quintal' : 'kg', price, harvest_date: body.harvest_date || null, pickup_ready_at: body.pickup_ready_at || null, photos: body.photos || (body.photo_url ? [body.photo_url] : []), photo_url: body.photo_url || body.photos?.[0], notes: String(body.notes || '').slice(0, 300), freshness: body.freshness || 'Fresh today', agmark: body.agmark || 'Not certified', quality_grade: body.quality_grade || quality.grade, quality_score: quality.score, location: body.location || null, language: body.language || 'en', price_source: 'farmer_set', status: body.offline_draft ? 'draft' : 'active' });
