@@ -14,8 +14,121 @@
     .wrap{width:min(100% - 32px,1200px);margin-inline:auto}.section{padding:74px 0;position:relative}.eyebrow{color:var(--wheat);font-size:.87rem;font-weight:700;margin-bottom:10px}.section-title{font-size:clamp(2rem,5.8vw,3.3rem);max-width:16ch;margin-bottom:14px}.intro{max-width:62ch;color:var(--muted)}
     .nav{position:fixed;z-index:10;top:12px;left:16px;right:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between}.brand{display:flex;align-items:center;gap:9px;text-decoration:none;font:600 1.3rem Fraunces,Georgia,serif}.mark{width:28px;height:28px;border-radius:9px;background:var(--wheat);display:grid;place-items:center;color:var(--canopy)}.mark svg{width:18px}.nav-links{display:none;gap:24px;font-size:.86rem}.nav-links a{text-decoration:none}.nav-cta{display:none}.menu-btn{border:0;background:transparent;min-width:44px;min-height:44px;border-radius:12px;cursor:pointer}.menu-btn span,.menu-btn:before,.menu-btn:after{content:"";display:block;width:20px;height:2px;background:var(--cream);margin:4px auto}.mobile-menu{position:fixed;z-index:9;top:74px;left:16px;right:16px;padding:12px;display:none}.mobile-menu.open{display:grid}.mobile-menu a{padding:12px;text-decoration:none;border-radius:10px}.mobile-menu a:hover{background:rgba(255,255,255,.1)}
     .auth-modal{position:fixed;inset:0;z-index:30;display:none;place-items:center;padding:18px;background:rgba(4,18,10,.72);backdrop-filter:blur(7px)}.auth-modal.open{display:grid}.auth-card{width:min(100%,460px);padding:28px;position:relative;color:var(--cream)}.auth-card h2{font-size:2rem;margin-bottom:7px}.auth-copy{color:var(--muted);font-size:.9rem}.auth-close{position:absolute;right:13px;top:12px;border:0;background:transparent;font-size:1.7rem;line-height:1;cursor:pointer}.auth-form{display:grid;gap:12px;margin-top:22px}.auth-form label{display:grid;gap:5px;font-size:.83rem;font-weight:700}.auth-form input,.auth-form select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(9,36,20,.42);color:var(--cream);font:inherit}.auth-form select option{color:#16301f}.auth-error{min-height:1.25em;margin:0;color:#ffe39b;font-size:.84rem}.auth-switch{margin:17px 0 0;color:var(--muted);font-size:.86rem}.auth-link{border:0;background:transparent;padding:0;color:var(--wheat);font:inherit;font-weight:700;cursor:pointer}.auth-panel[hidden]{display:none}.account-status{position:fixed;right:18px;bottom:18px;z-index:20;display:none;padding:11px 15px;font-size:.86rem}.account-status.show{display:block}
-    .dashboard-app{width:min(100% - 32px,1100px);margin:105px auto 54px}.dashboard-app[hidden]{display:none}.dashboard-top{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:28px}.dashboard-top h1{font-size:clamp(2.2rem,6vw,4rem);margin:0 0 8px}.dashboard-top p{margin:0;color:var(--muted)}.dashboard-grid{display:grid;gap:16px}.dashboard-card{padding:22px}.dashboard-card h2{font-size:1.32rem;margin-bottom:8px}.dashboard-card p{color:var(--muted);margin-bottom:0}.dashboard-stat{font:600 2.3rem Fraunces,Georgia,serif;color:var(--wheat);margin:9px 0}.logout-button{background:transparent;cursor:pointer}
-    @media(min-width:700px){.dashboard-grid{grid-template-columns:repeat(3,1fr)}}
+    /* ═══════════════ BUYER DASHBOARD ═══════════════ */
+    /* Buyer-mode background: Farmer Login Background.jpg */
+    body.buyer-mode .video-bg,body.buyer-mode .veil{display:none}
+    body.buyer-mode::before{content:'';position:fixed;inset:0;z-index:-2;background:url('Farmer%20Login%20Background.jpg') center/cover no-repeat;filter:brightness(.55) saturate(1.2)}
+    body.buyer-mode::after{content:'';position:fixed;inset:0;z-index:-1;background:linear-gradient(135deg,rgba(10,30,18,.75) 0%,rgba(20,50,30,.5) 50%,rgba(8,24,14,.82) 100%);pointer-events:none}
+    .dashboard-app{width:min(100% - 24px,1200px);margin:85px auto 60px}.dashboard-app[hidden]{display:none}
+    .db-header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:30px;flex-wrap:wrap}
+    .db-header h1{font-size:clamp(1.8rem,5vw,3rem);margin:0 0 4px}
+    .db-header p{margin:0;color:var(--muted);font-size:.9rem}
+    .db-meta{display:flex;align-items:center;gap:12px}
+    .db-avatar{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--wheat),var(--leaf));display:grid;place-items:center;font:700 1.1rem Fraunces,serif;color:#183020;flex-shrink:0}
+    .logout-button{background:rgba(255,255,255,.08);border:1px solid var(--line);padding:9px 18px;border-radius:999px;cursor:pointer;font-size:.84rem;transition:background .2s}
+    .logout-button:hover{background:rgba(255,255,255,.17)}
+    /* Stats row */
+    .db-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+    @media(min-width:640px){.db-stats{grid-template-columns:repeat(4,1fr)}}
+    .db-stat-card{padding:18px;border-radius:16px}.db-stat-card small{font-size:.75rem;color:var(--muted)}
+    .db-stat-card .val{font:700 1.9rem Fraunces,serif;color:var(--wheat);display:block;margin:4px 0 2px}
+    /* Tabs */
+    .db-tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap}
+    .db-tab{padding:9px 20px;border-radius:999px;border:1px solid var(--line);background:transparent;cursor:pointer;font:.84rem "Public Sans",sans-serif;color:var(--cream);transition:all .2s;white-space:nowrap}
+    .db-tab:hover{background:rgba(255,255,255,.1)}
+    .db-tab.active{background:var(--wheat);border-color:var(--wheat);color:#1a2d1e;font-weight:700}
+    /* Panels */
+    .db-panel{display:none}.db-panel.active{display:block}
+    /* Section label */
+    .db-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    .db-section-head h2{font-size:1.4rem;margin:0}
+    /* Form card */
+    .req-form-card{padding:26px;border-radius:20px;margin-bottom:24px}
+    .req-form-grid{display:grid;gap:14px}
+    @media(min-width:560px){.req-form-grid{grid-template-columns:1fr 1fr}}
+    .form-field{display:grid;gap:5px}
+    .form-field label{font-size:.8rem;font-weight:700;color:var(--muted)}
+    .form-field input,.form-field select,.form-field textarea{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;background:rgba(9,36,20,.45);color:var(--cream);font:inherit;font-size:.9rem;resize:vertical}
+    .form-field input::placeholder,.form-field textarea::placeholder{color:rgba(244,239,226,.35)}
+    .form-field select option{color:#16301f;background:#f4efe2}
+    .form-span{grid-column:1/-1}
+    .btn-primary{display:inline-flex;align-items:center;gap:7px;padding:11px 24px;background:var(--wheat);color:#1a2d1e;border:none;border-radius:999px;font:700 .9rem "Public Sans",sans-serif;cursor:pointer;transition:opacity .2s}
+    .btn-primary:hover{opacity:.88}
+    .btn-sm{padding:7px 16px;font-size:.78rem;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--cream);cursor:pointer;white-space:nowrap;transition:background .2s}
+    .btn-sm:hover{background:rgba(255,255,255,.12)}
+    .btn-sm.danger{border-color:rgba(255,100,100,.4);color:#ffaaaa}
+    .btn-sm.accept{border-color:rgba(90,200,90,.4);color:#aaeeaa}
+    /* Requirement list */
+    .req-list{display:grid;gap:12px}
+    .req-card{padding:18px 20px;border-radius:16px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px;flex-wrap:wrap}
+    .req-card h3{margin:0 0 4px;font-size:1.05rem}
+    .req-card .meta{font-size:.8rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:10px}
+    .req-card .meta span{display:flex;align-items:center;gap:4px}
+    .req-actions{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap}
+    /* Status badges */
+    .badge{display:inline-block;padding:3px 10px;border-radius:999px;font-size:.7rem;font-weight:700}
+    .badge.open{background:rgba(90,143,94,.35);color:#ccf0cc}
+    .badge.matched{background:rgba(233,185,73,.25);color:#ffe39b}
+    .badge.closed{background:rgba(255,255,255,.1);color:var(--muted)}
+    .badge.delivered{background:rgba(90,200,100,.3);color:#b0ffb0}
+    .badge.transit{background:rgba(100,150,255,.25);color:#c0d8ff}
+    /* Farmer grid */
+    .farmer-grid{display:grid;gap:14px}
+    @media(min-width:560px){.farmer-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:900px){.farmer-grid{grid-template-columns:repeat(3,1fr)}}
+    .farmer-card{padding:20px;border-radius:18px;position:relative;overflow:hidden}
+    .farmer-card::before{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(circle at top right,rgba(233,185,73,.08),transparent 60%)}
+    .farmer-card .fc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+    .farmer-card .fc-name{font:700 1rem Fraunces,serif}
+    .farmer-card .fc-loc{font-size:.75rem;color:var(--muted);margin-top:2px}
+    .farmer-card .fc-dist{font-size:.75rem;background:rgba(233,185,73,.2);color:#ffe39b;padding:3px 9px;border-radius:999px;white-space:nowrap}
+    .produce-list{display:grid;gap:6px;margin:10px 0}
+    .produce-row{display:flex;justify-content:space-between;align-items:center;padding:7px 10px;border-radius:9px;background:rgba(9,36,20,.3);font-size:.82rem}
+    .produce-row .p-name{font-weight:600}
+    .produce-row .p-price{color:var(--wheat);font-weight:700}
+    .produce-row .p-qty{color:var(--muted);font-size:.75rem}
+    /* Logistics grid */
+    .logistics-grid{display:grid;gap:14px}
+    @media(min-width:560px){.logistics-grid{grid-template-columns:repeat(2,1fr)}}
+    .logistics-card{padding:20px;border-radius:18px}
+    .lc-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px}
+    .lc-name{font:700 1rem Fraunces,serif}.lc-rating{font-size:.78rem;color:var(--wheat)}
+    .vehicles-list{display:grid;gap:6px;margin:10px 0}
+    .vehicle-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:9px;background:rgba(9,36,20,.3);font-size:.82rem}
+    .veh-icon{width:28px;height:28px;border-radius:8px;background:rgba(233,185,73,.18);display:grid;place-items:center;font-size:1rem;flex-shrink:0}
+    .veh-info{flex:1}
+    .veh-info .vtype{font-weight:600;font-size:.83rem}
+    .veh-info .vcap{color:var(--muted);font-size:.73rem}
+    .veh-avail{font-size:.72rem;padding:2px 8px;border-radius:999px}
+    .veh-avail.yes{background:rgba(90,200,90,.25);color:#aaeea0}
+    .veh-avail.no{background:rgba(255,100,100,.2);color:#ffaaaa}
+    /* Orders */
+    .orders-list{display:grid;gap:12px}
+    .order-card{padding:20px;border-radius:16px}
+    .order-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+    .order-id{font-size:.73rem;color:var(--muted)}.order-crop{font:700 1.1rem Fraunces,serif}
+    .order-details{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;font-size:.82rem}
+    @media(min-width:560px){.order-details{grid-template-columns:repeat(4,1fr)}}
+    .od-item small{color:var(--muted);display:block;font-size:.72rem;margin-bottom:2px}
+    .order-progress{margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+    .progress-track{display:flex;align-items:center;gap:4px;flex-wrap:wrap;font-size:.72rem;margin-top:8px}
+    .pt-step{padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.09);color:var(--muted)}
+    .pt-step.done{background:rgba(90,143,94,.35);color:#ccf0cc}
+    .pt-step.active{background:var(--wheat);color:#1a2d1e;font-weight:700}
+    .pt-arrow{color:var(--muted);font-size:.9rem}
+    /* Nearby map placeholder */
+    .map-placeholder{border-radius:16px;padding:22px;text-align:center;background:rgba(9,36,20,.3);border:1px dashed var(--line);margin-bottom:20px}
+    .map-placeholder .map-icon{font-size:2.5rem;margin-bottom:8px}
+    .map-placeholder p{margin:0;color:var(--muted);font-size:.85rem}
+    /* Filter bar */
+    .filter-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+    .filter-bar select,.filter-bar input{padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:rgba(9,36,20,.45);color:var(--cream);font:inherit;font-size:.82rem}
+    .filter-bar select option{color:#16301f;background:#f4efe2}
+    .empty-state{text-align:center;padding:42px 20px;color:var(--muted)}
+    .empty-state .es-icon{font-size:2.8rem;margin-bottom:10px}
+    .empty-state p{margin:0;font-size:.9rem}
+    /* Notification dot */
+    .notif-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--wheat);margin-left:5px;vertical-align:middle}
     .hero{padding:132px 0 65px;min-height:100svh;display:flex;align-items:center}.hero-grid{display:grid;gap:34px}.hero-copy h1{font-size:clamp(2.65rem,10vw,5.1rem);max-width:11ch;margin-bottom:19px}.hero-copy p{font-size:clamp(1rem,3.5vw,1.14rem);max-width:48ch;color:var(--muted)}.actions{display:grid;gap:12px;margin-top:27px}.button{display:inline-flex;min-height:48px;align-items:center;justify-content:center;padding:12px 20px;border-radius:999px;text-decoration:none;font-weight:700;border:1px solid var(--line)}.primary{background:var(--wheat);border-color:var(--wheat);color:#1a2d1e}.secondary{background:rgba(17,43,27,.25)}
     .dashboard{padding:18px;position:relative;min-width:0}.dashboard-head,.split{display:flex;justify-content:space-between;gap:14px;align-items:center}.small{font-size:.76rem;color:var(--muted)}.farmer{font:600 1.15rem Fraunces,Georgia,serif}.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--wheat),var(--leaf));display:grid;place-items:center;color:#183020}.avatar svg{width:20px}.listing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:16px 0}.listing,.inset{background:rgba(9,36,20,.23);border:1px solid rgba(255,255,255,.18);border-radius:14px}.listing{padding:10px 6px;text-align:center;font-size:.75rem}.listing strong{display:block;font-size:.9rem;margin:2px 0}.price{color:var(--wheat);font-weight:700}.inset{padding:13px;margin-top:11px}.tag{border-radius:999px;padding:3px 8px;font-size:.67rem;font-weight:700}.high{background:rgba(233,185,73,.23);color:#ffe29a}.medium{background:rgba(90,143,94,.43);color:#e0f3d9}.status-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.status{font-size:.69rem;padding:9px;border-radius:10px;background:rgba(244,239,226,.13);text-align:center}.status b{color:var(--wheat)}.flow-row{display:flex;justify-content:space-between;padding:4px 0;font-size:.78rem}.flow-row.total{border-top:1px solid var(--line);padding-top:8px;margin-top:4px;color:var(--wheat);font-weight:700}
     .grid-3,.modules,.impact,.mvp,.architecture,.metrics{display:grid;gap:15px;margin-top:30px}.card{padding:23px}.num{font:600 1.55rem Fraunces,serif;color:var(--wheat)}.card h3{font-size:1.25rem;margin:11px 0 8px}.card p{margin:0;color:var(--muted);font-size:.92rem}.icon{width:27px;height:27px;color:var(--wheat);stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.icon.fill{fill:currentColor;stroke:none}
@@ -77,7 +190,490 @@
     async function submitAuth(form,path){const error=form.querySelector('.auth-error'),submit=form.querySelector('[type="submit"]');error.textContent='';submit.disabled=true;submit.textContent='Please wait…';try{const payload=Object.fromEntries(new FormData(form));const response=await fetch(`${apiBase}/api/auth/${path}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const data=await response.json().catch(()=>({}));if(!response.ok)throw new Error(data.detail||'Unable to complete your request.');localStorage.setItem('uyirva_access_token',data.access_token);localStorage.setItem('uyirva_refresh_token',data.refresh_token||'');redirectToDashboard(data.user||{full_name:payload.full_name||'UYIRVA member',email:payload.email,role:payload.role})}catch(err){error.textContent=err.message==='Failed to fetch'?'Cannot reach the UYIRVA server. Start the FastAPI backend on port 8000.':err.message}finally{submit.disabled=false;submit.textContent=path==='register'?'Create account':'Sign in'}}
     document.querySelector('#login-form').addEventListener('submit',e=>{e.preventDefault();submitAuth(e.currentTarget,'login')});document.querySelector('#register-form').addEventListener('submit',e=>{e.preventDefault();submitAuth(e.currentTarget,'register')});
     const dashboardRole=new URLSearchParams(location.search).get('dashboard'),savedUser=JSON.parse(localStorage.getItem('uyirva_user')||'null');
-    if(dashboardRole&&savedUser){const role=savedUser.role.toUpperCase(),titles={FARMER:['Farmer dashboard','Manage your produce and respond to buyer demand.'],BUYER:['Buyer dashboard','Discover supply and manage your procurement.'],FPO:['FPO dashboard','Coordinate member produce and collective orders.']},content={FARMER:[['Active listings','0','Create a produce listing to begin matching.'],['Buyer matches','0','New matching opportunities will appear here.'],['Expected settlement','₹0','Completed orders are tracked here.']],BUYER:[['Open demands','0','Post crop requirements to receive matches.'],['Supplier matches','0','Compatible farmer supply will appear here.'],['Active orders','0','Track confirmed procurement here.']],FPO:[['Member farmers','0','Invite and manage farmer members.'],['Pooled listings','0','Aggregate compatible member produce.'],['Collective orders','0','Manage active FPO orders here.']]};if(titles[role]){document.querySelector('.nav').hidden=true;document.querySelector('.mobile-menu').hidden=true;document.querySelector('main').hidden=true;document.querySelector('footer').hidden=true;const app=document.querySelector('#dashboard-app');app.hidden=false;app.innerHTML=`<div class="dashboard-top"><div><div class="eyebrow">UYIRVA · ${role}</div><h1>${titles[role][0]}</h1><p>Welcome, ${savedUser.full_name}. ${titles[role][1]}</p></div><button class="button logout-button" id="logout" type="button">Sign out</button></div><div class="dashboard-grid">${content[role].map(card=>`<article class="dashboard-card glass"><h2>${card[0]}</h2><div class="dashboard-stat">${card[1]}</div><p>${card[2]}</p></article>`).join('')}</div>`;document.querySelector('#logout').addEventListener('click',()=>{localStorage.removeItem('uyirva_access_token');localStorage.removeItem('uyirva_refresh_token');localStorage.removeItem('uyirva_user');location.assign(location.pathname)})}}
+    if(dashboardRole&&savedUser){
+      const role=savedUser.role.toUpperCase();
+      document.querySelector('.nav').hidden=true;
+      document.querySelector('.mobile-menu').hidden=true;
+      document.querySelector('main').hidden=true;
+      document.querySelector('footer').hidden=true;
+      const app=document.querySelector('#dashboard-app');
+      app.hidden=false;
+
+      if(role==='BUYER'){
+        document.body.classList.add('buyer-mode');
+        // ─── BUYER DATA STORE ───
+        const store={
+          requirements:JSON.parse(localStorage.getItem('uyirva_req')||'[]'),
+          orders:JSON.parse(localStorage.getItem('uyirva_orders')||'[]')
+        };
+        const save=()=>{
+          localStorage.setItem('uyirva_req',JSON.stringify(store.requirements));
+          localStorage.setItem('uyirva_orders',JSON.stringify(store.orders));
+        };
+        const uid=()=>Math.random().toString(36).slice(2,8).toUpperCase();
+
+        // ─── SAMPLE FARMERS ───
+        const sampleFarmers=[
+          {id:'F1',name:'Murugan Farms',location:'Coimbatore',dist:'4.2 km',rating:'4.8',produce:[{name:'Tomato',qty:'800 kg',price:'₹24/kg'},{name:'Brinjal',qty:'350 kg',price:'₹18/kg'}]},
+          {id:'F2',name:'Lakshmi Agro',location:'Erode',dist:'11.7 km',rating:'4.6',produce:[{name:'Onion',qty:'1200 kg',price:'₹21/kg'},{name:'Garlic',qty:'200 kg',price:'₹55/kg'}]},
+          {id:'F3',name:'Selvam & Sons',location:'Salem',dist:'28.3 km',rating:'4.9',produce:[{name:'Potato',qty:'950 kg',price:'₹22/kg'},{name:'Carrot',qty:'400 kg',price:'₹30/kg'}]},
+          {id:'F4',name:'Devi Organics',location:'Tiruppur',dist:'7.5 km',rating:'4.7',produce:[{name:'Banana',qty:'600 kg',price:'₹28/kg'},{name:'Coconut',qty:'500 units',price:'₹15/pc'}]},
+          {id:'F5',name:'Suresh Horticulture',location:'Namakkal',dist:'19.1 km',rating:'4.5',produce:[{name:'Chilli',qty:'300 kg',price:'₹65/kg'},{name:'Turmeric',qty:'250 kg',price:'₹80/kg'}]},
+          {id:'F6',name:'Anbu Farms',location:'Pollachi',dist:'5.8 km',rating:'4.8',produce:[{name:'Mango',qty:'700 kg',price:'₹45/kg'},{name:'Guava',qty:'300 kg',price:'₹32/kg'}]}
+        ];
+
+        // ─── SAMPLE LOGISTICS ───
+        const sampleLogistics=[
+          {id:'L1',name:'Vel Transports',owner:'Velmurugan K.',rating:'4.9 ★',loc:'Coimbatore',vehicles:[
+            {type:'Mini Truck',cap:'2 Ton',icon:'🚚',avail:true},
+            {type:'Pickup Van',cap:'800 kg',icon:'🚐',avail:true},
+            {type:'Refrigerator Van',cap:'1.5 Ton',icon:'❄️',avail:false}
+          ]},
+          {id:'L2',name:'Muthu Cargo',owner:'Muthu Rajan',rating:'4.7 ★',loc:'Erode',vehicles:[
+            {type:'Lorry (14 ft)',cap:'5 Ton',icon:'🚛',avail:true},
+            {type:'Mini Truck',cap:'2 Ton',icon:'🚚',avail:false}
+          ]},
+          {id:'L3',name:'Sri Logistics',owner:'Sridhar P.',rating:'4.8 ★',loc:'Salem',vehicles:[
+            {type:'Pickup Van',cap:'800 kg',icon:'🚐',avail:true},
+            {type:'Auto Tempo',cap:'500 kg',icon:'🛺',avail:true},
+            {type:'Lorry (20 ft)',cap:'8 Ton',icon:'🚛',avail:true}
+          ]},
+          {id:'L4',name:'Kaviya Fleet',owner:'Kavitha M.',rating:'4.6 ★',loc:'Tiruppur',vehicles:[
+            {type:'Refrigerator Van',cap:'2 Ton',icon:'❄️',avail:true},
+            {type:'Mini Truck',cap:'1.5 Ton',icon:'🚚',avail:true}
+          ]}
+        ];
+
+        // ─── BUILD HTML ───
+        app.innerHTML=`
+          <div class="db-header">
+            <div>
+              <div class="eyebrow">UYIRVA · BUYER</div>
+              <h1>Buyer Dashboard</h1>
+              <p>Welcome, ${savedUser.full_name} &nbsp;·&nbsp; Manage your procurement end-to-end.</p>
+            </div>
+            <div class="db-meta">
+              <div class="db-avatar">${savedUser.full_name[0]}</div>
+              <button class="logout-button" id="logout" type="button">Sign out</button>
+            </div>
+          </div>
+
+          <div class="db-stats">
+            <div class="db-stat-card glass">
+              <small>My Requirements</small>
+              <span class="val" id="stat-req">0</span>
+              <small>Posted</small>
+            </div>
+            <div class="db-stat-card glass">
+              <small>Farmer Listings</small>
+              <span class="val">6</span>
+              <small>Available nearby</small>
+            </div>
+            <div class="db-stat-card glass">
+              <small>Logistics Partners</small>
+              <span class="val">4</span>
+              <small>Active in region</small>
+            </div>
+            <div class="db-stat-card glass">
+              <small>Active Orders</small>
+              <span class="val" id="stat-orders">0</span>
+              <small>In progress</small>
+            </div>
+          </div>
+
+          <div class="db-tabs">
+            <button class="db-tab active" data-tab="requirements">📋 Requirements</button>
+            <button class="db-tab" data-tab="farmers">🌾 Farmer Listings</button>
+            <button class="db-tab" data-tab="logistics">🚚 Logistics</button>
+            <button class="db-tab" data-tab="orders">📦 My Orders</button>
+          </div>
+
+          <!-- REQUIREMENTS PANEL -->
+          <div class="db-panel active" id="panel-requirements">
+            <div class="db-section-head">
+              <h2>My Requirements</h2>
+            </div>
+            <div class="req-form-card glass">
+              <h3 style="margin:0 0 16px;font-size:1.1rem">➕ Add New Requirement</h3>
+              <form class="req-form-grid" id="req-form">
+                <div class="form-field">
+                  <label>Crop Name *</label>
+                  <input id="req-crop" name="crop" placeholder="e.g. Tomato, Onion…" required>
+                </div>
+                <div class="form-field">
+                  <label>Quantity Required *</label>
+                  <input id="req-qty" name="qty" placeholder="e.g. 500 kg" required>
+                </div>
+                <div class="form-field">
+                  <label>Quality Grade</label>
+                  <select id="req-grade" name="grade">
+                    <option value="A">Grade A (Premium)</option>
+                    <option value="B" selected>Grade B (Standard)</option>
+                    <option value="C">Grade C (Economy)</option>
+                    <option value="Any">Any Grade</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label>Max Price (₹/kg)</label>
+                  <input id="req-price" name="price" type="number" placeholder="e.g. 28" min="1">
+                </div>
+                <div class="form-field">
+                  <label>Required By</label>
+                  <input id="req-date" name="date" type="date">
+                </div>
+                <div class="form-field">
+                  <label>Delivery Location *</label>
+                  <input id="req-loc" name="location" placeholder="e.g. Coimbatore Central Market" required>
+                </div>
+                <div class="form-field form-span">
+                  <label>Special Notes</label>
+                  <textarea id="req-notes" name="notes" rows="2" placeholder="e.g. Organic preferred, no pesticides…"></textarea>
+                </div>
+                <div class="form-span">
+                  <button class="btn-primary" type="submit">Post Requirement</button>
+                </div>
+              </form>
+            </div>
+            <div id="req-list-wrap">
+              <div class="db-section-head"><h2>Posted Requirements</h2></div>
+              <div class="req-list" id="req-list"></div>
+            </div>
+          </div>
+
+          <!-- FARMERS PANEL -->
+          <div class="db-panel" id="panel-farmers">
+            <div class="db-section-head">
+              <h2>Farmer Listings</h2>
+              <span class="badge open">6 available</span>
+            </div>
+            <div class="map-placeholder glass">
+              <div class="map-icon">📍</div>
+              <strong>Nearby Farmers Map</strong>
+              <p>Showing farmers within 50 km of your delivery location. AI-matched to your requirements.</p>
+            </div>
+            <div class="filter-bar">
+              <select id="farmer-filter-crop">
+                <option value="">All Crops</option>
+                <option>Tomato</option><option>Onion</option><option>Potato</option>
+                <option>Brinjal</option><option>Carrot</option><option>Banana</option>
+                <option>Chilli</option><option>Turmeric</option><option>Mango</option>
+              </select>
+              <select id="farmer-filter-dist">
+                <option value="">Any Distance</option>
+                <option value="10">Within 10 km</option>
+                <option value="25">Within 25 km</option>
+                <option value="50">Within 50 km</option>
+              </select>
+            </div>
+            <div class="farmer-grid" id="farmer-grid"></div>
+          </div>
+
+          <!-- LOGISTICS PANEL -->
+          <div class="db-panel" id="panel-logistics">
+            <div class="db-section-head">
+              <h2>Logistics Partners</h2>
+              <span class="badge matched">4 active partners</span>
+            </div>
+            <div class="filter-bar">
+              <select id="logi-filter-type">
+                <option value="">All Vehicle Types</option>
+                <option>Mini Truck</option><option>Pickup Van</option>
+                <option>Refrigerator Van</option><option>Lorry (14 ft)</option>
+                <option>Lorry (20 ft)</option><option>Auto Tempo</option>
+              </select>
+              <select id="logi-filter-avail">
+                <option value="">All Availability</option>
+                <option value="yes">Available Now</option>
+              </select>
+            </div>
+            <div class="logistics-grid" id="logistics-grid"></div>
+          </div>
+
+          <!-- ORDERS PANEL -->
+          <div class="db-panel" id="panel-orders">
+            <div class="db-section-head">
+              <h2>My Orders</h2>
+            </div>
+            <div class="filter-bar">
+              <select id="order-filter-status">
+                <option value="">All Status</option>
+                <option value="Pending">Pending</option>
+                <option value="Accepted">Accepted</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Delivered">Delivered</option>
+              </select>
+            </div>
+            <div class="orders-list" id="orders-list"></div>
+          </div>
+        `;
+
+        // ─── TAB SWITCHER ───
+        document.querySelectorAll('.db-tab').forEach(btn=>{
+          btn.addEventListener('click',()=>{
+            document.querySelectorAll('.db-tab').forEach(b=>b.classList.remove('active'));
+            document.querySelectorAll('.db-panel').forEach(p=>p.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelector(`#panel-${btn.dataset.tab}`).classList.add('active');
+          });
+        });
+
+        // ─── RENDER HELPERS ───
+        const updateStats=()=>{
+          document.getElementById('stat-req').textContent=store.requirements.length;
+          document.getElementById('stat-orders').textContent=store.orders.filter(o=>o.status!=='Delivered').length;
+        };
+
+        const statusBadge=s=>{
+          const cls={Pending:'open',Accepted:'matched','In Transit':'transit',Delivered:'delivered'};
+          return `<span class="badge ${cls[s]||'open'}">${s}</span>`;
+        };
+
+        const renderRequirements=()=>{
+          const list=document.getElementById('req-list');
+          if(!store.requirements.length){
+            list.innerHTML=`<div class="empty-state"><div class="es-icon">📋</div><p>No requirements posted yet.<br>Add one above to start matching with farmers.</p></div>`;
+            return;
+          }
+          list.innerHTML=store.requirements.map(r=>`
+            <div class="req-card glass">
+              <div>
+                <h3>${r.crop} — ${r.qty}</h3>
+                <div class="meta">
+                  <span>🏷️ Grade ${r.grade}</span>
+                  ${r.price?`<span>💰 Max ₹${r.price}/kg</span>`:''}
+                  ${r.date?`<span>📅 By ${r.date}</span>`:''}
+                  <span>📍 ${r.location}</span>
+                  ${r.notes?`<span>📝 ${r.notes}</span>`:''}
+                </div>
+                <div style="margin-top:8px">${statusBadge(r.status)}</div>
+              </div>
+              <div class="req-actions">
+                <button class="btn-sm" onclick="editReq('${r.id}')">Edit</button>
+                <button class="btn-sm danger" onclick="deleteReq('${r.id}')">Delete</button>
+              </div>
+            </div>
+          `).join('');
+        };
+
+        const renderFarmers=()=>{
+          const grid=document.getElementById('farmer-grid');
+          const cropFilter=document.getElementById('farmer-filter-crop').value.toLowerCase();
+          const distFilter=parseFloat(document.getElementById('farmer-filter-dist').value)||999;
+          const filtered=sampleFarmers.filter(f=>{
+            const distVal=parseFloat(f.dist);
+            if(distVal>distFilter)return false;
+            if(cropFilter&&!f.produce.some(p=>p.name.toLowerCase().includes(cropFilter)))return false;
+            return true;
+          });
+          if(!filtered.length){
+            grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🌾</div><p>No farmers match your filter. Try widening your search.</p></div>`;
+            return;
+          }
+          grid.innerHTML=filtered.map(f=>`
+            <div class="farmer-card glass">
+              <div class="fc-top">
+                <div>
+                  <div class="fc-name">🧑‍🌾 ${f.name}</div>
+                  <div class="fc-loc">📍 ${f.location}</div>
+                </div>
+                <div>
+                  <div class="fc-dist">${f.dist}</div>
+                  <div style="font-size:.72rem;color:var(--wheat);text-align:right;margin-top:4px">⭐ ${f.rating}</div>
+                </div>
+              </div>
+              <div class="produce-list">
+                ${f.produce.map(p=>`
+                  <div class="produce-row">
+                    <span class="p-name">${p.name}</span>
+                    <span class="p-qty">${p.qty}</span>
+                    <span class="p-price">${p.price}</span>
+                  </div>
+                `).join('')}
+              </div>
+              <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="placeOrder('${f.id}')">📦 Place Order</button>
+            </div>
+          `).join('');
+        };
+
+        const renderLogistics=()=>{
+          const grid=document.getElementById('logistics-grid');
+          const typeFilter=document.getElementById('logi-filter-type').value;
+          const availFilter=document.getElementById('logi-filter-avail').value;
+          grid.innerHTML=sampleLogistics.map(l=>{
+            let vehicles=l.vehicles;
+            if(typeFilter)vehicles=vehicles.filter(v=>v.type===typeFilter);
+            if(availFilter==='yes')vehicles=vehicles.filter(v=>v.avail);
+            if(!vehicles.length)return '';
+            return `
+              <div class="logistics-card glass">
+                <div class="lc-header">
+                  <div>
+                    <div class="lc-name">🏢 ${l.name}</div>
+                    <div style="font-size:.75rem;color:var(--muted)">Owner: ${l.owner} · ${l.loc}</div>
+                  </div>
+                  <div class="lc-rating">${l.rating}</div>
+                </div>
+                <div class="vehicles-list">
+                  ${vehicles.map(v=>`
+                    <div class="vehicle-row">
+                      <div class="veh-icon">${v.icon}</div>
+                      <div class="veh-info">
+                        <div class="vtype">${v.type}</div>
+                        <div class="vcap">Capacity: ${v.cap}</div>
+                      </div>
+                      <span class="veh-avail ${v.avail?'yes':'no'}">${v.avail?'Available':'Booked'}</span>
+                    </div>
+                  `).join('')}
+                </div>
+                ${vehicles.some(v=>v.avail)?`<button class="btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="bookLogistics('${l.id}')">Book Transport</button>`:''}
+              </div>
+            `;
+          }).join('');
+          if(!grid.innerHTML.trim())grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🚚</div><p>No logistics partners match your filter.</p></div>`;
+        };
+
+        const renderOrders=()=>{
+          const list=document.getElementById('orders-list');
+          const statusFilter=document.getElementById('order-filter-status').value;
+          const filtered=store.orders.filter(o=>!statusFilter||o.status===statusFilter);
+          if(!filtered.length){
+            list.innerHTML=`<div class="empty-state"><div class="es-icon">📦</div><p>No orders yet.<br>Browse farmer listings and place your first order.</p></div>`;
+            return;
+          }
+          const steps=['Order Placed','Farmer Accepted','Logistics Assigned','In Transit','Delivered'];
+          list.innerHTML=filtered.map(o=>{
+            const stepIdx={Pending:0,Accepted:1,'In Transit':3,Delivered:4}[o.status]??0;
+            return `
+              <div class="order-card glass">
+                <div class="order-top">
+                  <div>
+                    <div class="order-id">Order #${o.id} · ${o.date}</div>
+                    <div class="order-crop">${o.crop} from ${o.farmer}</div>
+                  </div>
+                  ${statusBadge(o.status)}
+                </div>
+                <div class="order-details">
+                  <div class="od-item"><small>Quantity</small>${o.qty}</div>
+                  <div class="od-item"><small>Total Price</small><strong style="color:var(--wheat)">${o.total}</strong></div>
+                  <div class="od-item"><small>Delivery</small>${o.delivery}</div>
+                  <div class="od-item"><small>Logistics</small>${o.logistics}</div>
+                </div>
+                <div class="order-progress">
+                  <small style="color:var(--muted)">Order Progress</small>
+                  <div class="progress-track">
+                    ${steps.map((s,i)=>{
+                      let cls='';
+                      if(i<stepIdx)cls='done';
+                      else if(i===stepIdx)cls='active';
+                      return (i>0?'<span class="pt-arrow">→</span>':'')+`<span class="pt-step ${cls}">${s}</span>`;
+                    }).join('')}
+                  </div>
+                </div>
+                ${o.status==='Pending'?`<div style="margin-top:12px;display:flex;gap:8px"><button class="btn-sm danger" onclick="cancelOrder('${o.id}')">Cancel Order</button></div>`:''}
+              </div>
+            `;
+          }).join('');
+        };
+
+        // ─── ACTIONS ───
+        window.deleteReq=(id)=>{
+          store.requirements=store.requirements.filter(r=>r.id!==id);
+          save();updateStats();renderRequirements();
+        };
+        window.editReq=(id)=>{
+          const r=store.requirements.find(x=>x.id===id);
+          if(!r)return;
+          document.getElementById('req-crop').value=r.crop;
+          document.getElementById('req-qty').value=r.qty;
+          document.getElementById('req-grade').value=r.grade;
+          document.getElementById('req-price').value=r.price||'';
+          document.getElementById('req-date').value=r.date||'';
+          document.getElementById('req-loc').value=r.location;
+          document.getElementById('req-notes').value=r.notes||'';
+          store.requirements=store.requirements.filter(x=>x.id!==id);
+          save();updateStats();renderRequirements();
+          document.getElementById('req-crop').scrollIntoView({behavior:'smooth',block:'center'});
+        };
+        window.placeOrder=(farmerId)=>{
+          const farmer=sampleFarmers.find(f=>f.id===farmerId);
+          if(!farmer)return;
+          const produce=farmer.produce[0];
+          const newOrder={
+            id:uid(),
+            crop:produce.name,
+            farmer:farmer.name,
+            qty:'500 kg',
+            total:'₹12,000',
+            delivery:farmer.location,
+            logistics:'Vel Transports',
+            status:'Pending',
+            date:new Date().toLocaleDateString('en-IN')
+          };
+          store.orders.unshift(newOrder);
+          save();updateStats();
+          document.querySelectorAll('.db-tab').forEach(b=>b.classList.remove('active'));
+          document.querySelectorAll('.db-panel').forEach(p=>p.classList.remove('active'));
+          document.querySelector('[data-tab="orders"]').classList.add('active');
+          document.getElementById('panel-orders').classList.add('active');
+          renderOrders();
+          alert(`✅ Order placed for ${produce.name} from ${farmer.name}!`);
+        };
+        window.bookLogistics=(id)=>{
+          const lp=sampleLogistics.find(l=>l.id===id);
+          alert(`✅ Booking request sent to ${lp.name}!\nThey will confirm within 2 hours.`);
+        };
+        window.cancelOrder=(id)=>{
+          if(!confirm('Cancel this order?'))return;
+          store.orders=store.orders.filter(o=>o.id!==id);
+          save();updateStats();renderOrders();
+        };
+
+        // ─── FORM SUBMIT ───
+        document.getElementById('req-form').addEventListener('submit',e=>{
+          e.preventDefault();
+          const f=e.currentTarget;
+          const newReq={
+            id:uid(),
+            crop:document.getElementById('req-crop').value.trim(),
+            qty:document.getElementById('req-qty').value.trim(),
+            grade:document.getElementById('req-grade').value,
+            price:document.getElementById('req-price').value,
+            date:document.getElementById('req-date').value,
+            location:document.getElementById('req-loc').value.trim(),
+            notes:document.getElementById('req-notes').value.trim(),
+            status:'Open'
+          };
+          store.requirements.unshift(newReq);
+          save();f.reset();updateStats();renderRequirements();
+        });
+
+        // ─── FILTER EVENTS ───
+        document.getElementById('farmer-filter-crop').addEventListener('change',renderFarmers);
+        document.getElementById('farmer-filter-dist').addEventListener('change',renderFarmers);
+        document.getElementById('logi-filter-type').addEventListener('change',renderLogistics);
+        document.getElementById('logi-filter-avail').addEventListener('change',renderLogistics);
+        document.getElementById('order-filter-status').addEventListener('change',renderOrders);
+
+        // ─── INITIAL RENDER ───
+        updateStats();renderRequirements();renderFarmers();renderLogistics();renderOrders();
+
+        document.getElementById('logout').addEventListener('click',()=>{
+          localStorage.removeItem('uyirva_access_token');
+          localStorage.removeItem('uyirva_refresh_token');
+          localStorage.removeItem('uyirva_user');
+          location.assign(location.pathname);
+        });
+
+      } else {
+        // ─── FARMER / FPO DASHBOARD (existing minimal) ───
+        const titles={FARMER:['Farmer Dashboard','Manage your produce and respond to buyer demand.'],FPO:['FPO Dashboard','Coordinate member produce and collective orders.']};
+        const content={FARMER:[['Active listings','0','Create a produce listing to begin matching.'],['Buyer matches','0','New matching opportunities will appear here.'],['Expected settlement','₹0','Completed orders are tracked here.']],FPO:[['Member farmers','0','Invite and manage farmer members.'],['Pooled listings','0','Aggregate compatible member produce.'],['Collective orders','0','Manage active FPO orders here.']]};
+        if(titles[role]){
+          app.innerHTML=`<div class="dashboard-top"><div><div class="eyebrow">UYIRVA · ${role}</div><h1>${titles[role][0]}</h1><p>Welcome, ${savedUser.full_name}. ${titles[role][1]}</p></div><button class="button logout-button" id="logout" type="button">Sign out</button></div><div class="dashboard-grid">${content[role].map(card=>`<article class="dashboard-card glass"><h2>${card[0]}</h2><div class="dashboard-stat">${card[1]}</div><p>${card[2]}</p></article>`).join('')}</div>`;
+          document.querySelector('#logout').addEventListener('click',()=>{localStorage.removeItem('uyirva_access_token');localStorage.removeItem('uyirva_refresh_token');localStorage.removeItem('uyirva_user');location.assign(location.pathname)});
+        }
+      }
+    }
   </script>
 </body>
 </html>
