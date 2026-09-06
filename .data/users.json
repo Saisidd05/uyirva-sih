@@ -20,5 +20,16 @@
       "salt": "64d2d07c8b756eae3034f1ff8e0d8817",
       "value": "231134c93f4908704226d3cbc5ba171ad42e3d2ec2b6350f70af3c854cd95148957661bccd7570449df65de74df8912ad185c46a296692563ee204681978824f"
     }
+  },
+  {
+    "id": "171a4a14-58e0-42ec-827b-9bad1024ee0b",
+    "full_name": "Sai Siddharth",
+    "email": "saisiddharth052006@gmail.com",
+    "phone": "+919345411184",
+    "role": "BUYER",
+    "password": {
+      "salt": "4dd777d40560e38c377a428419c845e8",
+      "value": "573d83f2d3482a3465b58c745794d0758f9fa665d9542c847c1aeafe2a7e8bca095ae04c0d032bc07f9abea9e62f6c0994044ccca5d392ef2a033050a857da4c"
+    }
   }
 ]
