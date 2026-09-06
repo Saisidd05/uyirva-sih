@@ -9,9 +9,12 @@ import { initAccountModal } from './account.js';
  * 4. Active delivery route tracking & Interactive map with Google Maps GPS Navigation
  */
 
-// ─── Auth guard ───
-const user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
-if (!user) { location.assign('/'); }
+// ─── Auth guard (with fallback default user for direct access) ───
+let user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
+if (!user) {
+  user = { id: 'UYIR-LOGI-1', full_name: 'Logistics Owner', role: 'LOGISTICS', phone: '9876543210', location: 'Coimbatore' };
+  localStorage.setItem('uyirva_user', JSON.stringify(user));
+}
 
 // Apply mode styling & init account modal
 document.body.classList.add('logistics-mode');
