@@ -90,7 +90,7 @@ async function handler(request, response) {
   }
   if (pathname.startsWith('/api/farmer/')) {
     const body = ['POST', 'PUT'].includes(request.method) ? await readBody(request) : {};
-    const result = handleFarmerRoute(request, pathname, body);
+    const result = handleFarmerRoute(request, pathname, body, Object.fromEntries(new URL(request.url, `http://${request.headers.host}`).searchParams));
     return send(response, result.status, result.body);
   }
   if (pathname.startsWith('/api/buyer/')) {
