@@ -3,56 +3,36 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>UYIRVA — Dashboard</title>
+  <title>UYIRVA — Farmer Dashboard</title>
   <link rel="stylesheet" href="css/styles.css">
   <style>
-    /* Additional styles for dashboard features */
-    .dashboard-app { display: block; margin: 40px auto; }
-    .action-row { margin-bottom: 24px; display: flex; gap: 12px; }
-    .feature-card { background: rgba(9, 36, 20, 0.42); padding: 18px; border-radius: 12px; margin-bottom: 16px; border: 1px solid var(--line); }
-    .feature-card h3 { margin-bottom: 8px; font-size: 1.1rem; color: var(--wheat); }
-    .status-badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
-    .status-escrow { background: rgba(90, 143, 94, 0.3); color: #e0f3d9; }
-    .feature-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
-    .listing-list, .buyer-requirements { display: grid; gap: 12px; }
-    .listing-item, .buyer-requirement { display: flex; gap: 14px; align-items: flex-start; padding: 13px; border-radius: 10px; background: rgba(255,255,255,.08); }
-    .listing-item img { width: 78px; height: 78px; object-fit: cover; border-radius: 9px; }
-    .delete-listing { margin-top: 8px; padding: 5px 10px; border: 1px solid #d98275; border-radius: 7px; background: transparent; color: #ffd0ca; cursor: pointer; font-size: .78rem; font-weight: 700; }
-    .listing-item p, .buyer-requirement p { margin: 4px 0; }
-    .listing-item small, .buyer-requirement small, .buyer-requirement span, .buyer-note { color: var(--muted); font-size: .82rem; }
-    .buyer-requirement { display: block; border-left: 3px solid var(--wheat); }
-    .buyer-requirement span { float: right; }
-    .listing-success { padding: 11px 14px; border-radius: 10px; background: rgba(90,143,94,.3); border: 1px solid var(--line); color: #e0f3d9; font-weight: 700; }
-    @media(min-width: 700px) { .feature-grid { grid-template-columns: repeat(2, 1fr); } }
+    .dashboard-app{display:block;margin:40px auto}.feature-card{background:rgba(9,36,20,.58);padding:18px;border-radius:12px;margin-bottom:16px;border:1px solid var(--line);backdrop-filter:blur(10px)}.feature-card h3{margin-bottom:8px;font-size:1.1rem;color:var(--wheat)}.feature-grid{display:grid;grid-template-columns:1fr;gap:16px}.listing-list,.buyer-requirements,.order-list{display:grid;gap:12px}.listing-item,.buyer-requirement,.order-item{padding:13px;border-radius:10px;background:rgba(255,255,255,.08)}.listing-item{display:flex;gap:14px;align-items:flex-start}.listing-item img{width:78px;height:78px;object-fit:cover;border-radius:9px}.buyer-requirement{border-left:3px solid var(--wheat)}.buyer-requirement span{float:right}.buyer-requirement small,.order-item small,.buyer-note{color:var(--muted);font-size:.82rem}.listing-success{padding:11px 14px;border-radius:10px;background:rgba(90,143,94,.3);border:1px solid var(--line);color:#e0f3d9;font-weight:700}@media(min-width:700px){.feature-grid{grid-template-columns:repeat(2,1fr)}}
   </style>
 </head>
-<body>
-  
-  <section class="dashboard-app" id="dashboard-app">
-    <!-- Populated by JS -->
-  </section>
-
-  <!-- Create Listing Modal for Farmer -->
-  <div class="auth-modal" id="listing-modal" role="dialog" aria-hidden="true">
+<body class="farmer-dashboard">
+  <section class="dashboard-app" id="dashboard-app"></section>
+  <div class="auth-modal" id="listing-modal" role="dialog" aria-modal="true" aria-hidden="true">
     <div class="auth-card glass">
       <button class="auth-close" type="button" aria-label="Close">×</button>
       <h2>List your vegetables</h2>
-      <p class="auth-copy">Add the vegetable details buyers need to see.</p>
-      <form class="auth-form" id="listing-form">
-        <label>Vegetable name<select name="crop" required><option value="">Select a vegetable</option><option>Tomato</option><option>Onion</option><option>Potato</option><option>Brinjal</option><option>Carrot</option><option>Beans</option><option>Cabbage</option><option>Cauliflower</option><option>Okra</option><option>Chilli</option><option>Cucumber</option><option>Drumstick</option><option>Other vegetables</option></select></label>
-        <label>Quantity (kg)<input name="quantity" type="number" min="1" placeholder="e.g. 500" required></label>
-        <label>Your rate (₹ per kg)<input name="price" type="number" min="1" placeholder="e.g. 25" required></label>
-        <label>Freshness<select name="freshness"><option>Fresh today</option><option>Harvested within 24 hours</option><option>Harvested within 2 days</option></select></label>
-        <label>AGMARK status<select name="agmark"><option>AGMARK certified</option><option>Applied for AGMARK</option><option>Not certified</option></select></label>
-        <label>Quality<select name="quality_grade"><option>Premium / Grade A</option><option>Grade A</option><option>Grade B</option><option>Standard</option></select></label>
-        <label>Vegetable image<input name="photo" type="file" accept="image/*"></label>
+      <p class="auth-copy">All fields are required. Quantity is always in kilograms.</p>
+      <form class="auth-form" id="listing-form" novalidate>
+        <label>Vegetable name<select name="crop" required><option value="">Select a vegetable</option><option>Tomato</option><option>Onion</option><option>Potato</option><option>Brinjal</option><option>Carrot</option><option>Beans</option><option>Cabbage</option><option>Cauliflower</option><option>Okra</option><option>Chilli</option><option>Cucumber</option><option>Drumstick</option></select></label>
+        <label>Quantity (kg)<input name="quantity" type="number" inputmode="numeric" min="1" step="1" placeholder="e.g. 500" required></label>
+        <label>Price (₹ per kg)<input name="price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="e.g. 25" required></label>
+        <label>Harvest date<input name="harvest_date" type="date" required></label>
+        <label>Pickup-ready date/time<input name="pickup_ready_at" type="datetime-local" required></label>
+        <label>Pickup location<select name="location" required><option value="">Choose serviced area</option><option>Coimbatore</option><option>Pollachi</option><option>Mettupalayam</option><option>Tiruppur</option><option>Erode</option></select></label>
+        <label>Freshness<select name="freshness" required><option value="">Choose freshness</option><option>Fresh today</option><option>Harvested within 24 hours</option><option>Harvested within 2 days</option></select></label>
+        <label>AGMARK status<select name="agmark" required><option value="">Choose status</option><option>AGMARK certified</option><option>Applied for AGMARK</option><option>Not certified</option></select></label>
+        <label>Quality<select name="quality_grade" required><option value="">Choose quality</option><option>Premium / Grade A</option><option>Grade A</option><option>Grade B</option><option>Standard</option></select></label>
+        <label>Vegetable image (JPG/PNG)<input name="photo" type="file" accept="image/jpeg,image/png" required></label>
         <img id="listing-image-preview" alt="Vegetable preview" hidden style="width:100%;max-height:160px;object-fit:cover;border-radius:10px">
-        <p class="auth-error" id="listing-error"></p>
+        <p class="auth-error" id="listing-error" role="alert"></p>
         <button class="button primary" type="submit">Publish vegetable listing</button>
       </form>
     </div>
   </div>
-
   <script type="module" src="js/dashboard.js"></script>
 </body>
 </html>

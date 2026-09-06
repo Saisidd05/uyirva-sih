@@ -3,93 +3,32 @@ const token = localStorage.getItem('uyirva_access_token');
 const demoMode = localStorage.getItem('uyirva_demo_mode') === 'true';
 const app = document.querySelector('#dashboard-app');
 const apiBase = window.UYIRVA_API_URL || window.location.origin;
+const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
 
-if (!user || (!token && !demoMode)) {
-  location.assign('index.html');
-} else {
+if (!user || (!token && !demoMode)) location.assign('index.html');
+else {
   const role = String(user.role).toLowerCase();
-  const api = async (path, options = {}) => {
-    const response = await fetch(`${apiBase}${path}`, { ...options, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...options.headers } });
-    const data = await response.json();
-    if (!response.ok) {
-      if (response.status === 401) {
-        localStorage.removeItem('uyirva_access_token');
-        localStorage.removeItem('uyirva_user');
-        location.assign('index.html');
-        return new Promise(() => {});
-      }
-      throw new Error(data.detail || 'Request failed');
-    }
-    return data;
-  };
-  const logout = () => { localStorage.removeItem('uyirva_access_token'); localStorage.removeItem('uyirva_user'); localStorage.removeItem('uyirva_demo_mode'); location.assign('index.html'); };
-  const shell = (title, content) => {
-    app.innerHTML = `<div class="dashboard-top"><div><div class="eyebrow">UYIRVA · ${role.toUpperCase()}</div><h1>${title}</h1><p>Welcome to your marketplace workspace.</p></div><button class="button logout-button" id="logout">Sign out</button></div>${content}`;
-    document.querySelector('#logout').onclick = logout;
-  };
-
-  function farmerDemo() {
-    const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
-    const listingHtml = listings.length ? listings.map((item, index) => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small><button class="delete-listing" type="button" data-delete-listing="${index}">Delete listing</button></div></div>`).join('') : '<p>No vegetables listed yet. Click List vegetables to publish your first listing.</p>';
-    const buyers = [{ name: 'Kovai Fresh Mart', need: '500 kg tomatoes for tomorrow', offer: '₹29/kg', quality: 'Premium / Grade A' }, { name: 'Chennai Bulk Foods', need: '300 kg vegetables for hotel kitchens', offer: '₹28/kg', quality: 'Grade A or B' }, { name: 'Green Basket FPO', need: '250 kg fresh vegetables this week', offer: '₹27/kg', quality: 'Good quality' }];
-    shell('Farmer Demo Dashboard', `<div class="feature-grid"><div class="feature-card"><h3>My vegetable listings</h3><strong>${listings.length}</strong><p>Demo dashboard · locally saved listings</p><button class="button primary" id="create">List vegetables</button></div><div class="feature-card"><h3>Demand planning</h3><p>High demand expected for Tomato next month.</p></div></div><div class="feature-card"><h3>My listed vegetables</h3><div class="listing-list">${listingHtml}</div></div><div class="feature-card"><h3>Buyer requirements</h3><div class="buyer-requirements">${buyers.map(buyer => `<div class="buyer-requirement"><b>${buyer.name}</b><span>Near you</span><p>${buyer.need}</p><small>Offer: ${buyer.offer} · Quality: ${buyer.quality} · Freshness: within 24 hours</small></div>`).join('')}</div></div>`);
-    document.querySelector('#create').onclick = () => document.querySelector('#listing-modal').classList.add('open');
-    document.querySelectorAll('[data-delete-listing]').forEach(button => button.onclick = () => {
-      const current = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
-      current.splice(Number(button.dataset.deleteListing), 1);
-      localStorage.setItem('uyirva_demo_listings', JSON.stringify(current));
-      farmerDemo();
-    });
-  }
+  const api = async (path, options = {}) => { const response = await fetch(`${apiBase}${path}`, { ...options, headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}`, ...options.headers } }); const data = await response.json(); if (!response.ok) { if (response.status === 401) { localStorage.clear(); location.assign('index.html'); return new Promise(() => {}); } throw new Error(data.detail || 'Request failed'); } return data; };
+  const logout = () => { localStorage.clear(); location.assign('index.html'); };
+  const shell = (title, content) => { app.innerHTML = `<div class="dashboard-top"><div><div class="eyebrow">UYIRVA · ${role.toUpperCase()}</div><h1>${title}</h1><p>Your marketplace workspace.</p></div><button class="button logout-button" id="logout">Sign out</button></div>${content}`; document.querySelector('#logout').onclick = logout; };
+  const listingCard = item => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${escapeHtml(item.crop)}">` : ''}<div><b>${escapeHtml(item.crop)}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${escapeHtml(item.freshness || '')} · ${escapeHtml(item.quality_grade || '')}</small></div></div>`;
+  const buyerCard = buyer => `<div class="buyer-requirement"><b>${escapeHtml(buyer.buyer_name)}</b><span>${escapeHtml(buyer.buyer_type)} · ${buyer.distance_km} km</span><p>Needs ${buyer.quantity} kg of ${escapeHtml(buyer.crop)} · ₹${buyer.price_min}–₹${buyer.price_max}/kg</p><small>Delivery: ${escapeHtml(buyer.delivery_location)} · ${escapeHtml(buyer.delivery_window)}</small><p>${buyer.contact_visible ? `Contact: ${escapeHtml(buyer.contact.phone)} · ${escapeHtml(buyer.contact.email)}` : 'Contact details are private until this interest is an active match or order.'}</p><button class="button secondary" data-chat="${buyer.match_id}">Open negotiation</button></div>`;
+  const orderCard = order => `<div class="order-item"><b>${escapeHtml(order.buyer_name)}</b><p>${escapeHtml(order.crop)} · ${order.quantity} kg · Agreed ₹${order.agreed_price}/kg</p><small>Accepted → Pooled → Dispatched → Delivered → Paid</small><p>Current: ${escapeHtml(order.order_status)} · Escrow: ${escapeHtml(order.escrow_status)}</p>${order.logistics ? `<p><b>Driver:</b> ${escapeHtml(order.logistics.driver_name)} · ${escapeHtml(order.logistics.contact_number)}<br><b>Vehicle:</b> ${escapeHtml(order.logistics.vehicle_number)} · Pickup: ${escapeHtml(order.logistics.pickup_time_window)}</p>` : '<p>Logistics: pending assignment</p>'}</div>`;
+  const bindChats = () => document.querySelectorAll('[data-chat]').forEach(button => button.onclick = async () => { const text = window.prompt('Send a message to this buyer'); if (text?.trim()) { try { await api(`/api/farmer/matches/${button.dataset.chat}/messages`, { method: 'POST', body: JSON.stringify({ text }) }); window.alert('Message sent.'); } catch (error) { window.alert(error.message); } } });
 
   async function farmer() {
-    const [data, listingData, matchData] = await Promise.all([api('/api/farmer/dashboard'), api('/api/farmer/listings'), api('/api/farmer/matches')]);
-    const listingHtml = listingData.listings.length ? listingData.listings.map(item => `<div class="listing-item">${item.photo_url ? `<img src="${item.photo_url}" alt="${item.crop}">` : ''}<div><b>${item.crop}</b><p>${item.quantity} kg · ₹${item.price}/kg</p><small>${item.freshness} · ${item.agmark} · ${item.quality_grade}</small></div></div>`).join('') : '<p>No vegetables listed yet. Click “List vegetables” to publish your first listing.</p>';
-    const matchHtml = matchData.matches.map(match => `<div class="buyer-requirement"><b>${match.buyer_name}</b><span>${match.match_score}% match · ${match.distance_km} km away</span><p>${match.requirement}</p><small>Needs: ${match.requested_kg} kg · ₹${match.offered_price}/kg · ${match.freshness_required} · ${match.quality_required} · AGMARK: ${match.agmark_required}</small></div>`).join('');
-    shell('Farmer Home', `<div class="feature-grid"><div class="feature-card"><h3>My vegetable listings</h3><strong>${data.stats.active_listings}</strong><p>Active listings · Pending orders: ${data.stats.pending_orders}</p><button class="button primary" id="create">List vegetables</button></div><div class="feature-card"><h3>Action needed</h3><p>${data.actions.unread_matches} buyer matches · ${data.actions.disputes_awaiting_response} disputes</p></div><div class="feature-card"><h3>Demand planning</h3><p>${data.demand_insight.recommendation}</p></div><div class="feature-card"><h3>This month earnings</h3><strong>₹${data.stats.month_earnings}</strong></div></div><div class="feature-card"><h3>My listed vegetables</h3><div class="listing-list">${listingHtml}</div></div><div class="feature-card"><h3>Buyer requirements</h3><p class="buyer-note">Buyers looking for vegetables near you. Publish your listing to receive offers.</p><div class="buyer-requirements">${matchHtml}</div></div>`);
-    document.querySelector('#create').onclick = () => document.querySelector('#listing-modal').classList.add('open');
+    const [data, listingData, buyersData, acceptedData] = await Promise.all([api('/api/farmer/dashboard'), api('/api/farmer/listings'), api('/api/farmer/buyers?sort=distance'), api('/api/farmer/accepted-orders')]);
+    shell('Farmer Home', `<div class="feature-grid"><div class="feature-card"><h3>My vegetable listings</h3><strong>${data.stats.active_listings}</strong><p>Active listings · Pending orders: ${data.stats.pending_orders}</p><button class="button primary" id="create">List vegetables</button></div><div class="feature-card"><h3>Action needed</h3><p>${data.actions.unread_matches} buyer matches · ${data.actions.disputes_awaiting_response} disputes</p></div><div class="feature-card"><h3>Demand planning</h3><p>${escapeHtml(data.demand_insight.recommendation)}</p></div><div class="feature-card"><h3>This month earnings</h3><strong>₹${data.stats.month_earnings}</strong></div></div><div class="feature-card"><h3>My listed vegetables</h3><div class="listing-list">${listingData.listings.length ? listingData.listings.map(listingCard).join('') : '<p>No vegetables listed yet. Create a listing to reach buyers.</p>'}</div></div><div class="feature-card"><h3>Buyers</h3><p class="buyer-note">Matched buyers and buyers interested in your active listings.</p><div class="buyer-requirements">${buyersData.buyers.length ? buyersData.buyers.map(buyerCard).join('') : '<p>No buyer interest yet.</p>'}</div></div><div class="feature-card"><h3>Accepted orders</h3><div class="order-list">${acceptedData.orders.length ? acceptedData.orders.map(orderCard).join('') : '<p>No buyer-confirmed orders yet.</p>'}</div></div>`);
+    document.querySelector('#create').onclick = () => document.querySelector('#listing-modal').classList.add('open'); bindChats();
   }
-
-  async function buyer() {
-    const data = await api('/api/buyer/dashboard'); const listings = await api('/api/buyer/listings');
-    shell('Buyer Home', `<div class="feature-grid"><div class="feature-card"><h3>Active orders</h3><strong>${data.stats.active_orders}</strong><p>Awaiting confirmation: ${data.stats.awaiting_confirmation}</p></div><div class="feature-card"><h3>Spend this month</h3><strong>₹${data.stats.month_spend}</strong><p>Average paid: ₹${data.stats.average_price_paid}</p></div></div><div class="feature-card"><h3>Farmgate listings</h3>${listings.listings.length ? listings.listings.map(item => `<p><b>${item.crop}</b> — ${item.quantity} kg · ₹${item.price}/kg <button class="button primary" data-order="${item.id}">Order</button></p>`).join('') : 'No listings available yet.'}</div>`);
-    document.querySelectorAll('[data-order]').forEach(button => button.onclick = async () => { await api('/api/orders', { method: 'POST', body: JSON.stringify({ listing_id: button.dataset.order, quantity: 100, order_type: 'bulk' }) }); buyer(); });
-  }
-
-  async function logistics() { const [orders, route] = await Promise.all([api('/api/logistics/orders'), api('/api/logistics/route')]); shell('Logistics Partner', `<div class="feature-card"><h3>Assigned pooled orders</h3><strong>${orders.orders.length}</strong><p>${route.distance_km} km · ${route.estimated_duration_minutes} minutes</p></div>`); }
+  function farmerDemo() { shell('Farmer Demo Dashboard', '<div class="feature-card"><h3>Demo mode</h3><p>Sign in with OTP to view live buyers, orders, and logistics.</p></div>'); }
+  async function buyer() { const data = await api('/api/buyer/dashboard'); shell('Buyer Home', `<div class="feature-card"><h3>Active orders</h3><strong>${data.stats.active_orders}</strong></div>`); }
+  async function logistics() { const data = await api('/api/logistics/orders'); shell('Logistics Partner', `<div class="feature-card"><h3>Assigned orders</h3><strong>${data.orders.length}</strong></div>`); }
   async function admin() { const data = await api('/api/admin/dashboard'); shell('Admin Control Centre', `<div class="feature-card"><h3>Adoption rate</h3><strong>${data.analytics.adoption_rate}%</strong></div>`); }
+  if (demoMode) farmerDemo(); else ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.')))().catch(error => shell('Dashboard error', `<p>${escapeHtml(error.message)}</p>`));
 
-  if (demoMode) {
-    farmerDemo();
-  } else {
-    const loadDashboard = ({ farmer, buyer, logistics, admin }[role] || (() => shell('Dashboard', 'Unsupported role.')));
-    loadDashboard().catch(error => shell('Dashboard error', `<p>${error.message}</p>`));
-  }
-
-  const modal = document.querySelector('#listing-modal');
-  const form = document.querySelector('#listing-form');
-  const photoInput = form?.elements.photo;
-  const preview = document.querySelector('#listing-image-preview');
-  let photoData = '';
-  document.querySelector('.auth-close')?.addEventListener('click', () => modal.classList.remove('open'));
-  photoInput?.addEventListener('change', () => {
-    const file = photoInput.files[0]; if (!file) return;
-    preview.src = URL.createObjectURL(file); preview.hidden = false;
-    const reader = new FileReader(); reader.onload = () => { photoData = reader.result; }; reader.readAsDataURL(file);
-  });
-  form?.addEventListener('submit', async event => {
-    event.preventDefault(); const error = document.querySelector('#listing-error'); error.textContent = '';
-    const values = Object.fromEntries(new FormData(form));
-    try {
-      if (demoMode) {
-        const listings = JSON.parse(localStorage.getItem('uyirva_demo_listings') || '[]');
-        listings.unshift({ crop: values.crop, quantity: values.quantity, price: values.price, freshness: values.freshness, agmark: values.agmark, quality_grade: values.quality_grade, photo_url: photoData });
-        localStorage.setItem('uyirva_demo_listings', JSON.stringify(listings));
-        modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmerDemo();
-        const notice = document.createElement('p'); notice.className = 'listing-success'; notice.textContent = `${values.crop} listing published successfully.`; app.prepend(notice); return;
-      }
-      await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer();
-    }
-    catch (err) { error.textContent = err.message; }
-  });
+  const modal = document.querySelector('#listing-modal'); const form = document.querySelector('#listing-form'); const photoInput = form.elements.photo; const preview = document.querySelector('#listing-image-preview'); const today = new Date().toISOString().slice(0, 10); form.elements.harvest_date.min = today; form.elements.pickup_ready_at.min = `${today}T00:00`; let photoData = '';
+  document.querySelector('.auth-close').onclick = () => modal.classList.remove('open');
+  photoInput.onchange = () => { const file = photoInput.files[0]; const error = document.querySelector('#listing-error'); if (!file) return; if (!['image/jpeg', 'image/png'].includes(file.type)) { photoInput.value = ''; error.textContent = 'Please choose a JPG or PNG image.'; return; } error.textContent = ''; preview.src = URL.createObjectURL(file); preview.hidden = false; const reader = new FileReader(); reader.onload = () => { photoData = reader.result; }; reader.readAsDataURL(file); };
+  form.onsubmit = async event => { event.preventDefault(); const error = document.querySelector('#listing-error'); error.textContent = ''; if (!form.checkValidity() || !photoData) { error.textContent = 'Complete every required field and add a JPG or PNG image.'; form.reportValidity(); return; } const values = Object.fromEntries(new FormData(form)); if (values.harvest_date < today || values.pickup_ready_at.slice(0, 10) < today) { error.textContent = 'Harvest and pickup-ready dates cannot be in the past.'; return; } try { await api('/api/farmer/listings', { method: 'POST', body: JSON.stringify({ ...values, unit: 'kg', photo_url: photoData }) }); modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = ''; farmer(); } catch (issue) { error.textContent = issue.message; } };
 }
