@@ -7,8 +7,44 @@
   <title>Buyer Dashboard — UYIRVA</title>
   <link rel="stylesheet" href="../../css/styles.css">
   <link rel="stylesheet" href="../../css/buyer.css">
+  <style>
+    /* Dashboard navbar */
+    .db-nav{position:fixed;z-index:20;top:12px;left:16px;right:16px;padding:10px 18px;display:flex;align-items:center;justify-content:space-between;gap:14px;border-radius:18px}
+    .db-nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .db-nav-logo{width:36px;height:36px;border-radius:10px;background:#fff;overflow:hidden;display:grid;place-items:center;flex-shrink:0}
+    .db-nav-logo img{width:60px;height:60px;object-fit:cover;transform:translate(-12px,-5px)}
+    .db-nav-name{font:700 1.25rem Fraunces,Georgia,serif;color:#fff;letter-spacing:.02em}
+    .db-nav-right{display:flex;align-items:center;gap:10px}
+    .db-user-pill{display:flex;align-items:center;gap:8px;padding:6px 14px 6px 6px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px}
+    .db-user-avatar-nav{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--wheat),var(--leaf));display:grid;place-items:center;font:700 .85rem Fraunces,serif;color:#183020;flex-shrink:0}
+    .db-user-info{line-height:1.2}
+    .db-user-info span{display:block;font-size:.78rem;font-weight:700;color:var(--cream)}
+    .db-user-info small{font-size:.68rem;color:var(--muted)}
+    .db-signout{padding:7px 16px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:transparent;color:var(--cream);font:.82rem "Public Sans",sans-serif;cursor:pointer;transition:background .2s;white-space:nowrap}
+    .db-signout:hover{background:rgba(255,255,255,.12)}
+    @media(max-width:480px){.db-user-info{display:none}}
+    @media(min-width:881px){.db-nav{left:max(4vw,24px);right:max(4vw,24px)}}
+  </style>
 </head>
 <body>
+
+  <!-- ── NAVBAR ── -->
+  <nav class="db-nav glass" aria-label="Dashboard navigation">
+    <a class="db-nav-brand" href="/">
+      <span class="db-nav-logo"><img src="/uyirva-logo.jpeg" alt="UYIRVA logo"></span>
+      <span class="db-nav-name">UYIRVA</span>
+    </a>
+    <div class="db-nav-right">
+      <div class="db-user-pill">
+        <div class="db-user-avatar-nav" id="nav-avatar">B</div>
+        <div class="db-user-info">
+          <span id="nav-user-name">Loading…</span>
+          <small>Buyer</small>
+        </div>
+      </div>
+      <button class="db-signout" id="db-logout" type="button">Sign out</button>
+    </div>
+  </nav>
 
   <main class="db-app" id="db-app">
 
