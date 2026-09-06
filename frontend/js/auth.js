@@ -1,11 +1,9 @@
+import { initAiPriceModal } from './ai-price.js';
+
 /**
  * auth.js — OTP-based role login & registration for UYIRVA
- * Features:
- * - Login Mode vs Signup Mode ("Don't have an account? Sign up" toggle)
- * - Login mode NEVER asks for name/registration questions for old or returning users
- * - Signup mode presents registration questions for new users
- * - Input keystroke restrictions & format/range validations
  */
+initAiPriceModal();
 
 // ─── Modal open/close ───
 const modal = document.querySelector('#auth-modal');

@@ -1,4 +1,5 @@
 import { initAccountModal } from './account.js';
+import { initAiPriceModal } from './ai-price.js';
 
 // ─── Auth guard ───
 const user = JSON.parse(localStorage.getItem('uyirva_user') || 'null');
@@ -10,8 +11,9 @@ const app = document.querySelector('#dashboard-app');
 const apiBase = window.UYIRVA_API_URL || window.location.origin;
 const escapeHtml = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[c]));
 
-// Initialize Account Profile Modal & Navbar triggers
+// Initialize Account & AI Price Modals
 initAccountModal();
+initAiPriceModal();
 
 const logout = () => { localStorage.clear(); location.assign('/'); };
 
@@ -103,8 +105,9 @@ async function farmer() {
         <p>${buyers.length} buyer requirements posted</p>
       </div>
       <div class="feature-card">
-        <h3>Demand planning</h3>
+        <h3>Demand planning & AI Pricing</h3>
         <p>${listings.length > 0 ? 'Your vegetables are live for buyers.' : 'List your harvested vegetables to match with nearby buyers.'}</p>
+        <button class="button secondary btn-sm" id="btn-ai-more-info" type="button" style="width:100%;margin-top:10px;font-size:.82rem">🤖 More Info &amp; AI Price Suggestions</button>
       </div>
       <div class="feature-card">
         <h3>This month earnings</h3>
