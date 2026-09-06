@@ -345,8 +345,8 @@
           <div class="otp-step-divider"></div>
           <div class="otp-step"><span class="otp-step-num">3</span><span class="otp-step-label">Your Name</span></div>
         </div>
-        <h2 id="auth-title">Welcome to UYIRVA</h2>
-        <p class="auth-copy">Enter your mobile number and select your role to continue.</p>
+        <h2 id="auth-title">Sign In to UYIRVA</h2>
+        <p class="auth-copy" id="auth-copy">Enter your registered mobile number and role to continue.</p>
         <div class="role-grid">
           <button class="role-btn selected" data-role="FARMER" type="button">
             <span class="rb-icon">&#x1F9D1;&#x200D;&#x1F33E;</span>
@@ -367,6 +367,11 @@
         </div>
         <p class="auth-error" id="step1-err"></p>
         <button class="auth-submit" id="send-otp-btn" type="button">Send OTP &#x2192;</button>
+        
+        <p style="text-align:center;margin-top:16px;font-size:.86rem;color:var(--muted)">
+          <span id="auth-switch-text">Don't have an account?</span>
+          <button class="auth-link" id="toggle-auth-mode" type="button" style="margin-left:4px;color:var(--wheat);font-weight:700">Sign up</button>
+        </p>
       </div>
 
       <!-- STEP 2: OTP Entry -->

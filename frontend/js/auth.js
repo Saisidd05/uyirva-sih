@@ -1,9 +1,10 @@
 /**
  * auth.js — OTP-based role login & registration for UYIRVA
  * Features:
- * - Returning user check (bypasses registration questions for existing users)
- * - Strict input restrictions (digits only phone, letters only name)
- * - Format & range validation checks
+ * - Login Mode vs Signup Mode ("Don't have an account? Sign up" toggle)
+ * - Login mode NEVER asks for name/registration questions for old or returning users
+ * - Signup mode presents registration questions for new users
+ * - Input keystroke restrictions & format/range validations
  */
 
 // ─── Modal open/close ───
@@ -18,7 +19,8 @@ if (menuBtn && mobileMenu) {
   });
 }
 
-function showAuth() {
+function showAuth(mode = 'login') {
+  setAuthMode(mode === 'signup');
   modal?.classList.add('open');
   modal?.setAttribute('aria-hidden', 'false');
   document.getElementById('phone-inp')?.focus();
@@ -28,7 +30,12 @@ function closeAuth() {
   modal?.setAttribute('aria-hidden', 'true');
 }
 
-document.querySelectorAll('[data-auth-open]').forEach(el => el.addEventListener('click', showAuth));
+document.querySelectorAll('[data-auth-open]').forEach(el => {
+  el.addEventListener('click', (e) => {
+    const mode = el.getAttribute('data-auth-open');
+    showAuth(mode);
+  });
+});
 document.querySelector('.auth-close')?.addEventListener('click', closeAuth);
 modal?.addEventListener('click', e => { if (e.target === modal) closeAuth(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
@@ -44,11 +51,38 @@ if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
   document.querySelectorAll('.reveal').forEach(el => el.classList.add('in-view'));
 }
 
-// ─── OTP State ───
+// ─── OTP & AUTH MODE STATE ───
 let _selectedRole = 'FARMER';
 let _phone = '';
 let _generatedOTP = '';
 let _timerInterval = null;
+let _isSignupMode = false; // false = Login mode, true = Signup mode
+
+function setAuthMode(isSignup) {
+  _isSignupMode = isSignup;
+  const title = document.getElementById('auth-title');
+  const copy = document.getElementById('auth-copy');
+  const switchText = document.getElementById('auth-switch-text');
+  const toggleBtn = document.getElementById('toggle-auth-mode');
+  const step1Err = document.getElementById('step1-err');
+  if (step1Err) step1Err.textContent = '';
+
+  if (_isSignupMode) {
+    if (title) title.textContent = 'Create UYIRVA Account';
+    if (copy) copy.textContent = 'Enter your mobile number and role to register as a new user.';
+    if (switchText) switchText.textContent = 'Already have an account?';
+    if (toggleBtn) toggleBtn.textContent = 'Sign in';
+  } else {
+    if (title) title.textContent = 'Sign In to UYIRVA';
+    if (copy) copy.textContent = 'Enter your registered mobile number and role to continue.';
+    if (switchText) switchText.textContent = "Don't have an account?";
+    if (toggleBtn) toggleBtn.textContent = 'Sign up';
+  }
+}
+
+document.getElementById('toggle-auth-mode')?.addEventListener('click', () => {
+  setAuthMode(!_isSignupMode);
+});
 
 // Role selector & detail field updater
 const updateRoleDetailField = (role) => {
@@ -97,7 +131,7 @@ document.querySelectorAll('.role-btn').forEach(btn => {
 const phoneInp = document.getElementById('phone-inp');
 if (phoneInp) {
   phoneInp.addEventListener('input', e => {
-    // Restrict to digits only, max 10 chars
+    // Digits only, max 10 chars
     e.target.value = e.target.value.replace(/\D/g, '').slice(0, 10);
   });
 }
@@ -105,7 +139,7 @@ if (phoneInp) {
 const nameInp = document.getElementById('name-inp');
 if (nameInp) {
   nameInp.addEventListener('input', e => {
-    // Restrict to letters and spaces only, max 50 chars
+    // Letters and spaces only, max 50 chars
     e.target.value = e.target.value.replace(/[^a-zA-Z\s]/g, '').slice(0, 50);
   });
 }
@@ -116,7 +150,6 @@ document.getElementById('send-otp-btn')?.addEventListener('click', () => {
   const err = document.getElementById('step1-err');
   err.textContent = '';
 
-  // Required & Format check: Exactly 10 digits starting with 6-9
   if (!phoneVal) {
     err.textContent = 'Mobile number is required.';
     return;
@@ -196,16 +229,26 @@ document.getElementById('verify-otp-btn')?.addEventListener('click', () => {
 
   clearInterval(_timerInterval);
 
-  // Check persistent users registry
+  // Look up user in persistent registry
   const usersRegistry = JSON.parse(localStorage.getItem('uyirva_users_registry') || '{}');
   const existingUser = usersRegistry[_phone];
 
-  // RETURNING OLD USER: Bypass name/registration questions completely!
-  if (existingUser && existingUser.full_name) {
-    existingUser.role = _selectedRole;
-    redirectToDashboard(existingUser);
+  // LOGIN MODE or EXISTING USER -> NEVER ASK FOR NAME OR QUESTIONS! Direct redirect to dashboard!
+  if (!_isSignupMode || (existingUser && existingUser.full_name)) {
+    const userToLog = existingUser || {
+      id: `UYIR-${Math.floor(10000 + Math.random() * 90000)}`,
+      full_name: `${_selectedRole.charAt(0) + _selectedRole.slice(1).toLowerCase()} User`,
+      phone: _phone,
+      role: _selectedRole,
+      location: 'Coimbatore'
+    };
+    userToLog.role = _selectedRole;
+    // Save/update registry
+    usersRegistry[_phone] = userToLog;
+    localStorage.setItem('uyirva_users_registry', JSON.stringify(usersRegistry));
+    redirectToDashboard(userToLog);
   } else {
-    // NEW USER: Show Registration Questions Form
+    // SIGNUP MODE for NEW USER -> Show Registration Questions
     document.getElementById('otp-step2').hidden = true;
     document.getElementById('otp-step3').hidden = false;
     updateRoleDetailField(_selectedRole);
@@ -213,7 +256,7 @@ document.getElementById('verify-otp-btn')?.addEventListener('click', () => {
   }
 });
 
-// ─── STEP 3: Complete Signup with Validations ───
+// ─── STEP 3: Complete Signup (New Users Only) ───
 document.getElementById('complete-btn')?.addEventListener('click', () => {
   const nameVal = document.getElementById('name-inp').value.trim();
   const locVal = document.getElementById('loc-inp').value;
