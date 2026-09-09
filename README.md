@@ -347,6 +347,7 @@ npm run dev:frontend
 ---
 
 <p align="center">
-  <b>Built with ❤️ by Team Uyirva for Smart India Hackathon</b><br/>
+  <b>Built with ❤️ by Team Uyirva - NeuroMinds for Smart India Hackathon</b><br/>
+   <b>@2026 Agni College of Technology - Dept of Information Technology</b><br/> 
   <i>Digitizing agriculture, empowering farmers.</i>
 </p>
