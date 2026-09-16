@@ -38,11 +38,11 @@ function initDefaultMockData() {
 
   if (!localStorage.getItem('uyirva_logistics')) {
     const defaultLogistics = [
-      { id: 'L1', name: 'Vel Transports & Cold Chain', type: 'Ashok Leyland Dost / Reefer', location: 'Coimbatore', capacity: '2 Ton', phone: '9842100011', available: true },
-      { id: 'L2', name: 'Muthu Cargo & Freight', type: 'Eicher Pro Lorry (14 ft)', location: 'Erode', capacity: '5 Ton', phone: '9842100022', available: true },
-      { id: 'L3', name: 'Sri Logistics & Roadlines', type: 'Mahindra Bolero Pickup', location: 'Salem', capacity: '1.5 Ton', phone: '9842100033', available: true },
-      { id: 'L4', name: 'Kaviya Fleet Logistics', type: 'Refrigerator Van (Cold-chain)', location: 'Tiruppur', capacity: '2 Ton', phone: '9842100044', available: true },
-      { id: 'L5', name: 'Kongu Express Freight', type: 'Force Trump Pickup', location: 'Dindigul', capacity: '1.2 Ton', phone: '9842100055', available: true }
+      { id: 'L1', name: 'Vel Transports & Cold Chain', type: 'Ashok Leyland Dost / Reefer', location: 'Coimbatore', capacity: '2 Ton', phone: '+91 98421 00011', rating: '4.9', rate_per_km: '18', rate_per_hr: '150', available: true },
+      { id: 'L2', name: 'Muthu Cargo & Freight', type: 'Eicher Pro Lorry (14 ft)', location: 'Erode', capacity: '5 Ton', phone: '+91 98421 00022', rating: '4.8', rate_per_km: '28', rate_per_hr: '240', available: true },
+      { id: 'L3', name: 'Sri Logistics & Roadlines', type: 'Mahindra Bolero Pickup', location: 'Salem', capacity: '1.5 Ton', phone: '+91 98421 00033', rating: '4.7', rate_per_km: '16', rate_per_hr: '130', available: true },
+      { id: 'L4', name: 'Kaviya Fleet Logistics', type: 'Refrigerator Van (Cold-chain)', location: 'Tiruppur', capacity: '2 Ton', phone: '+91 98421 00044', rating: '4.9', rate_per_km: '22', rate_per_hr: '180', available: true },
+      { id: 'L5', name: 'Kongu Express Freight', type: 'Force Trump Pickup', location: 'Dindigul', capacity: '1.2 Ton', phone: '+91 98421 00055', rating: '4.6', rate_per_km: '14', rate_per_hr: '120', available: true }
     ];
     localStorage.setItem('uyirva_logistics', JSON.stringify(defaultLogistics));
   }
@@ -207,14 +207,14 @@ function renderLogistics() {
           <div class="lc-name">🚚 ${l.name}</div>
           <small style="color:var(--muted)">📍 ${l.location || 'Coimbatore'} · Capacity: ${l.capacity || '2 Ton'}</small>
         </div>
-        <div class="lc-rating">⭐ 4.8 / 5.0</div>
+        <div class="lc-rating">⭐ ${l.rating || '4.8'} / 5.0</div>
       </div>
       <div class="vehicles-list">
         <div class="vehicle-row">
           <div class="veh-icon">🚛</div>
           <div class="veh-info">
             <div class="vtype">${l.type || 'Mini Truck / Reefer'}</div>
-            <div class="vcap">Cold-chain Escrow Protected</div>
+            <div class="vcap">Rate: <strong style="color:var(--wheat)">₹${l.rate_per_km || '18'}/km</strong> · <strong style="color:var(--wheat)">₹${l.rate_per_hr || '150'}/hr</strong></div>
           </div>
           <span class="veh-avail ${l.available ? 'yes' : 'no'}">${l.available ? 'Available' : 'Busy'}</span>
         </div>
@@ -223,6 +223,51 @@ function renderLogistics() {
     </div>
   `).join('');
 }
+
+// ─── LOGISTICS BOOKING MODAL LOGIC ───
+let _pendingLogisticsBooking = null;
+
+const logiModal = document.getElementById('logistics-confirm-modal');
+const closeLogiBtn = document.getElementById('close-logistics-modal');
+const cancelLogiBtn = document.getElementById('btn-cancel-logistics');
+const confirmLogiBtn = document.getElementById('btn-confirm-logistics');
+
+function closeLogiModal() {
+  logiModal?.classList.remove('open');
+  logiModal?.setAttribute('aria-hidden', 'true');
+  _pendingLogisticsBooking = null;
+}
+
+closeLogiBtn?.addEventListener('click', closeLogiModal);
+cancelLogiBtn?.addEventListener('click', closeLogiModal);
+logiModal?.addEventListener('click', e => { if (e.target === logiModal) closeLogiModal(); });
+
+window.bookLogistics = id => {
+  const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
+  const lp = logisticsList.find(l => l.id === id);
+  if (!lp) return;
+
+  _pendingLogisticsBooking = lp;
+
+  document.getElementById('logi-modal-name').textContent = lp.name;
+  document.getElementById('logi-modal-type').textContent = lp.type;
+  document.getElementById('logi-modal-rating').textContent = `⭐ ${lp.rating || '4.8'} / 5.0`;
+  document.getElementById('logi-modal-cap').textContent = lp.capacity || '2 Ton';
+  document.getElementById('logi-modal-loc').textContent = lp.location || 'Coimbatore';
+  document.getElementById('logi-modal-phone').textContent = lp.phone || '+91 98421 00000';
+  document.getElementById('logi-modal-rate-km').textContent = `₹${lp.rate_per_km || '18'} / km`;
+  document.getElementById('logi-modal-rate-hr').textContent = `₹${lp.rate_per_hr || '150'} / hr`;
+
+  logiModal?.classList.add('open');
+  logiModal?.setAttribute('aria-hidden', 'false');
+};
+
+confirmLogiBtn?.addEventListener('click', () => {
+  if (!_pendingLogisticsBooking) return;
+  const lp = _pendingLogisticsBooking;
+  closeLogiModal();
+  alert(`✅ Booking Request Confirmed!\n\nPartner: ${lp.name}\nVehicle: ${lp.type}\nRates: ₹${lp.rate_per_km || '18'}/km | ₹${lp.rate_per_hr || '150'}/hr\n\nDriver contact details have been sent to your registered phone number.`);
+});
 
 // ─── RENDER: Orders ───
 function renderOrders() {
