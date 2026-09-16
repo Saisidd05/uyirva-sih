@@ -210,17 +210,8 @@ function renderLogistics() {
         </div>
         <div class="lc-rating">⭐ ${l.rating || '4.8'} / 5.0</div>
       </div>
-      <div class="vehicles-list">
-        <div class="vehicle-row">
-          <div class="veh-icon">🚛</div>
-          <div class="veh-info">
-            <div class="vtype">${l.type || 'Mini Truck / Reefer'}</div>
-            <div class="vcap">Rate: <strong style="color:var(--wheat)">₹${l.rate_per_km || '18'}/km</strong> · <strong style="color:var(--wheat)">₹${l.rate_per_hr || '150'}/hr</strong></div>
-          </div>
-          <span class="veh-avail ${l.available ? 'yes' : 'no'}">${l.available ? 'Available' : 'Busy'}</span>
-        </div>
       </div>
-      <button class="button primary" style="width:100%;justify-content:center;margin-top:10px;border-radius:12px;padding:8px" onclick="bookLogistics('${l.id}')">📞 Book Vehicle</button>
+      <button class="button primary" style="width:100%;justify-content:center;margin-top:10px;border-radius:12px;padding:8px" onclick="window.bookLogistics('${l.id}')">📞 View Vehicles & Book</button>
     </div>
   `).join('');
 }
@@ -251,23 +242,34 @@ window.bookLogistics = id => {
   _pendingLogisticsBooking = lp;
 
   document.getElementById('logi-modal-name').textContent = lp.name;
-  document.getElementById('logi-modal-type').textContent = lp.type;
-  document.getElementById('logi-modal-rating').textContent = `⭐ ${lp.rating || '4.8'} / 5.0`;
-  document.getElementById('logi-modal-cap').textContent = lp.capacity || '2 Ton';
   document.getElementById('logi-modal-loc').textContent = lp.location || 'Coimbatore';
-  document.getElementById('logi-modal-phone').textContent = lp.phone || '+91 98421 00000';
-  document.getElementById('logi-modal-rate-km').textContent = `₹${lp.rate_per_km || '18'} / km`;
-  document.getElementById('logi-modal-rate-hr').textContent = `₹${lp.rate_per_hr || '150'} / hr`;
+  
+  // reset dropdown
+  const vSelect = document.getElementById('logi-modal-vehicle-select');
+  if(vSelect) vSelect.value = 'mini';
+  window.updateVehicleRates('mini');
 
   logiModal?.classList.add('open');
   logiModal?.setAttribute('aria-hidden', 'false');
 };
 
+window.updateVehicleRates = val => {
+  const kmRate = val === 'lorry' ? '28' : val === 'pickup' ? '22' : '18';
+  const hrRate = val === 'lorry' ? '240' : val === 'pickup' ? '180' : '150';
+  const kmEl = document.getElementById('logi-modal-rate-km');
+  const hrEl = document.getElementById('logi-modal-rate-hr');
+  if(kmEl) kmEl.textContent = `₹${kmRate} / km`;
+  if(hrEl) hrEl.textContent = `₹${hrRate} / hr`;
+};
+
 confirmLogiBtn?.addEventListener('click', () => {
   if (!_pendingLogisticsBooking) return;
   const lp = _pendingLogisticsBooking;
+  const vSelect = document.getElementById('logi-modal-vehicle-select');
+  const vName = vSelect ? vSelect.options[vSelect.selectedIndex].text.split('(')[0].trim() : 'Vehicle';
+  
   closeLogiModal();
-  alert(`✅ Booking Request Confirmed!\n\nPartner: ${lp.name}\nVehicle: ${lp.type}\nRates: ₹${lp.rate_per_km || '18'}/km | ₹${lp.rate_per_hr || '150'}/hr\n\nDriver contact details have been sent to your registered phone number.`);
+  alert(`✅ Booking Confirmed!\n\nPartner: ${lp.name}\nVehicle: ${vName}\n\n🚚 DRIVER DETAILS:\nName: Murugan / Saravanan\nContact: ${lp.phone || '+91 9842100000'}\nRating: ⭐ 4.8 / 5.0\n\nDriver will reach your location shortly.`);
 });
 
 // ─── RENDER: Orders ───

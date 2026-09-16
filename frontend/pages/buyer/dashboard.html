@@ -238,12 +238,18 @@
 
       <!-- Partner Specs -->
       <div style="background:rgba(6,22,13,.65);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:16px;margin-bottom:16px;display:grid;gap:8px;font-size:.86rem">
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Partner Name:</span><strong id="logi-modal-name" style="color:var(--wheat)">-</strong></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Vehicle Type:</span><strong id="logi-modal-type">-</strong></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Driver Rating:</span><strong id="logi-modal-rating" style="color:var(--wheat)">-</strong></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Max Payload Capacity:</span><strong id="logi-modal-cap">-</strong></div>
+        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Logistics Partner:</span><strong id="logi-modal-name" style="color:var(--wheat)">-</strong></div>
         <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Base Location:</span><strong id="logi-modal-loc">-</strong></div>
-        <div style="display:flex;justify-content:space-between"><span style="color:var(--muted)">Driver Contact:</span><strong id="logi-modal-phone">-</strong></div>
+      </div>
+
+      <!-- Vehicle selection like Ola -->
+      <div style="margin-bottom:16px">
+        <label style="font-size:.85rem;font-weight:700;color:var(--muted);margin-bottom:8px;display:block">Select Vehicle Type:</label>
+        <select id="logi-modal-vehicle-select" style="width:100%;padding:10px;background:rgba(9,36,20,.6);color:#fff;border:1px solid var(--line);border-radius:10px;font-size:.9rem" onchange="window.updateVehicleRates(this.value)">
+           <option value="mini">Mini Truck (₹18/km | ₹150/hr)</option>
+           <option value="pickup">Pickup Van (₹22/km | ₹180/hr)</option>
+           <option value="lorry">Lorry 14ft (₹28/km | ₹240/hr)</option>
+        </select>
       </div>
 
       <!-- Rates breakdown -->
