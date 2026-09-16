@@ -208,10 +208,10 @@ function renderLogistics() {
           <div class="lc-name">🚚 ${l.name}</div>
           <small style="color:var(--muted)">📍 ${l.location || 'Coimbatore'} · Capacity: ${l.capacity || '2 Ton'}</small>
         </div>
-        <div class="lc-rating">⭐ ${l.rating || '4.8'} / 5.0</div>
       </div>
+      <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.1); padding-top:12px; display:flex; justify-content:flex-end;">
+        <button class="button primary" style="border-radius:6px; padding:6px 14px; font-size:0.85rem; font-weight:600;" onclick="window.bookLogistics('${l.id}')">View Vehicles & Book</button>
       </div>
-      <button class="button primary" style="width:100%;justify-content:center;margin-top:10px;border-radius:12px;padding:8px" onclick="window.bookLogistics('${l.id}')">📞 View Vehicles & Book</button>
     </div>
   `).join('');
 }
@@ -255,11 +255,8 @@ window.bookLogistics = id => {
 
 window.updateVehicleRates = val => {
   const kmRate = val === 'lorry' ? '28' : val === 'pickup' ? '22' : '18';
-  const hrRate = val === 'lorry' ? '240' : val === 'pickup' ? '180' : '150';
   const kmEl = document.getElementById('logi-modal-rate-km');
-  const hrEl = document.getElementById('logi-modal-rate-hr');
   if(kmEl) kmEl.textContent = `₹${kmRate} / km`;
-  if(hrEl) hrEl.textContent = `₹${hrRate} / hr`;
 };
 
 confirmLogiBtn?.addEventListener('click', () => {
