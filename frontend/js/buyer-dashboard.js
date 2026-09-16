@@ -255,15 +255,50 @@ window.editReq = id => {
   save(); updateStats(); renderRequirements();
   document.getElementById('req-crop').scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
+let _pendingListingToOrder = null;
+
+const confirmModal = document.getElementById('order-confirm-modal');
+const closeConfirmBtn = document.getElementById('close-order-modal');
+const cancelConfirmBtn = document.getElementById('btn-cancel-order');
+const confirmOrderBtn = document.getElementById('btn-confirm-order');
+
+function closeOrderModal() {
+  confirmModal?.classList.remove('open');
+  confirmModal?.setAttribute('aria-hidden', 'true');
+  _pendingListingToOrder = null;
+}
+
+closeConfirmBtn?.addEventListener('click', closeOrderModal);
+cancelConfirmBtn?.addEventListener('click', closeOrderModal);
+confirmModal?.addEventListener('click', e => { if (e.target === confirmModal) closeOrderModal(); });
+
 window.placeOrderForListing = listingId => {
   const farmerListings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
   const listing = farmerListings.find(f => f.id === listingId);
   if (!listing) return;
+
+  _pendingListingToOrder = listing;
+  const totalPriceNum = parseFloat(listing.quantity || 0) * parseFloat(listing.price || 0);
+
+  document.getElementById('modal-crop-name').textContent = listing.crop;
+  document.getElementById('modal-farmer-name').textContent = listing.farmer_name || 'Farmer Produce';
+  document.getElementById('modal-qty').textContent = `${listing.quantity} kg`;
+  document.getElementById('modal-unit-price').textContent = `₹${listing.price}/kg`;
+  document.getElementById('modal-total-price').textContent = `₹${totalPriceNum.toLocaleString()}`;
+
+  confirmModal?.classList.add('open');
+  confirmModal?.setAttribute('aria-hidden', 'false');
+};
+
+confirmOrderBtn?.addEventListener('click', () => {
+  if (!_pendingListingToOrder) return;
+  const listing = _pendingListingToOrder;
   const totalPrice = (parseFloat(listing.quantity || 0) * parseFloat(listing.price || 0)).toLocaleString();
+
   store.orders.unshift({
     id: uid(),
     crop: listing.crop,
-    farmer: 'Farmer Produce',
+    farmer: listing.farmer_name || 'Farmer Produce',
     qty: `${listing.quantity} kg`,
     total: `₹${totalPrice}`,
     delivery: listing.location || 'Coimbatore',
@@ -271,14 +306,16 @@ window.placeOrderForListing = listingId => {
     status: 'Pending',
     date: new Date().toLocaleDateString('en-IN')
   });
+
   save(); updateStats();
+  closeOrderModal();
+
   document.querySelectorAll('.db-tab').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
   document.querySelector('[data-tab="orders"]').classList.add('active');
   document.getElementById('panel-orders').classList.add('active');
   renderOrders();
-  alert(`✅ Order placed for ${listing.crop} (${listing.quantity} kg)!`);
-};
+});
 window.bookLogistics = id => {
   const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
   const lp = logisticsList.find(l => l.id === id) || { name: 'Logistics Partner' };
