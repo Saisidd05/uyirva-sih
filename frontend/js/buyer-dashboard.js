@@ -184,12 +184,44 @@ function renderFarmers() {
 // ─── RENDER: Logistics ───
 function renderLogistics() {
   const grid = document.getElementById('logistics-grid');
+  if (!grid) return;
+  const typeFilter = document.getElementById('logi-filter-type')?.value.toLowerCase() || '';
+  const availFilter = document.getElementById('logi-filter-avail')?.value || '';
   const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
 
-  if (!logisticsList.length) {
-    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🚚</div><p>No logistics partners listed yet.<br>Registered logistics providers will appear here.</p></div>`;
+  const filtered = logisticsList.filter(l => {
+    if (typeFilter && !(l.type || '').toLowerCase().includes(typeFilter)) return false;
+    if (availFilter === 'yes' && !l.available) return false;
+    return true;
+  });
+
+  if (!filtered.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="es-icon">🚚</div><p>No matching logistics partners found.<br>Registered logistics providers will appear here.</p></div>`;
     return;
   }
+
+  grid.innerHTML = filtered.map(l => `
+    <div class="logistics-card glass">
+      <div class="lc-header">
+        <div>
+          <div class="lc-name">🚚 ${l.name}</div>
+          <small style="color:var(--muted)">📍 ${l.location || 'Coimbatore'} · Capacity: ${l.capacity || '2 Ton'}</small>
+        </div>
+        <div class="lc-rating">⭐ 4.8 / 5.0</div>
+      </div>
+      <div class="vehicles-list">
+        <div class="vehicle-row">
+          <div class="veh-icon">🚛</div>
+          <div class="veh-info">
+            <div class="vtype">${l.type || 'Mini Truck / Reefer'}</div>
+            <div class="vcap">Cold-chain Escrow Protected</div>
+          </div>
+          <span class="veh-avail ${l.available ? 'yes' : 'no'}">${l.available ? 'Available' : 'Busy'}</span>
+        </div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="bookLogistics('${l.id}')">📞 Book Vehicle</button>
+    </div>
+  `).join('');
 }
 
 // ─── RENDER: Orders ───
