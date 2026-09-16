@@ -16,21 +16,39 @@ if (!user) {
   localStorage.setItem('uyirva_user', JSON.stringify(user));
 }
 
-// Apply mode styling & init account modal
+// Apply mode styling & init account modal safely
 document.body.classList.add('logistics-mode');
-initAccountModal();
+try {
+  initAccountModal();
+} catch (err) {
+  console.warn('Account modal init warning:', err);
+}
 
 // ─── Local Storage Keys ───
 const STORE_VEHICLES = 'uyirva_logistics_vehicles';
 const STORE_NOTIFS = 'uyirva_logistics_notifs';
 const STORE_TRIPS = 'uyirva_logistics_trips';
+const STORE_REQ = 'uyirva_req';
 
 // Default mock vehicles if empty
 function getDefaultVehicles() {
   return [
-    { id: 'VEH-101', name: 'Ashok Leyland Dost', number: 'TN 38 CZ 4920', type: 'Mini Truck (2 Ton)', status: 'Available', location: 'Coimbatore', capacity: '2000 kg', driver: 'M. Selvam', driverPhone: '9842100011' },
-    { id: 'VEH-102', name: 'Mahindra Bolero Pickup', number: 'TN 37 B 8812', type: 'Pickup Van', status: 'Available', location: 'Pollachi', capacity: '1500 kg', driver: 'K. Rajesh', driverPhone: '9842100022' },
-    { id: 'VEH-103', name: 'Tata 407 Reefer', number: 'TN 38 AB 1109', type: 'Refrigerator Van', status: 'In Transit', location: 'Mettupalayam', capacity: '3500 kg', driver: 'P. Anand', driverPhone: '9842100033' }
+    { id: 'VEH-101', name: 'Ashok Leyland Dost Plus', number: 'TN 38 CZ 4920', type: 'Mini Truck (2 Ton)', status: 'Available', location: 'Coimbatore', capacity: '2000 kg', driver: 'M. Selvam', driverPhone: '9842100011' },
+    { id: 'VEH-102', name: 'Mahindra Bolero Pickup Maxx', number: 'TN 37 B 8812', type: 'Pickup Van (1.5 Ton)', status: 'Available', location: 'Pollachi', capacity: '1500 kg', driver: 'K. Rajesh', driverPhone: '9842100022' },
+    { id: 'VEH-103', name: 'Tata 407 Reefer Cold Chain', number: 'TN 38 AB 1109', type: 'Refrigerator Van (Cold-chain)', status: 'In Transit', location: 'Mettupalayam', capacity: '3500 kg', driver: 'P. Anand', driverPhone: '9842100033' },
+    { id: 'VEH-104', name: 'Eicher Pro 2049 Lorry', number: 'TN 33 E 5510', type: 'Lorry (14 ft)', status: 'Available', location: 'Erode', capacity: '5000 kg', driver: 'S. Shanmugam', driverPhone: '9842100044' },
+    { id: 'VEH-105', name: 'Tata Ace Gold Tempo', number: 'TN 27 K 9012', type: 'Auto Tempo (750 kg)', status: 'Available', location: 'Salem', capacity: '800 kg', driver: 'R. Periasamy', driverPhone: '9842100055' }
+  ];
+}
+
+// Default mock buyer requirements if empty
+function getDefaultBuyerRequirements() {
+  return [
+    { id: 'REQ-101', crop: 'Tomato (Hybrid)', qty: '1200 kg', location: 'Coimbatore Wholesale Mandi', price: '26', grade: 'A', date: '2026-09-15', notes: 'Requires immediate morning transport pickup from Pollachi farmgate.' },
+    { id: 'REQ-102', crop: 'Shallots (Small Onion)', qty: '2500 kg', location: 'Erode Supermarket Hub', price: '40', grade: 'A', date: '2026-09-16', notes: 'Ventilated pickup van or mini truck required from Perundurai.' },
+    { id: 'REQ-103', crop: 'Ooty Carrot', qty: '850 kg', location: 'Salem Hotel Chain Depot', price: '35', grade: 'A', date: '2026-09-14', notes: 'Standard tempo auto or mini truck required from Mettupalayam.' },
+    { id: 'REQ-104', crop: 'Green Chilli', qty: '500 kg', location: 'Tiruppur Textile Canteen', price: '68', grade: 'A', date: '2026-09-15', notes: 'Crate packed shipment from Oddanchatram.' },
+    { id: 'REQ-105', crop: 'G9 Banana', qty: '1800 kg', location: 'Madurai Retail Market', price: '28', grade: 'B', date: '2026-09-17', notes: 'Bulk transport lorry required from Theni.' }
   ];
 }
 
@@ -46,6 +64,16 @@ function getVehicles() {
 
 function saveVehicles(vList) {
   localStorage.setItem(STORE_VEHICLES, JSON.stringify(vList));
+}
+
+function getBuyerRequirements() {
+  const data = localStorage.getItem(STORE_REQ);
+  if (!data || JSON.parse(data).length === 0) {
+    const def = getDefaultBuyerRequirements();
+    localStorage.setItem(STORE_REQ, JSON.stringify(def));
+    return def;
+  }
+  return JSON.parse(data);
 }
 
 function getNotifications() {
@@ -80,7 +108,8 @@ document.getElementById('db-logout')?.addEventListener('click', () => {
 // ─── Tab Switching & Event Listener Setup ───
 function setupTabSwitching() {
   document.querySelectorAll('.db-tab').forEach(btn => {
-    btn.onclick = () => {
+    btn.onclick = (e) => {
+      e.preventDefault();
       document.querySelectorAll('.db-tab').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.db-panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
@@ -88,12 +117,6 @@ function setupTabSwitching() {
       if (targetPanel) targetPanel.classList.add('active');
     };
   });
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', setupTabSwitching);
-} else {
-  setupTabSwitching();
 }
 
 // ─── Update Header Badges & Stats ───
@@ -149,10 +172,10 @@ function renderVehicles() {
         </div>
       </div>
       <div class="vc-actions">
-        <button class="btn-sm" data-action="toggle-status" data-veh-id="${v.id}" onclick="toggleVehicleStatus('${v.id}')">
+        <button class="btn-sm" type="button" data-action="toggle-status" data-veh-id="${v.id}" onclick="window.toggleVehicleStatus('${v.id}')">
           ${v.status === 'Available' ? 'Mark Maintenance' : 'Mark Available'}
         </button>
-        <button class="btn-sm danger" data-action="delete-veh" data-veh-id="${v.id}" onclick="deleteVehicle('${v.id}')">Remove</button>
+        <button class="btn-sm danger" type="button" data-action="delete-veh" data-veh-id="${v.id}" onclick="window.deleteVehicle('${v.id}')">Remove</button>
       </div>
     </div>
   `).join('');
@@ -166,6 +189,7 @@ window.toggleVehicleStatus = id => {
     v.status = v.status === 'Available' ? 'Under Maintenance' : 'Available';
     saveVehicles(vehicles);
     renderVehicles();
+    renderBuyerListings();
     updateStats();
   }
 };
@@ -175,6 +199,7 @@ window.deleteVehicle = id => {
   const vehicles = getVehicles().filter(x => x.id !== id);
   saveVehicles(vehicles);
   renderVehicles();
+  renderBuyerListings();
   updateStats();
 };
 
@@ -183,17 +208,34 @@ function setupVehicleForm() {
   const form = document.getElementById('add-vehicle-form');
   if (!form) return;
   
-  form.onsubmit = e => {
+  form.addEventListener('submit', e => {
     e.preventDefault();
-    const name = document.getElementById('veh-name').value.trim();
-    const num = document.getElementById('veh-num').value.trim().toUpperCase();
-    const type = document.getElementById('veh-type').value;
-    const cap = document.getElementById('veh-cap').value.trim();
-    const loc = document.getElementById('veh-loc').value.trim();
-    const driver = document.getElementById('veh-driver').value.trim();
-    const driverPhone = document.getElementById('veh-phone').value.trim();
+    const feedback = document.getElementById('veh-add-feedback');
 
-    if (!name || !num || !cap || !loc) return;
+    const nameInput = document.getElementById('veh-name');
+    const numInput = document.getElementById('veh-num');
+    const typeInput = document.getElementById('veh-type');
+    const capInput = document.getElementById('veh-cap');
+    const locInput = document.getElementById('veh-loc');
+    const driverInput = document.getElementById('veh-driver');
+    const driverPhoneInput = document.getElementById('veh-phone');
+
+    const name = nameInput?.value.trim() || '';
+    const num = numInput?.value.trim().toUpperCase() || '';
+    const type = typeInput?.value || 'Mini Truck (2 Ton)';
+    const cap = capInput?.value.trim() || '';
+    const loc = locInput?.value.trim() || '';
+    const driver = driverInput?.value.trim() || 'Owner Operator';
+    const driverPhone = driverPhoneInput?.value.trim() || user.phone || '9876543210';
+
+    if (!name || !num || !cap || !loc) {
+      if (feedback) {
+        feedback.style.color = '#ff6b6b';
+        feedback.textContent = '⚠️ Please fill out all required fields marked with (*).';
+        feedback.hidden = false;
+      }
+      return;
+    }
 
     const newVehicle = {
       id: `VEH-${Math.floor(1000 + Math.random() * 9000)}`,
@@ -202,8 +244,8 @@ function setupVehicleForm() {
       type,
       capacity: cap,
       location: loc,
-      driver: driver || 'Owner Operator',
-      driverPhone: driverPhone || user.phone || '9876543210',
+      driver,
+      driverPhone,
       status: 'Available'
     };
 
@@ -230,15 +272,16 @@ function setupVehicleForm() {
     renderBuyerListings();
     updateStats();
 
-    const feedback = document.getElementById('veh-add-feedback');
     if (feedback) {
-      feedback.textContent = `✅ Vehicle ${name} (${num}) added to your active stack!`;
+      feedback.style.color = 'var(--wheat)';
+      feedback.textContent = `✅ Vehicle ${name} (${num}) successfully registered & added to active stack!`;
       feedback.hidden = false;
-      setTimeout(() => { feedback.hidden = true; }, 4000);
+      setTimeout(() => { feedback.hidden = true; }, 5000);
     }
 
+    alert(`🚛 Success! Vehicle ${name} (${num}) has been registered to your vehicle stack.`);
     document.getElementById('vehicle-stack-list')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  };
+  });
 }
 
 // ─── RENDER: Buyer Requirements List & Vehicle Assignment ───
@@ -246,7 +289,7 @@ function renderBuyerListings() {
   const container = document.getElementById('buyer-req-list');
   if (!container) return;
 
-  const buyers = JSON.parse(localStorage.getItem('uyirva_req') || '[]');
+  const buyers = getBuyerRequirements();
   const vehicles = getVehicles().filter(v => v.status === 'Available');
 
   if (!buyers.length) {
@@ -276,7 +319,7 @@ function renderBuyerListings() {
           <select id="assign-veh-${b.id}" style="padding:6px;border-radius:8px;background:rgba(9,36,20,.6);color:#fff;border:1px solid var(--line);font-size:.83rem">
             ${vehicles.length ? vehicles.map(v => `<option value="${v.id}">${v.name} (${v.number}) - ${v.capacity}</option>`).join('') : '<option value="">No Available Vehicles</option>'}
           </select>
-          <button class="btn-primary" style="padding:6px 12px;font-size:.82rem" ${!vehicles.length ? 'disabled' : ''} onclick="assignVehicleToBuyer('${b.id}')">Assign &amp; Notify</button>
+          <button class="btn-primary" type="button" style="padding:6px 12px;font-size:.82rem" ${!vehicles.length ? 'disabled' : ''} data-action="assign-veh" data-req-id="${b.id}" onclick="window.assignVehicleToBuyer('${b.id}')">Assign &amp; Notify</button>
         </div>
       </div>
     </div>
@@ -284,7 +327,7 @@ function renderBuyerListings() {
 }
 
 window.assignVehicleToBuyer = reqId => {
-  const buyers = JSON.parse(localStorage.getItem('uyirva_req') || '[]');
+  const buyers = getBuyerRequirements();
   const req = buyers.find(r => r.id === reqId);
   if (!req) return;
 
@@ -303,7 +346,7 @@ window.assignVehicleToBuyer = reqId => {
     time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     date: new Date().toLocaleDateString('en-IN'),
     title: `🚚 Vehicle Assigned for Buyer Order!`,
-    message: `Buyer selected vehicle ${veh.name} (${veh.number}) for ${req.crop} (${req.qty}) shipment to ${req.location}.`,
+    message: `Vehicle ${veh.name} (${veh.number}) assigned for ${req.crop} (${req.qty}) shipment to ${req.location}.`,
     read: false,
     crop: req.crop,
     qty: req.qty,
@@ -339,6 +382,7 @@ window.assignVehicleToBuyer = reqId => {
 
   updateStats();
   renderVehicles();
+  renderBuyerListings();
   renderNotifications();
   renderTrips();
 
@@ -372,7 +416,7 @@ function renderNotifications() {
         <span>📍 Destination: ${n.location}</span>
         <span>🚚 Vehicle: ${n.vehicle} (${n.vehNumber})</span>
       </div>
-      ${!n.read ? `<button class="btn-sm" style="margin-top:8px" onclick="markNotifRead('${n.id}')">Mark as Read</button>` : ''}
+      ${!n.read ? `<button class="btn-sm" type="button" style="margin-top:8px" data-action="mark-read" data-notif-id="${n.id}" onclick="window.markNotifRead('${n.id}')">Mark as Read</button>` : ''}
     </div>
   `).join('');
 }
@@ -444,7 +488,7 @@ function renderTrips() {
           <a class="btn-secondary" href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="font-size:.82rem;padding:7px 14px;text-decoration:none">
             📍 Google Maps Route
           </a>
-          ${t.status !== 'Delivered' ? `<button class="btn-sm" style="background:var(--leaf);color:#fff;border-color:var(--leaf)" onclick="completeTrip('${t.id}')">✅ Mark Order Delivered</button>` : ''}
+          ${t.status !== 'Delivered' ? `<button class="btn-sm" type="button" style="background:var(--leaf);color:#fff;border-color:var(--leaf)" data-action="complete-trip" data-trip-id="${t.id}" onclick="window.completeTrip('${t.id}')">✅ Mark Order Delivered</button>` : ''}
         </div>
       </div>
     `;
@@ -468,6 +512,7 @@ window.completeTrip = id => {
 
     renderTrips();
     renderVehicles();
+    renderBuyerListings();
     updateStats();
     alert(`🎉 Delivery for Route #${t.id} marked as DELIVERED! Payment settlement initiated via Escrow.`);
   }
@@ -475,7 +520,8 @@ window.completeTrip = id => {
 
 // ─── Event Delegation for Dynamic Action Buttons ───
 document.addEventListener('click', e => {
-  const target = e.target;
+  const target = e.target.closest('button, a');
+  if (!target) return;
 
   // 1. Assign Vehicle to Buyer button
   if (target.matches('[data-action="assign-veh"]')) {

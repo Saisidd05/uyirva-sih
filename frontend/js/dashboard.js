@@ -15,7 +15,11 @@ const escapeHtml = v => String(v ?? '').replace(/[&<>'"]/g, c => ({ '&': '&amp;'
 initAccountModal();
 initAiPriceModal();
 
-const logout = () => { localStorage.clear(); location.assign('/'); };
+const logout = () => {
+  localStorage.removeItem('uyirva_access_token');
+  localStorage.removeItem('uyirva_user');
+  location.assign('/');
+};
 
 const shell = (title, content) => {
   app.innerHTML = content;
@@ -32,7 +36,12 @@ const api = async (path, options = {}) => {
   });
   const data = await response.json();
   if (!response.ok) {
-    if (response.status === 401) { localStorage.clear(); location.assign('/'); return new Promise(() => {}); }
+    if (response.status === 401) {
+      localStorage.removeItem('uyirva_access_token');
+      localStorage.removeItem('uyirva_user');
+      location.assign('/');
+      return new Promise(() => {});
+    }
     throw new Error(data.detail || 'Request failed');
   }
   return data;
@@ -74,17 +83,21 @@ const bindChats = () => document.querySelectorAll('[data-chat]').forEach(btn =>
 
 // ─── FARMER dashboard ───
 async function farmer() {
-  let listings, buyers, orders;
+  let listings = [], buyers = [], orders = [];
   try {
-    [_, { listings }, { buyers }, { orders }] = await Promise.all([
+    const [_, listingsRes, buyersRes, ordersRes] = await Promise.all([
       api('/api/farmer/dashboard'),
       api('/api/farmer/listings'),
       api('/api/farmer/buyers?sort=distance'),
       api('/api/farmer/accepted-orders')
     ]);
+    listings = listingsRes?.listings || [];
+    buyers = buyersRes?.buyers || [];
+    orders = ordersRes?.orders || [];
   } catch {
-    // Read real user data from localStorage
-    listings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+    // Read real user data from localStorage, scope to user if possible
+    const localListings = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
+    listings = user?.id ? localListings.filter(l => !l.farmer_id || l.farmer_id === user.id) : localListings;
     buyers = JSON.parse(localStorage.getItem('uyirva_req') || '[]');
     orders = JSON.parse(localStorage.getItem('uyirva_orders') || '[]');
   }
@@ -165,7 +178,7 @@ async function admin() {
 ({ farmer, fpo, logistics, admin }[role] || farmer)()
   .catch(err => shell('Dashboard', `<div class="feature-card"><p style="color:#ffaaaa">${escapeHtml(err.message)}</p></div>`));
 
-// ─── Listing modal ───
+// ─── Listing modal & AI Price predictor ───
 const modal = document.querySelector('#listing-modal');
 const form = document.querySelector('#listing-form');
 const photoInput = form.elements.photo;
@@ -173,6 +186,59 @@ const preview = document.querySelector('#listing-image-preview');
 const today = new Date().toISOString().slice(0, 10);
 form.elements.pickup_date.min = today;
 let photoData = '';
+
+const AI_PRICES = {
+  Tomato: { optimal: 27, min: 24, max: 29 },
+  Onion: { optimal: 23, min: 21, max: 25 },
+  Potato: { optimal: 22, min: 20, max: 24 },
+  Brinjal: { optimal: 19, min: 17, max: 22 },
+  Carrot: { optimal: 32, min: 28, max: 35 },
+  Beans: { optimal: 40, min: 35, max: 44 },
+  Cabbage: { optimal: 16, min: 14, max: 18 },
+  Cauliflower: { optimal: 25, min: 22, max: 28 },
+  Okra: { optimal: 28, min: 25, max: 30 },
+  Chilli: { optimal: 68, min: 60, max: 75 },
+  Cucumber: { optimal: 18, min: 16, max: 20 },
+  Drumstick: { optimal: 52, min: 45, max: 58 },
+  Turmeric: { optimal: 88, min: 82, max: 95 },
+  Garlic: { optimal: 110, min: 100, max: 120 }
+};
+
+const cropSelect = form.elements.crop;
+const priceInput = form.elements.price;
+const aiPriceText = document.querySelector('#ai-price-text');
+const btnUseAiPrice = document.querySelector('#btn-use-ai-price');
+
+let currentAiOptimalPrice = null;
+
+if (cropSelect) {
+  cropSelect.onchange = () => {
+    const veggie = cropSelect.value;
+    if (veggie && AI_PRICES[veggie]) {
+      const data = AI_PRICES[veggie];
+      currentAiOptimalPrice = data.optimal;
+      if (aiPriceText) aiPriceText.textContent = `🤖 AI Prediction for ${veggie}: ₹${data.optimal}/kg (Fair range: ₹${data.min}–₹${data.max}/kg)`;
+      if (btnUseAiPrice) btnUseAiPrice.hidden = false;
+      if (!priceInput.value) {
+        priceInput.value = data.optimal;
+      }
+    } else {
+      currentAiOptimalPrice = null;
+      if (aiPriceText) aiPriceText.textContent = '🤖 Select vegetable to get AI Price Suggestion';
+      if (btnUseAiPrice) btnUseAiPrice.hidden = true;
+    }
+  };
+}
+
+if (btnUseAiPrice) {
+  btnUseAiPrice.onclick = () => {
+    if (currentAiOptimalPrice && priceInput) {
+      priceInput.value = currentAiOptimalPrice;
+      priceInput.style.borderColor = 'var(--wheat)';
+      setTimeout(() => { priceInput.style.borderColor = ''; }, 1500);
+    }
+  };
+}
 
 document.querySelector('.auth-close').onclick = () => modal.classList.remove('open');
 
@@ -208,6 +274,8 @@ form.onsubmit = async event => {
       body: JSON.stringify({ ...listing, pickup_ready_at: `${pickup_date}T${pickup_time}`, unit: 'kg', photo_url: photoData })
     });
     modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = '';
+    if (aiPriceText) aiPriceText.textContent = '🤖 Select vegetable to get AI Price Suggestion';
+    if (btnUseAiPrice) btnUseAiPrice.hidden = true;
     farmer();
   } catch (issue) {
     // Offline mode — save listing to localStorage
@@ -215,6 +283,7 @@ form.onsubmit = async event => {
       const existing = JSON.parse(localStorage.getItem('uyirva_farmer_listings') || '[]');
       existing.unshift({
         id: Date.now().toString(),
+        farmer_id: user?.id || 'farmer',
         crop: values.crop,
         quantity: values.quantity,
         price: values.price,
@@ -225,6 +294,8 @@ form.onsubmit = async event => {
       });
       localStorage.setItem('uyirva_farmer_listings', JSON.stringify(existing));
       modal.classList.remove('open'); form.reset(); preview.hidden = true; photoData = '';
+      if (aiPriceText) aiPriceText.textContent = '🤖 Select vegetable to get AI Price Suggestion';
+      if (btnUseAiPrice) btnUseAiPrice.hidden = true;
       window.alert('✅ Vegetable listing published successfully!');
       farmer();
     } else {
@@ -232,3 +303,4 @@ form.onsubmit = async event => {
     }
   }
 };
+

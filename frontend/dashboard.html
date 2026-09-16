@@ -53,7 +53,41 @@
       <h2>List your vegetables</h2>
       <p class="auth-copy">All fields are required. Quantity is always in kilograms.</p>
       <form class="auth-form listing-form" id="listing-form" novalidate>
-        <section class="form-section"><h3>1. Vegetable &amp; quantity</h3><p>Tell buyers what you have available.</p><div class="field-grid"><label>Vegetable name<select name="crop" required><option value="">Select a vegetable</option><option>Tomato</option><option>Onion</option><option>Potato</option><option>Brinjal</option><option>Carrot</option><option>Beans</option><option>Cabbage</option><option>Cauliflower</option><option>Okra</option><option>Chilli</option><option>Cucumber</option><option>Drumstick</option></select></label><label>Quantity available <small>(kilograms)</small><input name="quantity" type="number" inputmode="numeric" min="1" step="1" placeholder="Example: 500" required></label><label class="full-width">Expected price <small>(₹ per kilogram)</small><input name="price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="Example: 25" required></label></div></section>
+        <section class="form-section">
+          <h3>1. Vegetable &amp; quantity</h3>
+          <p>Tell buyers what you have available.</p>
+          <div class="field-grid">
+            <label>Vegetable name
+              <select name="crop" required>
+                <option value="">Select a vegetable</option>
+                <option>Tomato</option>
+                <option>Onion</option>
+                <option>Potato</option>
+                <option>Brinjal</option>
+                <option>Carrot</option>
+                <option>Beans</option>
+                <option>Cabbage</option>
+                <option>Cauliflower</option>
+                <option>Okra</option>
+                <option>Chilli</option>
+                <option>Cucumber</option>
+                <option>Drumstick</option>
+                <option>Turmeric</option>
+                <option>Garlic</option>
+              </select>
+            </label>
+            <label>Quantity available <small>(kilograms)</small>
+              <input name="quantity" type="number" inputmode="numeric" min="1" step="1" placeholder="Example: 500" required>
+            </label>
+            <label class="full-width">Expected price <small>(₹ per kilogram)</small>
+              <input name="price" type="number" inputmode="decimal" min="0.01" step="0.01" placeholder="Example: 25" required>
+            </label>
+            <div id="ai-form-price-hint" style="grid-column:1/-1;padding:10px 12px;background:rgba(233,185,73,.15);border:1px solid rgba(233,185,73,.4);border-radius:10px;font-size:.85rem;color:var(--wheat);display:flex;align-items:center;justify-content:space-between;gap:8px">
+              <span id="ai-price-text">🤖 Select vegetable to get AI Price Suggestion</span>
+              <button type="button" id="btn-use-ai-price" class="button secondary btn-sm" style="padding:4px 10px;font-size:.78rem;white-space:nowrap" hidden>Apply AI Price</button>
+            </div>
+          </div>
+        </section>
         <section class="form-section"><h3>2. Harvest &amp; pickup schedule</h3><p>Pick dates using the calendar and choose a pickup time.</p><div class="field-grid"><label>Harvest date<input name="harvest_date" type="date" required></label><label>Pickup-ready date<input name="pickup_date" type="date" required></label><label class="full-width">Pickup-ready time<input name="pickup_time" type="time" required></label></div></section>
         <section class="form-section"><h3>3. Quality &amp; location</h3><p>These fields help buyers decide quickly.</p><div class="field-grid"><label>Pickup location<select name="location" required><option value="">Choose serviced area</option><option>Coimbatore</option><option>Pollachi</option><option>Mettupalayam</option><option>Tiruppur</option><option>Erode</option></select></label><label>Freshness<select name="freshness" required><option value="">Choose freshness</option><option>Fresh today</option><option>Harvested within 24 hours</option><option>Harvested within 2 days</option></select></label><label>AGMARK status<select name="agmark" required><option value="">Choose status</option><option>AGMARK certified</option><option>Applied for AGMARK</option><option>Not certified</option></select></label><label>Quality grade<select name="quality_grade" required><option value="">Choose quality</option><option>Premium / Grade A</option><option>Grade A</option><option>Grade B</option><option>Standard</option></select></label><label class="full-width">Vegetable image <small>(JPG or PNG)</small><input name="photo" type="file" accept="image/jpeg,image/png" required></label></div>
         <img id="listing-image-preview" alt="Vegetable preview" hidden style="width:100%;max-height:160px;object-fit:cover;border-radius:10px"></section>

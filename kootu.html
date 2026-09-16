@@ -436,33 +436,39 @@
 
         // ─── SAMPLE FARMERS ───
         const sampleFarmers=[
-          {id:'F1',name:'Murugan Farms',location:'Coimbatore',dist:'4.2 km',rating:'4.8',produce:[{name:'Tomato',qty:'800 kg',price:'₹24/kg'},{name:'Brinjal',qty:'350 kg',price:'₹18/kg'}]},
-          {id:'F2',name:'Lakshmi Agro',location:'Erode',dist:'11.7 km',rating:'4.6',produce:[{name:'Onion',qty:'1200 kg',price:'₹21/kg'},{name:'Garlic',qty:'200 kg',price:'₹55/kg'}]},
-          {id:'F3',name:'Selvam & Sons',location:'Salem',dist:'28.3 km',rating:'4.9',produce:[{name:'Potato',qty:'950 kg',price:'₹22/kg'},{name:'Carrot',qty:'400 kg',price:'₹30/kg'}]},
-          {id:'F4',name:'Devi Organics',location:'Tiruppur',dist:'7.5 km',rating:'4.7',produce:[{name:'Banana',qty:'600 kg',price:'₹28/kg'},{name:'Coconut',qty:'500 units',price:'₹15/pc'}]},
-          {id:'F5',name:'Suresh Horticulture',location:'Namakkal',dist:'19.1 km',rating:'4.5',produce:[{name:'Chilli',qty:'300 kg',price:'₹65/kg'},{name:'Turmeric',qty:'250 kg',price:'₹80/kg'}]},
-          {id:'F6',name:'Anbu Farms',location:'Pollachi',dist:'5.8 km',rating:'4.8',produce:[{name:'Mango',qty:'700 kg',price:'₹45/kg'},{name:'Guava',qty:'300 kg',price:'₹32/kg'}]}
+          {id:'F1',name:'Murugan Organic Farms',location:'Pollachi, Coimbatore',dist:'4.2 km',rating:'4.9',produce:[{name:'Tomato (Hybrid)',qty:'1200 kg',price:'₹25/kg'},{name:'Brinjal (Purple)',qty:'450 kg',price:'₹20/kg'},{name:'Drumstick',qty:'200 kg',price:'₹50/kg'}]},
+          {id:'F2',name:'Lakshmi Agro Producers',location:'Perundurai, Erode',dist:'11.7 km',rating:'4.8',produce:[{name:'Shallots (Small Onion)',qty:'1500 kg',price:'₹38/kg'},{name:'Garlic (Country)',qty:'300 kg',price:'₹110/kg'},{name:'Turmeric (Erode Finger)',qty:'500 kg',price:'₹85/kg'}]},
+          {id:'F3',name:'Selvam & Sons Farms',location:'Mettupalayam, Nilgiris',dist:'28.3 km',rating:'4.9',produce:[{name:'Ooty Carrot',qty:'900 kg',price:'₹34/kg'},{name:'Potato (Hill Grade)',qty:'1400 kg',price:'₹22/kg'},{name:'Cabbage',qty:'600 kg',price:'₹16/kg'}]},
+          {id:'F4',name:'Devi Natural Organics',location:'Avinashi, Tiruppur',dist:'7.5 km',rating:'4.7',produce:[{name:'Green Chilli',qty:'350 kg',price:'₹65/kg'},{name:'Okra / Ladies Finger',qty:'400 kg',price:'₹28/kg'},{name:'Coconut',qty:'1000 units',price:'₹16/pc'}]},
+          {id:'F5',name:'Suresh Horticulture',location:'Oddanchatram, Dindigul',dist:'19.1 km',rating:'4.6',produce:[{name:'Hybrid Tomato',qty:'2000 kg',price:'₹24/kg'},{name:'Cucumber (Green)',qty:'800 kg',price:'₹18/kg'},{name:'Cauliflower',qty:'500 kg',price:'₹26/kg'}]},
+          {id:'F6',name:'Anbu Farms & Orchards',location:'Cumbum, Theni',dist:'15.8 km',rating:'4.8',produce:[{name:'G9 Banana',qty:'1800 kg',price:'₹26/kg'},{name:'Guava (Taiwan Pink)',qty:'400 kg',price:'₹35/kg'}]},
+          {id:'F7',name:'Amman Farm Producers',location:'Hosur, Krishnagiri',dist:'22.4 km',rating:'4.7',produce:[{name:'Capsicum (Green)',qty:'500 kg',price:'₹42/kg'},{name:'French Beans',qty:'300 kg',price:'₹40/kg'}]},
+          {id:'F8',name:'Kongu Organic FPO',location:'Tharamangalam, Salem',dist:'31.0 km',rating:'4.9',produce:[{name:'Tapioca',qty:'1200 kg',price:'₹15/kg'},{name:'Curry Leaves',qty:'150 kg',price:'₹30/kg'}]}
         ];
 
         // ─── SAMPLE LOGISTICS ───
         const sampleLogistics=[
-          {id:'L1',name:'Vel Transports',owner:'Velmurugan K.',rating:'4.9 ★',loc:'Coimbatore',vehicles:[
-            {type:'Mini Truck',cap:'2 Ton',icon:'🚚',avail:true},
-            {type:'Pickup Van',cap:'800 kg',icon:'🚐',avail:true},
-            {type:'Refrigerator Van',cap:'1.5 Ton',icon:'❄️',avail:false}
+          {id:'L1',name:'Vel Transports & Cold Chain',owner:'Velmurugan K.',rating:'4.9 ★',loc:'Coimbatore',vehicles:[
+            {type:'Ashok Leyland Dost (2 Ton)',cap:'2 Ton',icon:'🚚',avail:true},
+            {type:'Mahindra Bolero Pickup',cap:'1.5 Ton',icon:'🚐',avail:true},
+            {type:'Tata Reefer Cold Van',cap:'2.5 Ton',icon:'❄️',avail:true}
           ]},
-          {id:'L2',name:'Muthu Cargo',owner:'Muthu Rajan',rating:'4.7 ★',loc:'Erode',vehicles:[
-            {type:'Lorry (14 ft)',cap:'5 Ton',icon:'🚛',avail:true},
-            {type:'Mini Truck',cap:'2 Ton',icon:'🚚',avail:false}
+          {id:'L2',name:'Muthu Cargo & Freight',owner:'Muthu Rajan',rating:'4.8 ★',loc:'Erode',vehicles:[
+            {type:'Eicher Pro Lorry (14 ft)',cap:'5 Ton',icon:'🚛',avail:true},
+            {type:'Tata 407 Heavy Pickup',cap:'3.5 Ton',icon:'🚚',avail:true}
           ]},
-          {id:'L3',name:'Sri Logistics',owner:'Sridhar P.',rating:'4.8 ★',loc:'Salem',vehicles:[
-            {type:'Pickup Van',cap:'800 kg',icon:'🚐',avail:true},
-            {type:'Auto Tempo',cap:'500 kg',icon:'🛺',avail:true},
+          {id:'L3',name:'Sri Logistics & Roadlines',owner:'Sridhar P.',rating:'4.8 ★',loc:'Salem',vehicles:[
+            {type:'Mahindra Bolero Pickup',cap:'1.5 Ton',icon:'🚐',avail:true},
+            {type:'Auto Tempo (750 kg)',cap:'750 kg',icon:'🛺',avail:true},
             {type:'Lorry (20 ft)',cap:'8 Ton',icon:'🚛',avail:true}
           ]},
-          {id:'L4',name:'Kaviya Fleet',owner:'Kavitha M.',rating:'4.6 ★',loc:'Tiruppur',vehicles:[
-            {type:'Refrigerator Van',cap:'2 Ton',icon:'❄️',avail:true},
-            {type:'Mini Truck',cap:'1.5 Ton',icon:'🚚',avail:true}
+          {id:'L4',name:'Kaviya Fleet Logistics',owner:'Kavitha M.',rating:'4.7 ★',loc:'Tiruppur',vehicles:[
+            {type:'Refrigerator Van (Cold-chain)',cap:'2 Ton',icon:'❄️',avail:true},
+            {type:'Tata Ace Gold',cap:'1 Ton',icon:'🚚',avail:true}
+          ]},
+          {id:'L5',name:'Kongu Express Freight Services',owner:'P. Palanisamy',rating:'4.9 ★',loc:'Dindigul',vehicles:[
+            {type:'Force Trump Pickup',cap:'1.2 Ton',icon:'🚚',avail:true},
+            {type:'Eicher 10.90 Lorry',cap:'6 Ton',icon:'🚛',avail:true}
           ]}
         ];
 

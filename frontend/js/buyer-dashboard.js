@@ -22,6 +22,51 @@ if (user && userRole !== 'BUYER') {
 document.body.classList.add('buyer-mode');
 initAccountModal();
 
+// Default Mock Data Initializers
+function initDefaultMockData() {
+  if (!localStorage.getItem('uyirva_farmer_listings')) {
+    const defaultListings = [
+      { id: 'L-101', farmer_id: 'F1', farmer_name: 'Murugan Organic Farms', crop: 'Tomato (Hybrid)', quantity: '1200', price: '25', freshness: 'Harvested Today', quality_grade: 'Grade A', location: 'Pollachi, Coimbatore' },
+      { id: 'L-102', farmer_id: 'F2', farmer_name: 'Lakshmi Agro Producers', crop: 'Shallots (Small Onion)', quantity: '1500', price: '38', freshness: 'Fresh 1-Day Harvest', quality_grade: 'Grade A', location: 'Perundurai, Erode' },
+      { id: 'L-103', farmer_id: 'F3', farmer_name: 'Selvam & Sons Farms', crop: 'Ooty Carrot', quantity: '900', price: '34', freshness: 'Harvested Today', quality_grade: 'Grade A', location: 'Mettupalayam, Nilgiris' },
+      { id: 'L-104', farmer_id: 'F4', farmer_name: 'Devi Natural Organics', crop: 'Green Chilli', quantity: '350', price: '65', freshness: 'Fresh Today', quality_grade: 'Grade A', location: 'Avinashi, Tiruppur' },
+      { id: 'L-105', farmer_id: 'F5', farmer_name: 'Suresh Horticulture', crop: 'Cucumber (Green)', quantity: '800', price: '18', freshness: 'Harvested Today', quality_grade: 'Grade B', location: 'Oddanchatram, Dindigul' },
+      { id: 'L-106', farmer_id: 'F6', farmer_name: 'Anbu Farms & Orchards', crop: 'G9 Banana', quantity: '1800', price: '26', freshness: 'Fresh Farmgate', quality_grade: 'Grade A', location: 'Cumbum, Theni' }
+    ];
+    localStorage.setItem('uyirva_farmer_listings', JSON.stringify(defaultListings));
+  }
+
+  if (!localStorage.getItem('uyirva_logistics')) {
+    const defaultLogistics = [
+      { id: 'L1', name: 'Vel Transports & Cold Chain', type: 'Ashok Leyland Dost / Reefer', location: 'Coimbatore', capacity: '2 Ton', phone: '9842100011', available: true },
+      { id: 'L2', name: 'Muthu Cargo & Freight', type: 'Eicher Pro Lorry (14 ft)', location: 'Erode', capacity: '5 Ton', phone: '9842100022', available: true },
+      { id: 'L3', name: 'Sri Logistics & Roadlines', type: 'Mahindra Bolero Pickup', location: 'Salem', capacity: '1.5 Ton', phone: '9842100033', available: true },
+      { id: 'L4', name: 'Kaviya Fleet Logistics', type: 'Refrigerator Van (Cold-chain)', location: 'Tiruppur', capacity: '2 Ton', phone: '9842100044', available: true },
+      { id: 'L5', name: 'Kongu Express Freight', type: 'Force Trump Pickup', location: 'Dindigul', capacity: '1.2 Ton', phone: '9842100055', available: true }
+    ];
+    localStorage.setItem('uyirva_logistics', JSON.stringify(defaultLogistics));
+  }
+
+  if (!localStorage.getItem('uyirva_req')) {
+    const defaultReq = [
+      { id: 'REQ-101', crop: 'Tomato (Hybrid)', qty: '1200 kg', location: 'Coimbatore Wholesale Mandi', price: '26', grade: 'A', date: '2026-09-15', notes: 'Requires immediate morning transport pickup from Pollachi farmgate.' },
+      { id: 'REQ-102', crop: 'Shallots (Small Onion)', qty: '2500 kg', location: 'Erode Supermarket Hub', price: '40', grade: 'A', date: '2026-09-16', notes: 'Ventilated pickup van or mini truck required from Perundurai.' },
+      { id: 'REQ-103', crop: 'Ooty Carrot', qty: '850 kg', location: 'Salem Hotel Chain Depot', price: '35', grade: 'A', date: '2026-09-14', notes: 'Standard tempo auto or mini truck required from Mettupalayam.' }
+    ];
+    localStorage.setItem('uyirva_req', JSON.stringify(defaultReq));
+  }
+
+  if (!localStorage.getItem('uyirva_orders')) {
+    const defaultOrders = [
+      { id: 'ORD-8821', crop: 'Tomato (Hybrid)', farmer: 'Murugan Organic Farms', qty: '1000 kg', total: '₹25,000', delivery: 'Coimbatore Wholesale Mandi', logistics: 'Vel Transports & Cold Chain', status: 'In Transit', date: new Date().toLocaleDateString('en-IN') },
+      { id: 'ORD-8822', crop: 'Shallots (Small Onion)', farmer: 'Lakshmi Agro Producers', qty: '500 kg', total: '₹19,000', delivery: 'Erode Supermarket Hub', logistics: 'Muthu Cargo & Freight', status: 'Accepted', date: new Date().toLocaleDateString('en-IN') }
+    ];
+    localStorage.setItem('uyirva_orders', JSON.stringify(defaultOrders));
+  }
+}
+
+initDefaultMockData();
+
 // ─── Data store (localStorage backed) ───
 const store = {
   requirements: JSON.parse(localStorage.getItem('uyirva_req') || '[]'),
@@ -235,7 +280,8 @@ window.placeOrderForListing = listingId => {
   alert(`✅ Order placed for ${listing.crop} (${listing.quantity} kg)!`);
 };
 window.bookLogistics = id => {
-  const lp = LOGISTICS.find(l => l.id === id);
+  const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
+  const lp = logisticsList.find(l => l.id === id) || { name: 'Logistics Partner' };
   alert(`✅ Booking request sent to ${lp.name}!\nThey will confirm within 2 hours.`);
 };
 window.cancelOrder = id => {
