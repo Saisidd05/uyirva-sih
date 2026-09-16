@@ -36,7 +36,8 @@ function initDefaultMockData() {
     localStorage.setItem('uyirva_farmer_listings', JSON.stringify(defaultListings));
   }
 
-  if (!localStorage.getItem('uyirva_logistics')) {
+  const storedLogistics = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
+  if (storedLogistics.length === 0) {
     const defaultLogistics = [
       { id: 'L1', name: 'Vel Transports & Cold Chain', type: 'Ashok Leyland Dost / Reefer', location: 'Coimbatore', capacity: '2 Ton', phone: '+91 98421 00011', rating: '4.9', rate_per_km: '18', rate_per_hr: '150', available: true },
       { id: 'L2', name: 'Muthu Cargo & Freight', type: 'Eicher Pro Lorry (14 ft)', location: 'Erode', capacity: '5 Ton', phone: '+91 98421 00022', rating: '4.8', rate_per_km: '28', rate_per_hr: '240', available: true },
@@ -176,7 +177,7 @@ function renderFarmers() {
         </div>
       </div>
       <small style="color:var(--muted);display:block;margin-top:6px">Grade: ${f.quality_grade || 'Standard'} · ${f.freshness || 'Fresh'}</small>
-      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="placeOrderForListing('${f.id}')">📦 Place Order</button>
+      <button class="button primary" style="width:100%;justify-content:center;margin-top:10px;border-radius:12px;padding:8px" onclick="placeOrderForListing('${f.id}')">📦 Place Order</button>
     </div>
   `).join('');
 }
@@ -219,7 +220,7 @@ function renderLogistics() {
           <span class="veh-avail ${l.available ? 'yes' : 'no'}">${l.available ? 'Available' : 'Busy'}</span>
         </div>
       </div>
-      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:10px" onclick="bookLogistics('${l.id}')">📞 Book Vehicle</button>
+      <button class="button primary" style="width:100%;justify-content:center;margin-top:10px;border-radius:12px;padding:8px" onclick="bookLogistics('${l.id}')">📞 Book Vehicle</button>
     </div>
   `).join('');
 }
@@ -393,11 +394,6 @@ confirmOrderBtn?.addEventListener('click', () => {
   document.getElementById('panel-orders').classList.add('active');
   renderOrders();
 });
-window.bookLogistics = id => {
-  const logisticsList = JSON.parse(localStorage.getItem('uyirva_logistics') || '[]');
-  const lp = logisticsList.find(l => l.id === id) || { name: 'Logistics Partner' };
-  alert(`✅ Booking request sent to ${lp.name}!\nThey will confirm within 2 hours.`);
-};
 window.cancelOrder = id => {
   if (!confirm('Cancel this order?')) return;
   store.orders = store.orders.filter(o => o.id !== id);

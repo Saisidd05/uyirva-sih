@@ -319,7 +319,7 @@ function renderBuyerListings() {
           <select id="assign-veh-${b.id}" style="padding:6px;border-radius:8px;background:rgba(9,36,20,.6);color:#fff;border:1px solid var(--line);font-size:.83rem">
             ${vehicles.length ? vehicles.map(v => `<option value="${v.id}">${v.name} (${v.number}) - ${v.capacity}</option>`).join('') : '<option value="">No Available Vehicles</option>'}
           </select>
-          <button class="btn-primary" type="button" style="padding:6px 12px;font-size:.82rem" ${!vehicles.length ? 'disabled' : ''} data-action="assign-veh" data-req-id="${b.id}" onclick="window.assignVehicleToBuyer('${b.id}')">Assign &amp; Notify</button>
+          <button class="button primary" type="button" style="padding:6px 12px;font-size:.82rem;border-radius:12px;" ${!vehicles.length ? 'disabled' : ''} data-action="assign-veh" data-req-id="${b.id}" onclick="window.assignVehicleToBuyer('${b.id}')">Assign &amp; Notify</button>
         </div>
       </div>
     </div>
@@ -478,7 +478,7 @@ function renderTrips() {
           <strong style="color:var(--wheat)">Live GPS Tracking Mode Active</strong>
           <span style="font-size:.78rem;color:var(--muted)">Route: ${t.pickup} to ${t.destination}</span>
           <div style="margin-top:10px">
-            <a class="btn-primary" href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="padding:8px 16px;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px">
+            <a class="button primary" href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" style="padding:8px 16px;font-size:.85rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;border-radius:12px;">
               🧭 Open Google Maps Navigation &rarr;
             </a>
           </div>
